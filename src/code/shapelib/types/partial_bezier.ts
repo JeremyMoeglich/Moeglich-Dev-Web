@@ -1,5 +1,5 @@
 import type { Axis, PointMap, Stringifiable } from "./interfaces";
-import type { Point } from "./point";
+import { Point } from "./point";
 
 export class PartialBezier implements Stringifiable, PointMap<PartialBezier> {
     handle1: Point;
@@ -24,11 +24,11 @@ export class PartialBezier implements Stringifiable, PointMap<PartialBezier> {
         );
     }
 
-    scale(scale: number, offset?: Point): PartialBezier {
+    scale(scale: number, origin = new Point(0, 0)): PartialBezier {
         return new PartialBezier(
-            this.handle1.multiply(scale, offset),
-            this.handle2.multiply(scale, offset),
-            this.end_point.multiply(scale, offset)
+            this.handle1.scale(scale, origin),
+            this.handle2.scale(scale, origin),
+            this.end_point.scale(scale, origin)
         );
     }
 

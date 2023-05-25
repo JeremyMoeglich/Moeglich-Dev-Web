@@ -36,11 +36,11 @@ export class TriangleSolid
         );
     }
 
-    scale(scale: number, origin?: Point): TriangleSolid {
+    scale(scale: number, origin = new Point(0, 0)): TriangleSolid {
         return new TriangleSolid(
-            this.a.multiply(scale, origin),
-            this.b.multiply(scale, origin),
-            this.c.multiply(scale, origin)
+            this.a.scale(scale, origin),
+            this.b.scale(scale, origin),
+            this.c.scale(scale, origin)
         );
     }
 

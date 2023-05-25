@@ -77,10 +77,27 @@ export class Point
         return new Point(this.x + p.x, this.y + p.y);
     }
 
-    multiply(scale: number, offset?: Point): Point {
-        const offsetX = offset?.x ?? 0;
-        const offsetY = offset?.y ?? 0;
-        return new Point(this.x * scale + offsetX, this.y * scale + offsetY);
+    multiply(scale: number): Point {
+        return new Point(this.x * scale, this.y * scale);
+    }
+
+    scale(scale: number, origin: Point): Point {
+        // Scale the point relative to the origin
+        const translatedX = this.x - origin.x;
+        const translatedY = this.y - origin.y;
+        
+        const scaledX = translatedX * scale;
+        const scaledY = translatedY * scale;
+
+        // Translate the point back to the original position
+        const finalX = scaledX + origin.x;
+        const finalY = scaledY + origin.y;
+
+        return new Point(finalX, finalY);
+    }
+
+    subtract(p: Point): Point {
+        return new Point(this.x - p.x, this.y - p.y);
     }
 
     factor(f: number): Point {

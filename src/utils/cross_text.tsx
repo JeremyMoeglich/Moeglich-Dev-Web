@@ -55,9 +55,9 @@ const CrossText: React.FC<CrossTextProps> = ({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     style={style}
-                    className="relative inline-block z-10"
+                    className="relative inline-block z-50"
                 >
-                    {token === " " ? "\u00A0" : token}
+                    <div>{token === " " ? "\u00A0" : token}</div>
                 </motion.div>
             ))}
         </AnimatePresence>

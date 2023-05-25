@@ -35,10 +35,11 @@ export class LineSegment
         return new LineSegment(this.start.offset(p), this.end.offset(p));
     }
 
-    scale(scale: number, offset?: Point): LineSegment {
+    scale(scale: number, origin?: Point): LineSegment {
+        const norigin = origin ?? new Point(0, 0);
         return new LineSegment(
-            this.start.multiply(scale, offset),
-            this.end.multiply(scale, offset)
+            this.start.scale(scale, norigin),
+            this.end.scale(scale, norigin)
         );
     }
 

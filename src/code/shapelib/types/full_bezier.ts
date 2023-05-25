@@ -39,10 +39,10 @@ export class FullBezier
         );
     }
 
-    scale(scale: number, offset?: Point): FullBezier {
+    scale(scale: number, origin: Point): FullBezier {
         return new FullBezier(
-            this.start_point.multiply(scale, offset),
-            this.bezier.scale(scale, offset)
+            this.start_point.scale(scale, origin),
+            this.bezier.scale(scale, origin)
         );
     }
 

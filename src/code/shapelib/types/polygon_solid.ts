@@ -1,7 +1,7 @@
 import { cyclic_pairs, panic } from "functional-utilities";
 import type { Axis, HasVertices, PointMap, SolidShape } from "./interfaces";
 import { LineSegment } from "./line_segment";
-import type { Point } from "./point";
+import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
 import { TriangleSolid } from "./triangle_solid";
 import { chunk, sum } from "lodash-es";
@@ -47,9 +47,28 @@ export class PolygonSolid
         return new PolygonSolid(this.points.map((p2) => p2.offset(p)));
     }
 
-    scale(scale: number, offset?: Point): PolygonSolid {
+    static make_ngon(corners: number): PolygonSolid {
+        if (corners < 3)
+            throw new Error("A polygon must have at least 3 corners.");
+
+        let points: Point[] = [];
+        for (let i = 0; i < corners; i++) {
+            // Each corner is evenly spaced around the circle
+            let angle = (i / corners) * 2 * Math.PI;
+            // Calculate the x and y position using trigonometric functions
+            let x = Math.cos(angle);
+            let y = Math.sin(angle);
+            points.push(new Point(x, y));
+        }
+
+        return new PolygonSolid(points);
+    }
+
+    scale(scale: number, origin: Point = new Point(0, 0)): PolygonSolid {
         return new PolygonSolid(
-            this.points.map((p) => p.multiply(scale, offset))
+            this.points.map((p) =>
+                p.scale(scale, origin)
+            )
         );
     }
 

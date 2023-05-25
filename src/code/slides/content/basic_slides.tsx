@@ -5,8 +5,6 @@ import { type ColorPreset, FancyText } from "~/code/funcs/fancy_text";
 export const TitleSlide: StageGen<{
     title: string;
     subtitle?: string;
-    isTitleLarge?: boolean;
-    isSubtitleSmall?: boolean;
     animateId: string;
     titleFontSize?: string;
     titleColor?: ColorPreset;
@@ -16,26 +14,34 @@ export const TitleSlide: StageGen<{
     id: props.title,
     stage_duration: 1,
     Component: () => (
-        <div>
-            <FancyText
-                text={props.title}
-                animateId={props.animateId}
-                fontSize={props.titleFontSize ? props.titleFontSize : "10rem"}
-                color={props.titleColor ? props.titleColor : "redGradient"}
-            />
-            {props.subtitle && (
+        <div className="flex h-full flex-col justify-center">
+            <div>
                 <FancyText
-                    text={props.subtitle}
+                    text={props.title}
                     animateId={props.animateId}
                     fontSize={
-                        props.subtitleFontSize ? props.subtitleFontSize : "2rem"
+                        props.titleFontSize ? props.titleFontSize : "10rem"
                     }
-                    color={
-                        props.subtitleColor
-                            ? props.subtitleColor
-                            : "blueGradient"
-                    }
+                    color={props.titleColor ? props.titleColor : "redGradient"}
                 />
+            </div>
+            {props.subtitle && (
+                <div>
+                    <FancyText
+                        text={props.subtitle}
+                        animateId={props.animateId}
+                        fontSize={
+                            props.subtitleFontSize
+                                ? props.subtitleFontSize
+                                : "2rem"
+                        }
+                        color={
+                            props.subtitleColor
+                                ? props.subtitleColor
+                                : "blueGradient"
+                        }
+                    />
+                </div>
             )}
         </div>
     ),

@@ -47,7 +47,7 @@ const FancyTextNode = ({
     fontSize: string;
     color: ColorPreset;
 }) => {
-    const Text = styled.h1`
+    const Text = styled.div`
         position: relative;
         font-size: ${fontSize};
         font-weight: 900;
@@ -57,7 +57,6 @@ const FancyTextNode = ({
         animation: ${gradient} 15s ease-in-out infinite;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        z-index: 2;
         text-align: center;
     `;
 

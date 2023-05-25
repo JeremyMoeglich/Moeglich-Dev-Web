@@ -52,9 +52,9 @@ export class CircleSolid implements SolidShape<CircleSolid> {
         return new CircleSolid(this.position.offset(offset), this.radius);
     }
 
-    scale(scale: number, offset?: Point | undefined): CircleSolid {
+    scale(scale: number, origin = new Point(0, 0)): CircleSolid {
         return new CircleSolid(
-            this.position.multiply(scale, offset),
+            this.position.scale(scale, origin),
             this.radius * scale
         );
     }

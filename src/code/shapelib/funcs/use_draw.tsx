@@ -57,5 +57,9 @@ export function ShapeRender({
 }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     useDraw(canvasRef, instructions);
-    return <canvas ref={canvasRef} width={width} height={height} />;
+    return (
+        <div className="border-white border-2">
+            <canvas ref={canvasRef} width={width} height={height} />
+        </div>
+    );
 }

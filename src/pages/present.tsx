@@ -74,7 +74,7 @@ function App() {
     const slide = slides[slide_index] ?? panic("slide not found");
     return (
         <div className="flex h-screen w-screen flex-col items-center justify-center bg-slate-900">
-            <div className="relative w-full grow">
+            <div className="relative w-full grow font-bold">
                 {isHydrated && slide.Component()}
             </div>
             <p>

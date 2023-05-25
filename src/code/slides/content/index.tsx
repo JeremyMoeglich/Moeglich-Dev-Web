@@ -13,7 +13,13 @@ export const stages: Stage[] = [
         titleColor: "sunsetGradient",
     }),
     InterpolatorStage({
-        Component: ({ text_scale, offset, bbox_opacity, show_debug }) => {
+        Component: ({
+            text_scale,
+            offset,
+            bbox_opacity,
+            show_debug,
+            aspect_index,
+        }) => {
             const text = useTextShape("Text")
                 .scale(0.03 * text_scale)
                 .offset(offset);
@@ -26,32 +32,41 @@ export const stages: Stage[] = [
                     ])
             );
             return (
-                <div>
+                <div className="h-full">
                     {defaults.title("Abstraktion")}
-                    <ShapeRender
-                        width={1000}
-                        height={500}
-                        instructions={[
-                            {
-                                action: "fill",
-                                obj: text,
-                                ctx_setter: (ctx) => {
-                                    ctx.fillStyle = "white";
+                    <div className="flex h-full items-center justify-center gap-16 text-white">
+                        <ShapeRender
+                            width={600}
+                            height={300}
+                            instructions={[
+                                {
+                                    action: "both",
+                                    obj: text,
+                                    ctx_setter: (ctx) => {
+                                        ctx.fillStyle = "white";
+                                    },
+                                    debug: show_debug,
                                 },
-                                debug: show_debug,
-                            },
-                            {
-                                action: "outline",
-                                obj: new ShapeSet(bboxes),
-                                ctx_setter: (ctx) => {
-                                    ctx.strokeStyle = "blue";
-                                    ctx.lineWidth = 1;
-                                    ctx.globalAlpha = bbox_opacity;
+                                {
+                                    action: "outline",
+                                    obj: new ShapeSet(bboxes),
+                                    ctx_setter: (ctx) => {
+                                        ctx.strokeStyle = "blue";
+                                        ctx.lineWidth = 1;
+                                        ctx.globalAlpha = bbox_opacity;
+                                    },
+                                    debug: show_debug,
                                 },
-                                debug: show_debug,
-                            },
-                        ]}
-                    />
+                            ]}
+                        />
+                        {defaults.aspects(
+                            [
+                                "Vereinfachung von Komplexität",
+                                "Wiederverwendung von Lösungen",
+                            ],
+                            aspect_index
+                        )}
+                    </div>
                 </div>
             );
         },
@@ -61,56 +76,29 @@ export const stages: Stage[] = [
                 offset: new Point(0, 0),
                 bbox_opacity: 0,
                 show_debug: false,
+                aspect_index: 0,
             },
             {
                 text_scale: 5,
                 offset: new Point(0, 0),
                 bbox_opacity: 1,
                 show_debug: true,
+                aspect_index: 1,
             },
             {
                 text_scale: 2,
                 offset: new Point(0, 0),
                 bbox_opacity: 1,
+                show_debug: false,
+                aspect_index: 2,
             },
         ],
         switch_duration: 1000,
     }),
-    AspectSlide({
-        title: "Variables",
-        aspects: [
-            "What is a variable?",
-            "How do I declare a variable?",
-            "How do I assign a value to a variable?",
-        ],
-        animateId: "c1",
-    }),
-    InterpolatorStage({
-        switch_duration: 1000,
-        Component: ({ size }) => {
-            return (
-                <div
-                    style={{
-                        width: size,
-                        height: size,
-                        backgroundColor: "red",
-                        borderRadius: "50%",
-                        margin: "auto",
-                        fontSize: "2rem",
-                    }}
-                />
-            );
-        },
-        props_list: [
-            {
-                size: 100,
-            },
-            {
-                size: 200,
-            },
-            {
-                size: 300,
-            },
-        ],
+    TitleSlide({
+        title: "Funktionen",
+        animateId: "title",
+        titleColor: "coolGradient",
+        titleFontSize: "7rem",
     }),
 ];
