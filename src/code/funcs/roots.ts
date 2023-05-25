@@ -1,6 +1,11 @@
-import { panic } from "functional-utilities";
+import { panic, pipe } from "functional-utilities";
 
-export function find_roots_cubic(a3: number, a2: number, a1: number, a0: number): number[] {
+export function find_roots_cubic(
+    a3: number,
+    a2: number,
+    a1: number,
+    a0: number
+): number[] {
     // Handle non-standard cases
     if (a3 === 0) {
         // a3 = 0; a2*x^2+a1*x+a0=0; solve quadratic equation
@@ -13,9 +18,12 @@ export function find_roots_cubic(a3: number, a2: number, a1: number, a0: number)
         return find_roots_cubic_normalized(a2, a1, a0);
     } else {
         // standard case
-        const d = 18 * a3 * a2 * a1 * a0 - 4 * a2 * a2 * a2 * a0 + a2 * a2 * a1 * a1
-            - 4 * a3 * a1 * a1 * a1
-            - 27 * a3 * a3 * a0 * a0;
+        const d =
+            18 * a3 * a2 * a1 * a0 -
+            4 * a2 * a2 * a2 * a0 +
+            a2 * a2 * a1 * a1 -
+            4 * a3 * a1 * a1 * a1 -
+            27 * a3 * a3 * a0 * a0;
         const d0 = a2 * a2 - 3 * a3 * a1;
         const d1 = 2 * a2 * a2 * a2 - 9 * a3 * a2 * a1 + 27 * a3 * a3 * a0;
         if (d < 0) {
@@ -32,7 +40,11 @@ export function find_roots_cubic(a3: number, a2: number, a1: number, a0: number)
                 return [-a2 / (a3 * 3)];
             } else {
                 // single root and double root
-                return [(9 * a3 * a0 - a2 * a1) / (d0 * 2), (4 * a3 * a2 * a1 - 9 * a3 * a3 * a0 - a2 * a2 * a2) / (a3 * d0)];
+                return [
+                    (9 * a3 * a0 - a2 * a1) / (d0 * 2),
+                    (4 * a3 * a2 * a1 - 9 * a3 * a3 * a0 - a2 * a2 * a2) /
+                        (a3 * d0),
+                ];
             }
         } else {
             // three real roots
@@ -44,28 +56,46 @@ export function find_roots_cubic(a3: number, a2: number, a1: number, a0: number)
             const c_phase = c3_phase / 3;
             const c_real = c_module * Math.cos(c_phase);
             const c_img = c_module * Math.sin(c_phase);
-            const x0_real = -(a2 + c_real + (d0 * c_real) / (c_module * c_module)) / (3 * a3);
+            const x0_real =
+                -(a2 + c_real + (d0 * c_real) / (c_module * c_module)) /
+                (3 * a3);
 
             const e_real = -1 / 2;
             const e_img = Math.sqrt(3) / 2;
             const c1_real = c_real * e_real - c_img * e_img;
             const c1_img = c_real * e_img + c_img * e_real;
-            const x1_real = -(a2 + c1_real + (d0 * c1_real) / (c1_real * c1_real + c1_img * c1_img)) / (3 * a3);
+            const x1_real =
+                -(
+                    a2 +
+                    c1_real +
+                    (d0 * c1_real) / (c1_real * c1_real + c1_img * c1_img)
+                ) /
+                (3 * a3);
 
             const c2_real = c1_real * e_real - c1_img * e_img;
             const c2_img = c1_real * e_img + c1_img * e_real;
-            const x2_real = -(a2 + c2_real + (d0 * c2_real) / (c2_real * c2_real + c2_img * c2_img)) / (3 * a3);
+            const x2_real =
+                -(
+                    a2 +
+                    c2_real +
+                    (d0 * c2_real) / (c2_real * c2_real + c2_img * c2_img)
+                ) /
+                (3 * a3);
 
             return [x0_real, x1_real, x2_real];
         }
     }
 }
 
-export function find_roots_quadratic(a2: number, a1: number, a0: number): number[] {
+export function find_roots_quadratic(
+    a2: number,
+    a1: number,
+    a0: number
+): number[] {
     // Handle non-standard cases
     if (a2 === 0) {
         // a2 = 0; a1*x+a0=0; solve linear equation
-        return find_roots_linear(a1, a0);
+        return ((v) => (v ? [v] : []))(find_roots_linear(a1, a0));
     } else {
         const discriminant = a1 * a1 - 4 * a2 * a0;
         if (discriminant < 0) {
@@ -79,13 +109,14 @@ export function find_roots_quadratic(a2: number, a1: number, a0: number): number
                 // See https://people.csail.mit.edu/bkph/articles/Quadratics.pdf
                 const sq = Math.sqrt(discriminant);
 
-                const [same_sign, diff_sign] = a1 < 0 ? [-a1 + sq, -a1 - sq] : [-a1 - sq, -a1 + sq];
+                const [same_sign, diff_sign] =
+                    a1 < 0 ? [-a1 + sq, -a1 - sq] : [-a1 - sq, -a1 + sq];
 
                 const [x1, x2] =
                     Math.abs(same_sign) > Math.abs(a2x2)
                         ? Math.abs(diff_sign) > Math.abs(a2x2)
-                            ? [a0 * 2 / same_sign, a0 * 2 / diff_sign]
-                            : [a0 * 2 / same_sign, same_sign / a2x2]
+                            ? [(a0 * 2) / same_sign, (a0 * 2) / diff_sign]
+                            : [(a0 * 2) / same_sign, same_sign / a2x2]
                         : [diff_sign / a2x2, same_sign / a2x2];
 
                 // Order roots
@@ -95,15 +126,15 @@ export function find_roots_quadratic(a2: number, a1: number, a0: number): number
     }
 }
 
-export function find_roots_linear(a1: number, a0: number): number[] {
+export function find_roots_linear(a1: number, a0: number): number | undefined {
     if (a1 === 0) {
         if (a0 === 0) {
-            return [0];
+            return 0;
         } else {
-            return [];
+            return undefined;
         }
     } else {
-        return [-a0 / a1];
+        return -a0 / a1;
     }
 }
 
@@ -115,11 +146,11 @@ function find_roots_cubic_depressed(a1: number, a0: number): number[] {
         quadraticRoots.push(0);
         return quadraticRoots;
     } else {
-        const d = a0 * a0 / 4 + a1 * a1 * a1 / 27;
+        const d = (a0 * a0) / 4 + (a1 * a1 * a1) / 27;
         if (d < 0) {
-            const a = Math.sqrt(-4 * a1 / 3);
+            const a = Math.sqrt((-4 * a1) / 3);
 
-            const phi = Math.acos(-4 * a0 / (a * a * a)) / 3;
+            const phi = Math.acos((-4 * a0) / (a * a * a)) / 3;
             const x1 = a * Math.cos(phi);
             const x2 = a * Math.cos(phi + (2 / 3) * Math.PI);
             const x3 = a * Math.cos(phi - (2 / 3) * Math.PI);
@@ -127,7 +158,8 @@ function find_roots_cubic_depressed(a1: number, a0: number): number[] {
         } else {
             const sqrt_d = Math.sqrt(d);
             const a0_div_2 = a0 / 2;
-            const x1 = Math.cbrt(sqrt_d - a0_div_2) - Math.cbrt(sqrt_d + a0_div_2);
+            const x1 =
+                Math.cbrt(sqrt_d - a0_div_2) - Math.cbrt(sqrt_d + a0_div_2);
             if (d === 0) {
                 const quadraticRoots = find_roots_quadratic(1, 0, a1);
                 quadraticRoots.push(a0_div_2);
@@ -139,7 +171,11 @@ function find_roots_cubic_depressed(a1: number, a0: number): number[] {
     }
 }
 
-function find_roots_cubic_normalized(a2: number, a1: number, a0: number): number[] {
+function find_roots_cubic_normalized(
+    a2: number,
+    a1: number,
+    a0: number
+): number[] {
     const q = (3 * a1 - a2 ** 2) / 9;
     const r = (9 * a2 * a1 - 27 * a0 - 2 * a2 ** 3) / 54;
     const q3 = q ** 3;
@@ -164,10 +200,7 @@ function find_roots_cubic_normalized(a2: number, a1: number, a0: number): number
             if (s + t === 0) {
                 return [s + t - a2_div_3];
             } else {
-                return [
-                    s + t - a2_div_3,
-                    -((s + t) / 2) - a2_div_3,
-                ];
+                return [s + t - a2_div_3, -((s + t) / 2) - a2_div_3];
             }
         } else {
             return [s + t - a2_div_3];
@@ -197,7 +230,13 @@ function find_roots_biquadratic(a4: number, a2: number, a0: number): number[] {
     }
 }
 
-export function find_roots_quartic(a4: number, a3: number, a2: number, a1: number, a0: number): number[] {
+export function find_roots_quartic(
+    a4: number,
+    a3: number,
+    a2: number,
+    a1: number,
+    a0: number
+): number[] {
     if (a4 === 0) {
         return find_roots_cubic(a3, a2, a1, a0);
     } else if (a0 === 0) {
@@ -209,13 +248,23 @@ export function find_roots_quartic(a4: number, a3: number, a2: number, a1: numbe
         // https://en.wikipedia.org/wiki/Quartic_function#Nature_of_the_roots
         // Partially simplifed to keep intermediate values smaller (to minimize rounding errors).
         const discriminant =
-            a4 * a0 * a4 * (256 * a4 * a0 * a0 + a1 * (144 * a2 * a1 - 192 * a3 * a0)) +
+            a4 *
+                a0 *
+                a4 *
+                (256 * a4 * a0 * a0 + a1 * (144 * a2 * a1 - 192 * a3 * a0)) +
             a4 * a0 * a2 * a2 * (16 * a2 * a2 - 80 * a3 * a1 - 128 * a4 * a0) +
-            (a3 *
+            a3 *
                 a3 *
                 (a4 * a0 * (144 * a2 * a0 - 6 * a1 * a1) +
-                    (a0 * (18 * a3 * a2 * a1 - 27 * a3 * a3 * a0 - 4 * a2 * a2 * a2) + a1 * a1 * (a2 * a2 - 4 * a3 * a1)))) +
-            a4 * a1 * a1 * (18 * a3 * a2 * a1 - 27 * a4 * a1 * a1 - 4 * a2 * a2 * a2);
+                    (a0 *
+                        (18 * a3 * a2 * a1 -
+                            27 * a3 * a3 * a0 -
+                            4 * a2 * a2 * a2) +
+                        a1 * a1 * (a2 * a2 - 4 * a3 * a1))) +
+            a4 *
+                a1 *
+                a1 *
+                (18 * a3 * a2 * a1 - 27 * a4 * a1 * a1 - 4 * a2 * a2 * a2);
         const pp = 8 * a4 * a2 - 3 * a3 * a3;
         const rr = a3 * a3 * a3 + 8 * a4 * a4 * a1 - 4 * a4 * a3 * a2;
         const delta0 = a2 * a2 - 3 * a3 * a1 + 12 * a4 * a0;
@@ -234,7 +283,7 @@ export function find_roots_quartic(a4: number, a3: number, a2: number, a1: numbe
             const no_roots = dd === 0 && pp > 0 && rr === 0;
             if (quadruple_root) {
                 // Wiki: all four roots are equal
-                return [(-a3 / (4 * a4))];
+                return [-a3 / (4 * a4)];
             } else if (triple_root) {
                 // Wiki: At least three roots are equal to each other
                 // x0 is the unique root of the remainder of the Euclidean division of the quartic by its second derivative
@@ -250,39 +299,75 @@ export function find_roots_quartic(a4: number, a3: number, a2: number, a1: numbe
                 // solve(ra,x)
                 // ----- yields
                 // (−72*a^2*e+10*a*c^2−3*b^2*c)/(9*(8*a^2*d−4*a*b*c+b^3))
-                const x0 = (-72 * a4 * a4 * a0 + 10 * a4 * a2 * a2 - 3 * a3 * a3 * a2)
-                    / (9 * (8 * a4 * a4 * a1 - 4 * a4 * a3 * a2 + a3 * a3 * a3));
+                const x0 =
+                    (-72 * a4 * a4 * a0 +
+                        10 * a4 * a2 * a2 -
+                        3 * a3 * a3 * a2) /
+                    (9 * (8 * a4 * a4 * a1 - 4 * a4 * a3 * a2 + a3 * a3 * a3));
                 return [x0, -(a3 / a4 + 3 * x0)];
             } else if (no_roots) {
                 // Wiki: two complex conjugate double roots
                 return [];
             } else {
-                return find_roots_via_depressed_quartic(a4, a3, a2, a1, a0, pp, rr, dd);
+                return find_roots_via_depressed_quartic(
+                    a4,
+                    a3,
+                    a2,
+                    a1,
+                    a0,
+                    pp,
+                    rr,
+                    dd
+                );
             }
         } else {
             const no_roots = discriminant > 0 && (pp > 0 || dd > 0);
             if (no_roots) {
                 return [];
             } else {
-                return find_roots_via_depressed_quartic(a4, a3, a2, a1, a0, pp, rr, dd);
+                return find_roots_via_depressed_quartic(
+                    a4,
+                    a3,
+                    a2,
+                    a1,
+                    a0,
+                    pp,
+                    rr,
+                    dd
+                );
             }
         }
     }
 }
 
-function find_roots_via_depressed_quartic(a4: number, a3: number, a2: number, a1: number, a0: number, pp: number, rr: number, dd: number): number[] {
+function find_roots_via_depressed_quartic(
+    a4: number,
+    a3: number,
+    a2: number,
+    a1: number,
+    a0: number,
+    pp: number,
+    rr: number,
+    dd: number
+): number[] {
     const a4_pow_2 = a4 * a4;
     const a4_pow_3 = a4_pow_2 * a4;
     const a4_pow_4 = a4_pow_3 * a4;
     // Re-use pre-calculated values
     const p = pp / (a4_pow_2 * 8);
     const q = rr / (a4_pow_3 * 8);
-    const r = (dd + 16 * a4_pow_2 * (12 * a0 * a4 - 3 * a1 * a3 + a2 * a2)) / (256 * a4_pow_4);
+    const r =
+        (dd + 16 * a4_pow_2 * (12 * a0 * a4 - 3 * a1 * a3 + a2 * a2)) /
+        (256 * a4_pow_4);
 
-    return find_roots_quartic_depressed(p, q, r).map((y) => y - a3 / (4 * a4))
+    return find_roots_quartic_depressed(p, q, r).map((y) => y - a3 / (4 * a4));
 }
 
-function find_roots_quartic_depressed(a2: number, a1: number, a0: number): number[] {
+function find_roots_quartic_depressed(
+    a2: number,
+    a1: number,
+    a0: number
+): number[] {
     if (a1 === 0) {
         return find_roots_biquadratic(1, a2, a0);
     } else if (a0 === 0) {
@@ -290,7 +375,7 @@ function find_roots_quartic_depressed(a2: number, a1: number, a0: number): numbe
     } else {
         const a2_pow_2 = a2 * a2;
         const a1_div_2 = a1 / 2;
-        const b2 = a2 * 5 / 2;
+        const b2 = (a2 * 5) / 2;
         const b1 = 2 * a2_pow_2 - a0;
         const b0 = (a2_pow_2 * a2 - a2 * a0 - a1_div_2 * a1_div_2) / 2;
 

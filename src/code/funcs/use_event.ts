@@ -1,42 +1,68 @@
-import { type RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { EventTypes } from "../types/event_types";
-import { Point } from "../types/point";
+import { Point } from "../shapelib";
+import { panic } from "functional-utilities";
 
-export function useEvent<T extends keyof EventTypes, O>(element: RefObject<HTMLElement>, event: T, getter: (e: EventTypes[T]) => O, initial: O): O {
+export function useEvent<T extends keyof EventTypes, O>(
+    element: EventTarget | undefined,
+    event: T,
+    getter: (e: EventTypes[T]) => O,
+    initial: O
+): O {
     const [state, setState] = useState(initial);
 
     useEffect(() => {
-        const current = element.current;
-        if (!current) {
+        if (!element) {
             return;
         }
         const handler = ((e: EventTypes[T]) => {
             setState(getter(e));
         }) as (e: Event) => void;
 
-        current.addEventListener(event, handler);
+        element.addEventListener(event, handler);
 
         return () => {
-            current.removeEventListener(event, handler);
+            element.removeEventListener(event, handler);
         };
     }, [element, event, getter]);
 
     return state;
 }
 
-export function useMousePosition(element: RefObject<HTMLElement>, anchor: 'global' | 'element'): Point {
-    return useEvent(element, 'mousemove', e => {
-        if (anchor === 'global') {
-            return new Point(e.clientX, e.clientY);
-        } else {
-            const current = element.current;
-            if (!current) {
-                return new Point(0, 0);
+export function useMousePosition(
+    element: Element | undefined,
+    anchor: "global" | "element"
+): Point {
+    return useEvent(
+        element,
+        "mousemove",
+        (e) => {
+            if (anchor === "global") {
+                return new Point(e.clientX, e.clientY);
+            } else {
+                const rect = (element ?? panic()).getBoundingClientRect();
+                return new Point(e.clientX - rect.left, e.clientY - rect.top);
             }
-            const rect = current.getBoundingClientRect();
-            return new Point(e.clientX - rect.left, e.clientY - rect.top);
-        }
-    }, new Point(0, 0));
+        },
+        new Point(0, 0)
+    );
+}
+
+export function useKeydown(
+    element: EventTarget | undefined,
+    key: string,
+    callback: () => void
+): void {
+    useEvent(
+        element,
+        "keydown",
+        (e) => {
+            if (e.key === key) {
+                callback();
+            }
+        },
+        undefined
+    );
 }
 
 export function useContainerSize(element: React.RefObject<HTMLElement>): Point {
