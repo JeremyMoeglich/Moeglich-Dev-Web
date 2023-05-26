@@ -1,10 +1,12 @@
 import { InterpolatorStage } from "~/code/funcs/interpolator";
-import { AspectSlide, TitleSlide } from "./basic_slides";
+import { TitleSlide } from "./basic_slides";
 import type { Stage } from "../stage";
 import { defaults } from "../defaults";
 import { ShapeRender } from "~/code/shapelib/funcs/use_draw";
 import { Point, ShapeSet } from "~/code/shapelib";
 import { useTextShape } from "~/code/shapelib/funcs/use_text";
+import { CodeBlock } from "~/code/funcs/code_block";
+import { dedent } from "~/utils/dedent";
 
 export const stages: Stage[] = [
     TitleSlide({
@@ -96,9 +98,34 @@ export const stages: Stage[] = [
         switch_duration: 1000,
     }),
     TitleSlide({
-        title: "Funktionen",
+        title: "Abstraktion - Funktionen",
         animateId: "title",
         titleColor: "coolGradient",
         titleFontSize: "7rem",
+    }),
+    InterpolatorStage({
+        Component: ({ code }) => {
+            return (
+                <CodeBlock code={code} language="js" animateId="codeblock1" />
+            );
+        },
+        switch_duration: 1000,
+        props_list: [
+            {
+                code: dedent`
+                function add(a, b, c) {
+                    return a + b + c;
+                }
+                `,
+            },
+
+            {
+                code: dedent`
+                function add(a, b) {
+                    return a + b;
+                }
+                `,
+            },
+        ],
     }),
 ];

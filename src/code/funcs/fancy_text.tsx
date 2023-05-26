@@ -38,30 +38,22 @@ const colorPresets: Record<ColorPreset, string> = {
     warmGradient: "radial-gradient(circle, #FFFFE0, #FFA500, #FF0000, #8B0000)",
 };
 
-const FancyTextNode = ({
-    children,
-    fontSize,
-    color,
-}: {
-    children: React.ReactNode;
+interface TextProps {
     fontSize: string;
     color: ColorPreset;
-}) => {
-    const Text = styled.div`
-        position: relative;
-        font-size: ${fontSize};
-        font-weight: 900;
-        color: transparent;
-        background: ${colorPresets[color]};
-        background-size: 300% 300%;
-        animation: ${gradient} 15s ease-in-out infinite;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-    `;
+}
 
-    return <Text>{children}</Text>;
-};
+const Text = styled.div<TextProps>`
+    position: relative;
+    font-size: ${(props) => props.fontSize};
+    font-weight: 900;
+    color: transparent;
+    background: ${(props) => colorPresets[props.color]};
+    background-size: 300% 300%;
+    animation: ${gradient} 15s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`;
 
 export const FancyText = ({
     text,
@@ -75,8 +67,16 @@ export const FancyText = ({
     color: ColorPreset;
 }) => {
     return (
-        <FancyTextNode fontSize={fontSize} color={color}>
-            <CrossText text={text} animateId={animateId} style={{}} />
-        </FancyTextNode>
+        <div className="text-center">
+            <CrossText
+                text={text}
+                animateId={animateId}
+                token_wrap={(token) => (
+                    <Text fontSize={fontSize} color={color}>
+                        {token}
+                    </Text>
+                )}
+            />
+        </div>
     );
 };

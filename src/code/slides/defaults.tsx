@@ -19,7 +19,7 @@ export const defaults = {
                         opacity: t === undefined ? 1 : Math.min(1, t - i),
                     }}
                 >
-                    <CrossText animateId="aspect" text={aspect} style={{}} />
+                    <CrossText animateId="aspect" text={aspect} />
                 </div>
             ))}
         </div>

@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { split_include } from "./split_include";
 
 type CrossTextProps = {
-    style: React.CSSProperties;
+    token_wrap?: (token: string) => ReactNode;
     text: string;
     animateId: string;
     tokenize?: (text: string) => string[];
@@ -22,7 +22,7 @@ type CrossTextContextType = {
 const CrossTextContext = createContext<CrossTextContextType>({});
 
 const CrossText: React.FC<CrossTextProps> = ({
-    style,
+    token_wrap = (token) => token,
     text,
     animateId,
     tokenize = (text) => split_include(text, " "),
@@ -50,14 +50,13 @@ const CrossText: React.FC<CrossTextProps> = ({
             {tokens.map((token, index) => (
                 <motion.div
                     key={`${animateId}-${index}`}
-                    layoutId={`${animateId}-${index}`}
+                    layoutId={`${animateId}-${token}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    style={style}
-                    className="relative inline-block z-50"
+                    className="relative z-50 inline-block"
                 >
-                    <div>{token === " " ? "\u00A0" : token}</div>
+                    {token_wrap(token === " " ? "\u00A0" : token)}
                 </motion.div>
             ))}
         </AnimatePresence>
