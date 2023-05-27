@@ -65,7 +65,7 @@ export const AspectSlide: StageGen<{
                 fontSize={props.titleFontSize ? props.titleFontSize : "4rem"}
                 color={props.titleColor ? props.titleColor : "redGradient"}
             />
-            <ul>
+            <ul className="text-white text-center text-4xl">
                 {props.aspects.map((item, index) => (
                     <li key={index}>{item}</li>
                 ))}

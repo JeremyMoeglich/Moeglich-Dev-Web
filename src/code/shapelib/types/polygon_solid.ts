@@ -52,12 +52,12 @@ export class PolygonSolid
             throw new Error("A polygon must have at least 3 corners.");
 
         let points: Point[] = [];
-        for (let i = 0; i < corners; i++) {
+        for (const i = 0; i < corners; i++) {
             // Each corner is evenly spaced around the circle
-            let angle = (i / corners) * 2 * Math.PI;
+            const angle = (i / corners) * 2 * Math.PI;
             // Calculate the x and y position using trigonometric functions
-            let x = Math.cos(angle);
-            let y = Math.sin(angle);
+            const x = Math.cos(angle);
+            const y = Math.sin(angle);
             points.push(new Point(x, y));
         }
 

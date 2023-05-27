@@ -1,5 +1,5 @@
 import { InterpolatorStage } from "~/code/funcs/interpolator";
-import { TitleSlide } from "./basic_slides";
+import { AspectSlide, TitleSlide } from "./basic_slides";
 import type { Stage } from "../stage";
 import { defaults } from "../defaults";
 import { ShapeRender } from "~/code/shapelib/funcs/use_draw";
@@ -10,9 +10,9 @@ import { dedent } from "~/utils/dedent";
 
 export const stages: Stage[] = [
     TitleSlide({
-        title: "Abstraktion in der Programmierung",
+        title: "Abstraktion in der Programmierung 2",
         animateId: "title",
-        titleColor: "sunsetGradient",
+        titleColor: "coolGradient",
     }),
     InterpolatorStage({
         Component: ({
@@ -22,7 +22,7 @@ export const stages: Stage[] = [
             show_debug,
             aspect_index,
         }) => {
-            const text = useTextShape("Text")
+            const text = useTextShape("OK")
                 .scale(0.03 * text_scale)
                 .offset(offset);
             const bboxes = text.shapes.flatMap((shape) =>
