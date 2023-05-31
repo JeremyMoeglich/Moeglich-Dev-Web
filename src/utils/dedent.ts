@@ -10,5 +10,5 @@ export function dedent(strings: TemplateStringsArray, ...values: unknown[]): str
 
     const unindentedLines = lines.map(line => line.slice(indent));
 
-    return unindentedLines.join('\n');
+    return unindentedLines.join('\n').trim();
 }

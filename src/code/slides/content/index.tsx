@@ -9,6 +9,7 @@ import { dedent } from "~/utils/dedent";
 import { ShapeRender } from "~/code/shapelib/funcs/shape_render";
 import { useAnimationFrame } from "~/utils/use_update";
 import { CurveSet } from "~/code/shapelib/types/curve_set";
+import { motion } from "framer-motion";
 
 function interpolate_between(t: number, a: number, b: number) {
     const range = b - a;
@@ -34,14 +35,14 @@ export const stages: Stage[] = [
     InterpolatorStage({
         Component: ({
             text_scale,
-            offset,
+            offsetx,
             bbox_opacity,
             show_debug,
-            aspect_index,
             code_opacity,
         }) => {
             const time = useAnimationFrame();
-            const text = useTextShape("Das ist ein Text.")
+            const offset = new Point(offsetx, 0);
+            const text = useTextShape("Hello World!")
                 .recenter("both")
                 .scale(0.06 * text_scale)
                 .translate(offset);
@@ -64,20 +65,18 @@ export const stages: Stage[] = [
                 (bezier) =>
                     bezier.right_point_intersections(left_line_point) > 0
             );
-            const dot_rect_offset = new Point(
-                interpolate_between(time / 3000, -200, 1200),
-                0
-            );
-            const dot_rect = new RectSolid(-300, -300, 600, 600).translate(
-                dot_rect_offset
-            );
-            const samples = dot_rect.distribute_grid(2000).map((point) => {
+            const samples = bbox_opacity === 0 ? [] : new RectSolid(-300, -300, 600, 600).translate(
+                new Point(
+                    interpolate_between(time / 3000, -200, 1200),
+                    0
+                )
+            ).distribute_grid(2000).map((point) => {
                 return [point, text.contains(point, 0)] as const;
             });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
-                    {defaults.title("Abstraktion")}
+                    {defaults.title(["Was ist", " ", "Abstraktion", " ", "?"])}
                     <div className="flex h-full items-center justify-evenly gap-16 text-white">
                         <div className="relative w-16">
                             <ShapeRender
@@ -156,44 +155,41 @@ export const stages: Stage[] = [
                             />
                         </div>
                         <div>
-                            <div style={{ opacity: code_opacity }}>
+                            <motion.div style={{ opacity: code_opacity }} className="relative right-48" layoutId="slide_codeblock">
                                 <CodeBlock
                                     code={dedent`
-                                print("Das ist ein Text.")
+                                    print("Hello World!")
                                 `}
                                     language="python"
                                     animateId="codeblock1"
-                                    scale={2}
+                                    scale={2.7}
                                 />
-                            </div>
+                            </motion.div>
                         </div>
                     </div>
-                </div>
+                </div >
             );
         },
         props_list: [
             {
                 text_scale: 1,
-                offset: new Point(0, 0),
+                offsetx: 330,
                 bbox_opacity: 0,
                 show_debug: false,
-                aspect_index: 0,
                 code_opacity: 0,
             },
             {
                 text_scale: 5,
-                offset: new Point(0, 0),
+                offsetx: 0,
                 bbox_opacity: 1,
                 show_debug: true,
-                aspect_index: 1,
                 code_opacity: 0,
             },
             {
                 text_scale: 1,
-                offset: new Point(0, 0),
+                offsetx: -80,
                 bbox_opacity: 0,
                 show_debug: false,
-                aspect_index: 2,
                 code_opacity: 1,
             },
         ],
@@ -201,120 +197,38 @@ export const stages: Stage[] = [
     }),
     InterpolatorStage({
         Component: ({ code }) => {
-            return (
-                <div>
-                    <CodeBlock
-                        code={code}
-                        language="js"
-                        animateId="codeblock1"
-                        scale={2}
-                    />
-                </div>
-            );
+            return <div className="flex justify-center items-center h-full">
+                <motion.div layoutId="slide_codeblock">
+                    <CodeBlock animateId="codeblock1" code={code} language="python" scale={2.7} />
+                </motion.div>
+            </div>
         },
-        switch_duration: 1000,
         props_list: [
             {
-                code: dedent`
-                function processEmployees(employees) {
-                    let activeEmployees = [];
-                    for (let i = 0; i < employees.length; i++) {
-                        if (employees[i].isActive) {
-                            activeEmployees.push(employees[i]);
-                        }
-                    }
-    
-                    let totalAge = 0;
-                    let count = 0;
-                    for (let i = 0; i < activeEmployees.length; i++) {
-                        totalAge += activeEmployees[i].age;
-                        count++;
-                    }
-                    let averageAge = totalAge / count;
-    
-                    let sortedEmployees = [];
-                    for (let i = 0; i < activeEmployees.length; i++) {
-                        let insertIndex = sortedEmployees.length;
-                        for (let j = 0; j < sortedEmployees.length; j++) {
-                            if (activeEmployees[i].lastName < sortedEmployees[j].lastName) {
-                                insertIndex = j;
-                                break;
-                            }
-                        }
-                        sortedEmployees.splice(insertIndex, 0, activeEmployees[i]);
-                    }
-    
-                    return { sortedEmployees, averageAge };
-                }
-                `,
+                code: dedent`print("Hello World!")`,
             },
             {
                 code: dedent`
-                function processEmployees(employees) {
-                    let activeEmployees = employees.filter(employee => employee.isActive);
-                  
-                    let totalAge = 0;
-                    let count = 0;
-                    for (let i = 0; i < activeEmployees.length; i++) {
-                        totalAge += activeEmployees[i].age;
-                        count++;
-                    }
-                    let averageAge = totalAge / count;
-                  
-                    let sortedEmployees = [];
-                    for (let i = 0; i < activeEmployees.length; i++) {
-                        let insertIndex = sortedEmployees.length;
-                        for (let j = 0; j < sortedEmployees.length; j++) {
-                            if (activeEmployees[i].lastName < sortedEmployees[j].lastName) {
-                                insertIndex = j;
-                                break;
-                            }
-                        }
-                        sortedEmployees.splice(insertIndex, 0, activeEmployees[i]);
-                    }
-                  
-                    return { sortedEmployees, averageAge };
-                }
-                `,
+                print("Hello Jeremy!")
+                print("Hello Test!")
+                print("Hello World!")
+                print("Hello Universe!")
+                print("Hello Galaxy!")
+                `
             },
             {
                 code: dedent`
-                function processEmployees(employees) {
-                    let activeEmployees = employees.filter(employee => employee.isActive);
-                  
-                    let totalAge = activeEmployees.reduce((total, employee) => total + employee.age, 0);
-                    let averageAge = totalAge / activeEmployees.length;
-                  
-                    let sortedEmployees = [];
-                    for (let i = 0; i < activeEmployees.length; i++) {
-                        let insertIndex = sortedEmployees.length;
-                        for (let j = 0; j < sortedEmployees.length; j++) {
-                            if (activeEmployees[i].lastName < sortedEmployees[j].lastName) {
-                                insertIndex = j;
-                                break;
-                            }
-                        }
-                        sortedEmployees.splice(insertIndex, 0, activeEmployees[i]);
-                    }
-                  
-                    return { sortedEmployees, averageAge };
-                }
-                `,
-            },
-            {
-                code: dedent`
-                function processEmployees(employees) {
-                    let activeEmployees = employees.filter(employee => employee.isActive);
-    
-                    let totalAge = activeEmployees.reduce((total, employee) => total + employee.age, 0);
-                    let averageAge = totalAge / activeEmployees.length;
-    
-                    let sortedEmployees = [...activeEmployees].sort((a, b) => a.lastName.localeCompare(b.lastName));
-    
-                    return { sortedEmployees, averageAge };
-                }
-                `,
-            },
+                def greet(name):
+                    return "Hello {name}!"
+                    
+                greet("Jeremy")
+                greet("Test")
+                greet("World")
+                greet("Universe")
+                greet("Galaxy")
+                `
+            }
         ],
-    }),
+        switch_duration: 1000,
+    })
 ];

@@ -4,9 +4,13 @@ import { RectSolid } from "./rect_solid";
 import { Point } from "./point";
 import { zip } from "functional-utilities";
 import type { TriangleSolid } from "./triangle_solid";
+import { create_collider } from "../funcs/create_collider";
 
 export class ShapeSet<T extends Shape> {
     shapes: T[];
+    private cache: {
+        collider?: (p: Point) => boolean;
+    } = {}
 
     constructor(shapes: T[]) {
         this.shapes = shapes;
@@ -21,7 +25,9 @@ export class ShapeSet<T extends Shape> {
     }
 
     contains(p: Point, quality: number): boolean {
-        return this.shapes.some((s) => s.contains(p, quality));
+        const collider = this.cache.collider ?? create_collider<T, Point>(this.shapes, (s1, s2) => s1.contains(s2, quality));
+        this.cache.collider = collider;
+        return collider(p);
     }
 
     flip(axis: Axis): ShapeSet<T> {
