@@ -1,4 +1,4 @@
-import { cyclic_pairs, panic, tuple_zip } from "functional-utilities";
+import { cyclic_pairs, panic, zip } from "functional-utilities";
 import { FullBezier } from "./full_bezier";
 import type { Axis, PointMap, SolidShape } from "./interfaces";
 import type { PartialBezier } from "./partial_bezier";
@@ -12,6 +12,7 @@ import { sum } from "lodash-es";
 import type { TriangleSolid } from "./triangle_solid";
 import { debug_context } from "../funcs/render_debug";
 import type { ShapeSet } from "./shape_set";
+import { CurveSet } from "./curve_set";
 
 export type PointWithHandles = {
     start_handle: Point;
@@ -19,9 +20,7 @@ export type PointWithHandles = {
     end_handle: Point;
 };
 
-export class BezierSolid
-    implements SolidShape<BezierSolid>, PointMap<BezierSolid>
-{
+export class BezierSolid implements SolidShape, PointMap {
     bezier: PartialBezier[];
     private cache: {
         outline_length?: number;
@@ -51,25 +50,27 @@ export class BezierSolid
         }));
     }
 
-    offset(p: Point): BezierSolid {
-        return new BezierSolid(this.bezier.map((b) => b.offset(p)));
+    translate(p: Point): this {
+        return new BezierSolid(this.bezier.map((b) => b.translate(p))) as this;
     }
 
-    scale(scale: number, offset?: Point): BezierSolid {
-        return new BezierSolid(this.bezier.map((b) => b.scale(scale, offset)));
+    scale(scale: number, offset?: Point): this {
+        return new BezierSolid(
+            this.bezier.map((b) => b.scale(scale, offset))
+        ) as this;
     }
 
-    flip(axis: Axis): BezierSolid {
-        return new BezierSolid(this.bezier.map((b) => b.flip(axis)));
+    flip(axis: Axis): this {
+        return new BezierSolid(this.bezier.map((b) => b.flip(axis))) as this;
     }
 
-    map_points(f: (p: Point) => Point): BezierSolid {
-        return new BezierSolid(this.bezier.map((b) => b.map_points(f)));
+    map_points(f: (p: Point) => Point): this {
+        return new BezierSolid(this.bezier.map((b) => b.map_points(f))) as this;
     }
 
     bbox(): RectSolid {
         const fullbeziers = this.fullBeziers();
-        const boxes = fullbeziers.map((b) => b.bbox());
+        const boxes = fullbeziers.curves.map((b) => b.bbox());
 
         const mx = Math.min(...boxes.map((b) => b.x));
         const my = Math.min(...boxes.map((b) => b.y));
@@ -79,17 +80,20 @@ export class BezierSolid
         return new RectSolid(mx, my, Mx - mx, My - my);
     }
 
-    fullBeziers(): FullBezier[] {
-        return cyclic_pairs(this.bezier).map(
-            ([prev, next]) => new FullBezier(prev.end_point, next)
+    fullBeziers(): CurveSet<FullBezier> {
+        return new CurveSet(
+            cyclic_pairs(this.bezier).map(
+                ([prev, next]) => new FullBezier(prev.end_point, next)
+            )
         );
     }
 
     approximated(quality: number): PolygonSolid {
         if (this.cache.approximated) return this.cache.approximated;
         const polygon = new PolygonSolid(
-            this.fullBeziers().flatMap((b) =>
-                b.sample_on_length(quality_to_amount_per_unit(quality))
+            this.fullBeziers().sample_on_length(
+                quality_to_amount_per_unit(quality),
+                "evenly"
             )
         );
         this.cache.approximated = polygon;
@@ -127,9 +131,10 @@ export class BezierSolid
         const lengths = fullbeziers.map((b) => b.outline_length());
         const total_length = lengths.reduce((acc, l) => acc + l, 0);
         const amount_per_unit = amount / total_length;
-        const points = tuple_zip([fullbeziers, lengths]).flatMap(([b, l]) =>
-            b.sample_on_length(amount_per_unit * l)
-        );
+        const points = zip([fullbeziers.curves, lengths] as [
+            FullBezier[],
+            number[]
+        ]).flatMap(([b, l]) => b.sample_on_length(amount_per_unit * l));
         return points;
     }
 
@@ -144,7 +149,7 @@ export class BezierSolid
                 .fullBeziers()
                 .some((b) => (this.cache.outline_collider ?? panic())(b));
         const collider = create_collider<FullBezier, FullBezier>(
-            this.fullBeziers(),
+            this.fullBeziers().curves,
             (b1, b2) => b1.outline_intersects(b2)
         );
         this.cache.outline_collider = collider;
@@ -191,7 +196,7 @@ export class BezierSolid
         if (this.cache.right_point_counter)
             return this.cache.right_point_counter(p);
         const collider = create_range_collider<FullBezier, Point>(
-            this.fullBeziers(),
+            this.fullBeziers().curves,
             (b) => {
                 const bbox = b.bbox();
                 return [bbox.y, bbox.y + bbox.height];
@@ -289,7 +294,12 @@ export class BezierSolid
         return this.bbox().center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): BezierSolid {
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
+    }
+
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         return this.map_points((p) => p.rotate(angle, o));
     }

@@ -9,9 +9,10 @@ import { isEqual } from "lodash-es";
 import { has_property, panic } from "functional-utilities";
 import { type Stage } from "../slides/stage";
 import { type EasingFunctionName, easingFunctions } from "./ease";
+import { v4 } from "uuid";
 
 export interface Interpolate {
-    interpolate(t: number, to: ThisType<this>): ThisType<this>;
+    interpolate(t: number, to: this): this;
 }
 
 function interpolateProps<T>(startProps: T, endProps: T, progress: number): T {
@@ -168,11 +169,12 @@ type InterpolatorStageProps<T> = {
 };
 
 export function InterpolatorStage<T>(props: InterpolatorStageProps<T>): Stage {
+    const key = v4();
     return {
         id: "interpolator",
         stage_duration: props.props_list.length,
         Component: (substage_index: number) => (
-            <Interpolator {...props} current={substage_index} />
+            <Interpolator {...props} current={substage_index} key={key} />
         ),
     };
 }

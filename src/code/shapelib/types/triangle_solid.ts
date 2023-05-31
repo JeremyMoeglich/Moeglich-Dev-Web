@@ -8,12 +8,7 @@ import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
 
-export class TriangleSolid
-    implements
-        SolidShape<TriangleSolid>,
-        PointMap<TriangleSolid>,
-        PointMap<TriangleSolid>
-{
+export class TriangleSolid implements SolidShape, PointMap {
     a: Point;
     b: Point;
     c: Point;
@@ -28,32 +23,32 @@ export class TriangleSolid
         return `TriangleSolid(${this.a.toString()}, ${this.b.toString()}, ${this.c.toString()})`;
     }
 
-    offset(p: Point): TriangleSolid {
+    translate(p: Point): this {
         return new TriangleSolid(
-            this.a.offset(p),
-            this.b.offset(p),
-            this.c.offset(p)
-        );
+            this.a.translate(p),
+            this.b.translate(p),
+            this.c.translate(p)
+        ) as this;
     }
 
-    scale(scale: number, origin = new Point(0, 0)): TriangleSolid {
+    scale(scale: number, origin = new Point(0, 0)): this {
         return new TriangleSolid(
             this.a.scale(scale, origin),
             this.b.scale(scale, origin),
             this.c.scale(scale, origin)
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): TriangleSolid {
+    flip(axis: Axis): this {
         return new TriangleSolid(
             this.a.flip(axis),
             this.b.flip(axis),
             this.c.flip(axis)
-        );
+        ) as this;
     }
 
-    map_points(f: (p: Point) => Point): TriangleSolid {
-        return new TriangleSolid(f(this.a), f(this.b), f(this.c));
+    map_points(f: (p: Point) => Point): this {
+        return new TriangleSolid(f(this.a), f(this.b), f(this.c)) as this;
     }
 
     bbox(): RectSolid {
@@ -152,7 +147,7 @@ export class TriangleSolid
         return u >= 0 && v >= 0 && u + v < 1;
     }
 
-    rotate(angle: number, origin?: Point | undefined): TriangleSolid {
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         const rotator = o.as_center(angle);
         return this.map_points(rotator);
@@ -211,6 +206,11 @@ export class TriangleSolid
             return "outline_intersect";
         }
         return "disjoint";
+    }
+
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
     }
 
     right_point_intersections(p: Point): number {

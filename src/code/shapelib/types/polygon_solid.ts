@@ -13,10 +13,10 @@ import { ShapeSet } from "./shape_set";
 
 export class PolygonSolid
     implements
-        SolidShape<PolygonSolid>,
-        PointMap<PolygonSolid>,
-        HasVertices,
-        PointMap<PolygonSolid>
+    SolidShape,
+    PointMap,
+    HasVertices,
+    PointMap
 {
     points: Point[];
     private cache: {
@@ -43,16 +43,16 @@ export class PolygonSolid
             .join(", ")})`;
     }
 
-    offset(p: Point): PolygonSolid {
-        return new PolygonSolid(this.points.map((p2) => p2.offset(p)));
+    translate(p: Point): this {
+        return new PolygonSolid(this.points.map((p2) => p2.translate(p))) as this;
     }
 
     static make_ngon(corners: number): PolygonSolid {
         if (corners < 3)
             throw new Error("A polygon must have at least 3 corners.");
 
-        let points: Point[] = [];
-        for (const i = 0; i < corners; i++) {
+        const points: Point[] = [];
+        for (let i = 0; i < corners; i++) {
             // Each corner is evenly spaced around the circle
             const angle = (i / corners) * 2 * Math.PI;
             // Calculate the x and y position using trigonometric functions
@@ -64,20 +64,20 @@ export class PolygonSolid
         return new PolygonSolid(points);
     }
 
-    scale(scale: number, origin: Point = new Point(0, 0)): PolygonSolid {
+    scale(scale: number, origin: Point = new Point(0, 0)): this {
         return new PolygonSolid(
             this.points.map((p) =>
                 p.scale(scale, origin)
             )
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): PolygonSolid {
-        return new PolygonSolid(this.points.map((p) => p.flip(axis)));
+    flip(axis: Axis): this {
+        return new PolygonSolid(this.points.map((p) => p.flip(axis))) as this;
     }
 
-    map_points(f: (p: Point) => Point): PolygonSolid {
-        return new PolygonSolid(this.points.map(f));
+    map_points(f: (p: Point) => Point): this {
+        return new PolygonSolid(this.points.map(f)) as this;
     }
 
     bbox(): RectSolid {
@@ -271,8 +271,13 @@ export class PolygonSolid
         return this.bbox().center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): PolygonSolid {
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         return this.map_points((p) => p.rotate(angle, o));
+    }
+
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
     }
 }

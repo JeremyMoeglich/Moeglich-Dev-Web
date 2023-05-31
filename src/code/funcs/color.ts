@@ -8,13 +8,13 @@ export class Color implements Interpolate {
         this.color = chroma(r, g, b);
     }
 
-    interpolate(t: number, to: Color): Color {
+    interpolate(t: number, to: Color): this {
         const newColor = chroma.mix(this.color, to.color, t, "lab");
         return new Color(
             newColor.get("rgb.r"),
             newColor.get("rgb.g"),
             newColor.get("rgb.b")
-        );
+        ) as this;
     }
 
     getHex(): string {

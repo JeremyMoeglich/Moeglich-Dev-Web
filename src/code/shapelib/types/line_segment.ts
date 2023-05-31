@@ -14,9 +14,9 @@ import { RectSolid } from "./rect_solid";
 export class LineSegment
     implements
         Stringifiable,
-        Transformable<LineSegment>,
-        PointMap<LineSegment>,
-        HasLength<LineSegment>,
+        Transformable,
+        PointMap,
+        HasLength,
         BoundingBox
 {
     start: Point;
@@ -31,24 +31,24 @@ export class LineSegment
         return `Line(${this.start.toString()}, ${this.end.toString()})`;
     }
 
-    offset(p: Point): LineSegment {
-        return new LineSegment(this.start.offset(p), this.end.offset(p));
+    translate(p: Point): this {
+        return new LineSegment(this.start.translate(p), this.end.translate(p)) as this;
     }
 
-    scale(scale: number, origin?: Point): LineSegment {
+    scale(scale: number, origin?: Point): this {
         const norigin = origin ?? new Point(0, 0);
         return new LineSegment(
             this.start.scale(scale, norigin),
             this.end.scale(scale, norigin)
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): LineSegment {
-        return new LineSegment(this.start.flip(axis), this.end.flip(axis));
+    flip(axis: Axis): this {
+        return new LineSegment(this.start.flip(axis), this.end.flip(axis)) as this;
     }
 
-    map_points(f: (p: Point) => Point): LineSegment {
-        return new LineSegment(f(this.start), f(this.end));
+    map_points(f: (p: Point) => Point): this {
+        return new LineSegment(f(this.start), f(this.end)) as this;
     }
 
     outline_length(): number {
@@ -175,11 +175,11 @@ export class LineSegment
         );
     }
 
-    rotate(angle: number, origin?: Point | undefined): LineSegment {
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         return new LineSegment(
             this.start.rotate(angle, o),
             this.end.rotate(angle, o)
-        );
+        ) as this;
     }
 }

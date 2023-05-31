@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { StageGen } from "../stage";
 import { type ColorPreset, FancyText } from "~/code/funcs/fancy_text";
+import { defaults } from "../defaults";
 
 export const TitleSlide: StageGen<{
     title: string;
@@ -48,24 +49,19 @@ export const TitleSlide: StageGen<{
 });
 
 export const AspectSlide: StageGen<{
-    title: string;
+    title: string | string[];
     aspects: string[];
     isTitleLarge?: boolean;
     animateId: string;
     titleFontSize?: string;
     titleColor?: ColorPreset;
 }> = (props) => ({
-    id: props.title,
+    id: typeof props.title === "string" ? props.title : props.title.join("_"),
     stage_duration: 1,
     Component: () => (
         <div>
-            <FancyText
-                text={props.title}
-                animateId={props.animateId}
-                fontSize={props.titleFontSize ? props.titleFontSize : "4rem"}
-                color={props.titleColor ? props.titleColor : "redGradient"}
-            />
-            <ul className="text-white text-center text-4xl">
+            {defaults.title(props.title)}
+            <ul className="flex flex-col gap-4 p-16 text-4xl text-white">
                 {props.aspects.map((item, index) => (
                     <li key={index}>{item}</li>
                 ))}

@@ -2,10 +2,10 @@ import { sum } from "lodash-es";
 import type { Axis, Shape } from "./interfaces";
 import { RectSolid } from "./rect_solid";
 import { Point } from "./point";
-import { tuple_zip } from "functional-utilities";
+import { zip } from "functional-utilities";
 import type { TriangleSolid } from "./triangle_solid";
 
-export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
+export class ShapeSet<T extends Shape> {
     shapes: T[];
 
     constructor(shapes: T[]) {
@@ -32,23 +32,24 @@ export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
         const flippedShapes = this.shapes.map((s) => s.flip(axis));
 
         // Translate each shape to its new position.
-        const translatedShapes = tuple_zip([flippedShapes, bboxes]).map(
-            ([s, b]) => {
-                // calculate the translation vector for both axis
-                const vec = b.center().offset(center.factor(-1));
-                const axis_vec = new Point(
-                    axis !== "y" ? vec.x : 0,
-                    axis !== "x" ? vec.y : 0
-                );
-                return s.offset(axis_vec);
-            }
-        );
+        const translatedShapes = zip([flippedShapes, bboxes] as [
+            T[],
+            RectSolid[]
+        ]).map(([s, b]) => {
+            // calculate the translation vector for both axis
+            const vec = b.center().translate(center.factor(-1));
+            const axis_vec = new Point(
+                axis !== "y" ? vec.x : 0,
+                axis !== "x" ? vec.y : 0
+            );
+            return s.translate(axis_vec);
+        });
 
         return new ShapeSet(translatedShapes);
     }
 
-    offset(offset: Point): ShapeSet<T> {
-        return new ShapeSet(this.shapes.map((s) => s.offset(offset)));
+    translate(offset: Point): ShapeSet<T> {
+        return new ShapeSet(this.shapes.map((s) => s.translate(offset)));
     }
 
     outline_intersects(other: ShapeSet<T>): boolean {
@@ -105,11 +106,11 @@ export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
         return ShapeSet.union(this.shapes.map((s) => s.triangulate(quality)));
     }
 
-    static union<T extends Shape<T>>(sets: ShapeSet<T>[]): ShapeSet<T> {
+    static union<T extends Shape>(sets: ShapeSet<T>[]): ShapeSet<T> {
         return new ShapeSet(sets.flatMap((s) => s.shapes));
     }
 
-    map_shapes<U extends Shape<U>>(f: (s: T) => U): ShapeSet<U> {
+    map_shapes<U extends Shape>(f: (s: T) => U): ShapeSet<U> {
         return new ShapeSet(this.shapes.map(f));
     }
 
@@ -117,7 +118,7 @@ export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
         return this.shapes.map(f);
     }
 
-    map_base<U extends Shape<U>>(
+    map_base<U extends Shape>(
         f: (s: UnwrapSet<T>) => U
     ): MapContained<ShapeSet<T>, U> {
         return this.map_shapes((v) => {
@@ -127,6 +128,11 @@ export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
                 return f(v as UnwrapSet<T>);
             }
         }) as MapContained<ShapeSet<T>, U>;
+    }
+
+    recenter(axis: Axis): ShapeSet<T> {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
     }
 
     center(): Point {
@@ -140,9 +146,7 @@ export class ShapeSet<T extends Shape<T>> implements ShapeSet<T> {
 }
 
 type UnwrapSet<T> = T extends ShapeSet<infer U> ? UnwrapSet<U> : T;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-type MapContained<T, U extends Shape<U>> = T extends ShapeSet<infer V>
-    // @ts-expect-error - It doesn't like the recursive type, but it works.
+type MapContained<T, U extends Shape> = T extends ShapeSet<infer V>
     ? ShapeSet<MapContained<V, U>>
     : U;

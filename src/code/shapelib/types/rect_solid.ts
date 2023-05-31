@@ -10,7 +10,7 @@ import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
 
 export class RectSolid
-    implements SolidShape<RectSolid>, HasVertices, PointMap<RectSolid>
+    implements SolidShape, HasVertices, PointMap
 {
     x: number;
     y: number;
@@ -36,16 +36,16 @@ export class RectSolid
         return `Rect(${this.x}, ${this.y}, ${this.width}, ${this.height})`;
     }
 
-    offset(p: Point): RectSolid {
+    translate(p: Point): this {
         return new RectSolid(
             this.x + p.x,
             this.y + p.y,
             this.width,
             this.height
-        );
+        ) as this;
     }
 
-    scale(scale: number, offset?: Point): RectSolid {
+    scale(scale: number, offset?: Point): this {
         const offsetX = offset?.x ?? 0;
         const offsetY = offset?.y ?? 0;
         return new RectSolid(
@@ -53,10 +53,10 @@ export class RectSolid
             this.y * scale + offsetY,
             this.width * scale,
             this.height * scale
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): RectSolid {
+    flip(axis: Axis): this {
         switch (axis) {
             case "x":
                 return new RectSolid(
@@ -64,25 +64,30 @@ export class RectSolid
                     this.y,
                     this.width,
                     this.height
-                );
+                ) as this;
             case "y":
                 return new RectSolid(
                     this.x,
                     -this.y - this.height,
                     this.width,
                     this.height
-                );
+                ) as this;
             case "both":
                 return new RectSolid(
                     -this.x - this.width,
                     -this.y - this.height,
                     this.width,
                     this.height
-                );
+                ) as this;
         }
     }
 
-    rotate(angle: number, origin?: Point | undefined): RectSolid {
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
+    }
+
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         const rotator = o.as_center(angle);
         return this.map_points(rotator);
@@ -167,10 +172,10 @@ export class RectSolid
         ]);
     }
 
-    map_points(f: (p: Point) => Point): RectSolid {
+    map_points(f: (p: Point) => Point): this {
         const tl = f(new Point(this.x, this.y));
         const br = f(new Point(this.x + this.width, this.y + this.height));
-        return new RectSolid(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+        return new RectSolid(tl.x, tl.y, br.x - tl.x, br.y - tl.y) as this;
     }
 
     contains(p: Point): boolean {

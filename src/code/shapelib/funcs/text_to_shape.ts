@@ -24,10 +24,10 @@ export async function textToShapes(
         }
     })();
 
-    function convert_coords<T extends SolidShape<T>>(
+    function convert_coords<T extends SolidShape>(
         shape: HollowShape<T>
     ): HollowShape<T> {
-        return shape.offset(new Point(0, -1800)).flip("y");
+        return shape.flip("y");
     }
 
     const shapes_from_glyph = (
@@ -35,7 +35,7 @@ export async function textToShapes(
         offset: number
     ): HollowShape<BezierSolid>[] =>
         parseCommands(glyph.path.commands).map((shape) =>
-            convert_coords(shape.offset(new Point(offset, 0)))
+            convert_coords(shape.translate(new Point(offset, 0)))
         );
 
     // Convert each glyph shape to a Shape object

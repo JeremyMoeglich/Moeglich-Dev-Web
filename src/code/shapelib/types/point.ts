@@ -15,12 +15,13 @@ import type { Interpolate } from "~/code/funcs/interpolator";
 
 export class Point
     implements
-    Stringifiable,
-    Transformable<Point>,
-    PointMap<Point>,
-    BoundingBox,
-    RenderableDebug,
-    Interpolate {
+        Stringifiable,
+        Transformable,
+        PointMap,
+        BoundingBox,
+        RenderableDebug,
+        Interpolate
+{
     x: number;
     y: number;
 
@@ -35,6 +36,17 @@ export class Point
 
     toString(): string {
         return `Point(${this.x}, ${this.y})`;
+    }
+
+    to_axis(axis: Axis): this {
+        switch (axis) {
+            case "x":
+                return new Point(this.x, 0) as this;
+            case "y":
+                return new Point(0, this.y) as this;
+            case "both":
+                return this;
+        }
     }
 
     as_center(angle: number): (p: Point) => Point {
@@ -66,26 +78,30 @@ export class Point
         return func;
     }
 
-    rotate(angle: number, origin?: Point | undefined): Point {
+    negate(): this {
+        return new Point(-this.x, -this.y) as this;
+    }
+
+    rotate(angle: number, origin?: Point | undefined): this {
         if (!origin) {
             return this;
         }
-        return origin.as_center(angle)(this);
+        return origin.as_center(angle)(this) as this;
     }
 
-    offset(p: Point): Point {
-        return new Point(this.x + p.x, this.y + p.y);
+    translate(p: Point): this {
+        return new Point(this.x + p.x, this.y + p.y) as this;
     }
 
-    multiply(scale: number): Point {
-        return new Point(this.x * scale, this.y * scale);
+    multiply(scale: number): this {
+        return new Point(this.x * scale, this.y * scale) as this;
     }
 
-    scale(scale: number, origin: Point): Point {
+    scale(scale: number, origin: Point): this {
         // Scale the point relative to the origin
         const translatedX = this.x - origin.x;
         const translatedY = this.y - origin.y;
-        
+
         const scaledX = translatedX * scale;
         const scaledY = translatedY * scale;
 
@@ -93,7 +109,7 @@ export class Point
         const finalX = scaledX + origin.x;
         const finalY = scaledY + origin.y;
 
-        return new Point(finalX, finalY);
+        return new Point(finalX, finalY) as this;
     }
 
     subtract(p: Point): Point {
@@ -104,19 +120,19 @@ export class Point
         return new Point(this.x * f, this.y * f);
     }
 
-    flip(axis: Axis): Point {
+    flip(axis: Axis): this {
         switch (axis) {
             case "x":
-                return new Point(-this.x, this.y);
+                return new Point(-this.x, this.y) as this;
             case "y":
-                return new Point(this.x, -this.y);
+                return new Point(this.x, -this.y) as this;
             case "both":
-                return new Point(-this.x, -this.y);
+                return new Point(-this.x, -this.y) as this;
         }
     }
 
-    map_points(f: (p: Point) => Point): Point {
-        return f(this);
+    map_points(f: (p: Point) => Point): this {
+        return f(this) as this;
     }
 
     distance(p: Point): number {
@@ -149,10 +165,7 @@ export class Point
         return this.x + (to - this.x) * t;
     }
 
-    interpolate(t: number, to: Point): ThisType<this> {
-        return new Point(
-            this.lerp(t, to.x),
-            this.lerp(t, to.y),
-        ) as ThisType<this>;
+    interpolate(t: number, to: Point): this {
+        return new Point(this.lerp(t, to.x), this.lerp(t, to.y)) as this;
     }
 }

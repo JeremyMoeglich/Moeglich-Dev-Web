@@ -4,6 +4,7 @@ import type {
     BoundingBox,
     HasLength,
     PointMap,
+    RenderableOutline,
     Stringifiable,
     Transformable,
 } from "./interfaces";
@@ -11,14 +12,16 @@ import type { PartialBezier } from "./partial_bezier";
 import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
 import { find_roots_cubic, find_roots_quadratic } from "../../funcs/roots";
+import { debug_context } from "../funcs/render_debug";
 
 export class FullBezier
     implements
-        Transformable<FullBezier>,
+        Transformable,
         Stringifiable,
-        PointMap<FullBezier>,
+        PointMap,
         BoundingBox,
-        HasLength<FullBezier>
+        HasLength,
+        RenderableOutline
 {
     start_point: Point;
     bezier: PartialBezier;
@@ -32,29 +35,32 @@ export class FullBezier
         return `FullBezier(sp=${this.start_point.toString()}, b=${this.bezier.toString()})`;
     }
 
-    offset(p: Point): FullBezier {
+    translate(p: Point): this {
         return new FullBezier(
-            this.start_point.offset(p),
-            this.bezier.offset(p)
-        );
+            this.start_point.translate(p),
+            this.bezier.translate(p)
+        ) as this;
     }
 
-    scale(scale: number, origin: Point): FullBezier {
+    scale(scale: number, origin: Point): this {
         return new FullBezier(
             this.start_point.scale(scale, origin),
             this.bezier.scale(scale, origin)
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): FullBezier {
+    flip(axis: Axis): this {
         return new FullBezier(
             this.start_point.flip(axis),
             this.bezier.flip(axis)
-        );
+        ) as this;
     }
 
-    map_points(f: (p: Point) => Point): FullBezier {
-        return new FullBezier(f(this.start_point), this.bezier.map_points(f));
+    map_points(f: (p: Point) => Point): this {
+        return new FullBezier(
+            f(this.start_point),
+            this.bezier.map_points(f)
+        ) as this;
     }
 
     bbox(): RectSolid {
@@ -302,11 +308,39 @@ export class FullBezier
         );
     }
 
-    rotate(angle: number, origin?: Point | undefined): FullBezier {
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.bbox().center();
         return new FullBezier(
             this.start_point.rotate(angle, o),
             this.bezier.map_points((p) => p.rotate(angle, o))
+        ) as this;
+    }
+
+    select_shape(ctx: CanvasRenderingContext2D): void {
+        ctx.moveTo(this.start_point.x, this.start_point.y);
+        ctx.bezierCurveTo(
+            this.bezier.handle1.x,
+            this.bezier.handle1.y,
+            this.bezier.handle2.x,
+            this.bezier.handle2.y,
+            this.bezier.end_point.x,
+            this.bezier.end_point.y
         );
+    }
+
+    render_outline(ctx: CanvasRenderingContext2D): void {
+        ctx.beginPath();
+        this.select_shape(ctx);
+        ctx.stroke();
+    }
+
+    render_debug(ctx: CanvasRenderingContext2D): void {
+        debug_context(ctx, (ctx) => {
+            this.render_outline(ctx);
+            this.start_point.render_debug(ctx);
+            this.bezier.handle1.render_debug(ctx);
+            this.bezier.handle2.render_debug(ctx);
+            this.bezier.end_point.render_debug(ctx);
+        });
     }
 }

@@ -8,9 +8,7 @@ import { panic } from "functional-utilities";
 import earcut from "earcut";
 import { ShapeSet } from "./shape_set";
 
-export class HollowShape<T extends SolidShape<T>>
-    implements Shape<HollowShape<T>>
-{
+export class HollowShape<T extends SolidShape> implements Shape {
     exterior: T;
     holes: T[];
 
@@ -35,25 +33,25 @@ export class HollowShape<T extends SolidShape<T>>
         return [this.exterior, ...this.holes];
     }
 
-    offset(p: Point): HollowShape<T> {
+    translate(p: Point): this {
         return new HollowShape(
-            this.exterior.offset(p),
-            this.holes.map((h) => h.offset(p))
-        );
+            this.exterior.translate(p),
+            this.holes.map((h) => h.translate(p))
+        ) as this;
     }
 
-    scale(scale: number, offset?: Point): HollowShape<T> {
+    scale(scale: number, offset?: Point): this {
         return new HollowShape(
             this.exterior.scale(scale, offset),
             this.holes.map((h) => h.scale(scale, offset))
-        );
+        ) as this;
     }
 
-    flip(axis: Axis): HollowShape<T> {
+    flip(axis: Axis) {
         return new HollowShape(
             this.exterior.flip(axis),
             this.holes.map((h) => h.flip(axis))
-        );
+        ) as this;
     }
 
     bbox(): RectSolid {
@@ -70,6 +68,11 @@ export class HollowShape<T extends SolidShape<T>>
     sample_on_area(min_per_unit: number, variant: "min" | "rng"): Point[] {
         // TODO do exact sampling
         return this.approximated(1).sample_on_area(min_per_unit, variant);
+    }
+
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
     }
 
     triangulate(quality: number): ShapeSet<TriangleSolid> {
@@ -196,11 +199,11 @@ export class HollowShape<T extends SolidShape<T>>
         return this.exterior.center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): HollowShape<T> {
+    rotate(angle: number, origin?: Point | undefined): this {
         const o = origin ?? this.center();
         return new HollowShape(
             this.exterior.rotate(angle, o),
             this.holes.map((h) => h.rotate(angle, o))
-        );
+        ) as this;
     }
 }

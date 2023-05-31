@@ -1,8 +1,9 @@
 import { CrossText } from "~/utils/cross_text";
 import { FancyText } from "../funcs/fancy_text";
+import { split_include } from "~/utils/split_include";
 
 export const defaults = {
-    title: (text: string) => (
+    title: (text: string | string[]) => (
         <FancyText
             text={text}
             animateId="title"
@@ -11,7 +12,7 @@ export const defaults = {
         />
     ),
     aspects: (aspects: string[], t?: number) => (
-        <div className="text-white text-2xl">
+        <div className="text-2xl text-white">
             {aspects.map((aspect, i) => (
                 <div
                     key={i}
@@ -19,7 +20,10 @@ export const defaults = {
                         opacity: t === undefined ? 1 : Math.min(1, t - i),
                     }}
                 >
-                    <CrossText animateId="aspect" text={aspect} />
+                    <CrossText
+                        animateId="aspect"
+                        tokens={split_include(aspect, " ")}
+                    />
                 </div>
             ))}
         </div>

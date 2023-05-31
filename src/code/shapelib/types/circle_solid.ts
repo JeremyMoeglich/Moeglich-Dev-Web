@@ -2,14 +2,14 @@ import { range } from "functional-utilities";
 import { quality_to_amount_per_unit } from "../funcs/quality";
 import { debug_context } from "../funcs/render_debug";
 import { sample_amount_default } from "../funcs/sample_amount";
-import type { SolidShape } from "./interfaces";
+import type { Axis, SolidShape } from "./interfaces";
 import { Point } from "./point";
 import { PolygonSolid } from "./polygon_solid";
 import { RectSolid } from "./rect_solid";
 import type { TriangleSolid } from "./triangle_solid";
 import type { ShapeSet } from "./shape_set";
 
-export class CircleSolid implements SolidShape<CircleSolid> {
+export class CircleSolid implements SolidShape {
     position: Point;
     radius: number;
 
@@ -33,7 +33,7 @@ export class CircleSolid implements SolidShape<CircleSolid> {
     }
 
     bbox(): RectSolid {
-        const top_left = this.position.offset(
+        const top_left = this.position.translate(
             new Point(-this.radius, -this.radius)
         );
         const diameter = this.radius * 2;
@@ -44,19 +44,19 @@ export class CircleSolid implements SolidShape<CircleSolid> {
         return p.distance(this.position) <= this.radius;
     }
 
-    flip(): CircleSolid {
+    flip(): this {
         return this;
     }
 
-    offset(offset: Point): CircleSolid {
-        return new CircleSolid(this.position.offset(offset), this.radius);
+    translate(offset: Point): this {
+        return new CircleSolid(this.position.translate(offset), this.radius) as this;
     }
 
-    scale(scale: number, origin = new Point(0, 0)): CircleSolid {
+    scale(scale: number, origin = new Point(0, 0)): this {
         return new CircleSolid(
             this.position.scale(scale, origin),
             this.radius * scale
-        );
+        ) as this;
     }
 
     toString(): string {
@@ -119,7 +119,7 @@ export class CircleSolid implements SolidShape<CircleSolid> {
             for (let i = 0; i < amount; i++) {
                 const angle = (2 * Math.PI * i) / amount;
                 points.push(
-                    this.position.offset(
+                    this.position.translate(
                         new Point(Math.cos(angle), Math.sin(angle)).multiply(
                             this.radius
                         )
@@ -212,10 +212,15 @@ export class CircleSolid implements SolidShape<CircleSolid> {
         return this.position;
     }
 
-    rotate(angle: number, origin?: Point | undefined): CircleSolid {
+    recenter(axis: Axis): this {
+        const offset = this.center().to_axis(axis).negate();
+        return this.translate(offset);
+    }
+
+    rotate(angle: number, origin?: Point | undefined): this {
         return new CircleSolid(
             this.position.rotate(angle, origin),
             this.radius
-        );
+        ) as this;
     }
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { get_slides } from "~/code/slides/slide_data";
 import { panic } from "functional-utilities";
 import { maybe_window } from "~/utils/maybe_window";
+import useLocalStorage from "use-local-storage";
 
 function FullScreenApp() {
     const handle = useFullScreenHandle();
@@ -40,22 +41,27 @@ function FullScreenApp() {
 const slides = get_slides();
 
 function App() {
-    const [slide_index, unchecked_setSlideIndex] = useState(0);
+    const [slide_index, unchecked_setSlideIndex] = useLocalStorage(
+        "CurrentSlide",
+        0
+    );
     const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
         setIsHydrated(true);
     }, []);
 
+    const clampSlideIndex = (index: number) => {
+        return Math.max(0, Math.min(slides.length - 1, index));
+    };
+
     const setSlideIndex = (index: number | ((index: number) => number)) => {
         if (typeof index === "number") {
-            unchecked_setSlideIndex(
-                Math.max(0, Math.min(slides.length - 1, index))
-            );
+            unchecked_setSlideIndex(clampSlideIndex(index));
         } else {
             unchecked_setSlideIndex((prev_index) => {
-                const new_index = index(prev_index);
-                return Math.max(0, Math.min(slides.length - 1, new_index));
+                const new_index = index(prev_index ?? 0);
+                return clampSlideIndex(new_index);
             });
         }
     };
@@ -71,15 +77,25 @@ function App() {
     useKeydown(maybe_window(), "ArrowUp", prev_slide);
     useKeydown(maybe_window(), "ArrowDown", next_slide);
 
-    const slide = slides[slide_index] ?? panic("slide not found");
+    const slide =
+        slides[slide_index] ??
+        (() => {
+            const clamped = clampSlideIndex(slide_index);
+            setSlideIndex(clamped);
+            return slides[clamped] ?? panic("no slide");
+        })();
     return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center bg-slate-900 overflow-hidden">
-            <div className="relative w-full grow font-bold">
-                {isHydrated && slide.Component()}
-            </div>
-            <p>
-                {slide_index + 1} / {slides.length}
-            </p>
+        <div className="flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-slate-900">
+            {isHydrated && (
+                <>
+                    <div className="relative w-full grow font-bold">
+                        {slide.Component()}
+                    </div>
+                    <p>
+                        {slide_index + 1} / {slides.length}
+                    </p>
+                </>
+            )}
         </div>
     );
 }

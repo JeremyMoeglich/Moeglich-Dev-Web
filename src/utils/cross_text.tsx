@@ -1,84 +1,81 @@
 import React, {
-    useEffect,
-    useState,
     useContext,
-    createContext,
     type ReactNode,
+    createContext,
+    useEffect,
+    useRef,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { split_include } from "./split_include";
 
 type CrossTextProps = {
     token_wrap?: (token: string) => ReactNode;
-    text: string;
+    tokens: string[];
     animateId: string;
-    tokenize?: (text: string) => string[];
 };
 
-type CrossTextContextType = {
-    [key: string]: string;
-};
+const existentTokens = createContext<Set<string>>(new Set());
 
-const CrossTextContext = createContext<CrossTextContextType>({});
-
-const CrossText: React.FC<CrossTextProps> = ({
-    token_wrap = (token) => token,
-    text,
-    animateId,
-    tokenize = (text) => split_include(text, " "),
-}) => {
-    const animateTexts = useContext(CrossTextContext);
-
-    const [isMounted, setIsMounted] = useState(true);
-
-    const tokens = tokenize(text);
-
+const Token: React.FC<{
+    token: string;
+    token_wrap: (token: string) => ReactNode;
+    layoutId: string;
+}> = ({ token, token_wrap, layoutId }) => {
+    const existent = useContext(existentTokens);
+    const cleanup_ref = useRef<string | undefined>(undefined);
+    const duration = 0.5;
+    const tokenExists = existent.has(layoutId);
     useEffect(() => {
-        animateTexts[animateId] = text;
-        setIsMounted(true);
+        const timeout = setTimeout(() => {
+            existent.add(layoutId);
+            cleanup_ref.current = undefined;
+        }, duration * 1000);
 
         return () => {
-            delete animateTexts[animateId];
-            setIsMounted(false);
+            clearTimeout(timeout);
+            if (cleanup_ref.current !== undefined) {
+                existent.delete(cleanup_ref.current);
+            }
         };
-    }, [animateId, text, animateTexts]);
+    });
 
-    if (!isMounted) return null;
-
+    return (
+        <motion.div
+            layoutId={layoutId}
+            className="relative z-50 inline-block"
+            initial={tokenExists ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration }}
+        >
+            {token_wrap(token === " " ? "\u00A0" : token)}
+        </motion.div>
+    );
+};
+export const CrossText: React.FC<CrossTextProps> = ({
+    token_wrap = (token) => token,
+    tokens,
+    animateId,
+}) => {
     return (
         <AnimatePresence>
             {tokens.map((token, index) => (
-                <motion.div
+                <Token
                     key={`${animateId}-${index}`}
                     layoutId={`${animateId}-${token}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="relative z-50 inline-block"
-                >
-                    {token_wrap(token === " " ? "\u00A0" : token)}
-                </motion.div>
+                    token={token}
+                    token_wrap={token_wrap}
+                />
             ))}
         </AnimatePresence>
     );
 };
 
-type CrossTextProviderProps = {
+export const CrossTextProvider: React.FC<{
     children: ReactNode;
-};
-
-const CrossTextProvider: React.FC<CrossTextProviderProps> = ({ children }) => {
-    const [animateTexts, setAnimateTexts] = useState<CrossTextContextType>({});
-
-    useEffect(() => {
-        setAnimateTexts(animateTexts);
-    }, [animateTexts]);
-
+}> = ({ children }) => {
     return (
-        <CrossTextContext.Provider value={animateTexts}>
+        <existentTokens.Provider value={new Set()}>
             {children}
-        </CrossTextContext.Provider>
+        </existentTokens.Provider>
     );
 };
-
-export { CrossText, CrossTextProvider };
