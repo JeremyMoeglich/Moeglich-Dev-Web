@@ -10,6 +10,8 @@ import { ShapeRender } from "~/code/shapelib/funcs/shape_render";
 import { useAnimationFrame } from "~/utils/use_update";
 import { CurveSet } from "~/code/shapelib/types/curve_set";
 import { motion } from "framer-motion";
+import { languages } from "~/code/funcs/lex";
+import { join_horizontal } from "~/code/funcs/join_horizontal";
 
 function interpolate_between(t: number, a: number, b: number) {
     const range = b - a;
@@ -69,16 +71,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                          .translate(
-                              new Point(
-                                  interpolate_between(time / 3000, -200, 1200),
-                                  0
-                              )
-                          )
-                          .distribute_grid(2000)
-                          .map((point) => {
-                              return [point, text.contains(point, 0)] as const;
-                          });
+                        .translate(
+                            new Point(
+                                interpolate_between(time / 3000, -200, 1200),
+                                0
+                            )
+                        )
+                        .distribute_grid(2000)
+                        .map((point) => {
+                            return [point, text.contains(point, 0)] as const;
+                        });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -205,17 +207,20 @@ export const stages: Stage[] = [
         switch_duration: 1000,
     }),
     InterpolatorStage({
-        Component: ({ code }) => {
+        Component: ({ code, language, scale, offsety, title }) => {
             return (
                 <div className="h-full">
-                    {defaults.title("Abstraktion - Funktionen")}
+                    {defaults.title(title)}
                     <div className="flex h-full items-center justify-center">
-                        <motion.div layoutId="slide_codeblock">
+                        <motion.div layoutId="slide_codeblock" style={{
+                            top: `${offsety}px`,
+                            position: "relative",
+                        }}>
                             <CodeBlock
                                 animateId="codeblock1"
                                 code={code}
-                                language="python"
-                                scale={2.7}
+                                language={language}
+                                scale={scale}
                             />
                         </motion.div>
                     </div>
@@ -225,6 +230,10 @@ export const stages: Stage[] = [
         props_list: [
             {
                 code: dedent`print("Hello World!")`,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
             },
             {
                 code: dedent`
@@ -234,6 +243,10 @@ export const stages: Stage[] = [
                 print("Hello Universe!")
                 print("Hello Galaxy!")
                 `,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
             },
             {
                 code: dedent`
@@ -246,6 +259,10 @@ export const stages: Stage[] = [
                 greet("Universe")
                 greet("Galaxy")
                 `,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
             },
             {
                 code: dedent`
@@ -256,9 +273,256 @@ export const stages: Stage[] = [
                     return total
 
                 print(get_price([1, 2, 3, 4, 5]))
-                `
+                `,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
+            },
+            {
+                code: dedent`
+                print(get_price([1, 2, 3, 4, 5]))
+                `,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
+            },
+            {
+                code: dedent`
+                def get_price(prices):
+                    total = 0
+                    for price in prices:
+                        total += price
+                    return total
+
+                print(get_price([1, 2, 3, 4, 5]))
+                `,
+                language: "python",
+                scale: 2.7,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
+            },
+            {
+                code: dedent`
+                function get_price(prices) {
+                    let total = 0;
+                    for (const price of prices) {
+                        total += price;
+                    }
+                    return total;
+                }
+
+                console.log(get_price([1, 2, 3, 4, 5]));
+                `,
+                language: "js",
+                scale: 2.5,
+                offsety: 0,
+                title: "Abstraktion - Funktionen",
+            },
+            {
+                code: dedent`
+                function get_price(prices: number[]): number {
+                    let total = 0;
+                    for (const price of prices) {
+                        total += price;
+                    }
+                    return total;
+                }
+
+                console.log(get_price([1, 2, 3, 4, 5]));
+                `,
+                language: "ts",
+                scale: 2,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Product = {
+                    name: string,
+                    price: number,
+                }
+
+                function get_price(products: Product[]): number {
+                    let total = 0;
+                    for (const product of products) {
+                        total += product.price;
+                    }
+                    return total;
+                }
+
+                console.log(get_price([
+                    { name: "Apple", price: 1 },
+                    { name: "Banana", price: 2 },
+                    { name: "Orange", price: 3 },
+                ]));
+                `,
+                language: "ts",
+                scale: 2,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Circle = {
+                    x: number,
+                    y: number,
+                    radius: number,
+                }
+                `,
+                language: "ts",
+                scale: 3,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Point = {
+                    x: number,
+                    y: number,
+                }
+                
+                type Circle = {
+                    x: number,
+                    y: number,
+                    radius: number,
+                }
+                `,
+                language: "ts",
+                scale: 2.6,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Point = {
+                    x: number,
+                    y: number,
+                }
+                
+                type Circle = {
+                    x: number,
+                    y: number,
+                    radius: number,
+                }
+
+                function is_inside_circle(circle: Circle, point: Point): boolean {
+                    const dx = circle.x - point.x;
+                    const dy = circle.y - point.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    return distance < circle.radius;
+                }
+                `,
+                language: "ts",
+                scale: 2,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                console.log(is_inside_circle(
+                    { x: 10, y: 20, radius: 5 },
+                    { x: 15, y: 25 },
+                )); // false
+                `,
+                language: "ts",
+                scale: 2,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Point = {
+                    x: number,
+                    y: number,
+                }
+                
+                type Circle = {
+                    x: number,
+                    y: number,
+                    radius: number,
+                }
+
+                function is_inside_circle(circle: Circle, point: Point): boolean {
+                    const dx = circle.x - point.x;
+                    const dy = circle.y - point.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    return distance < circle.radius;
+                }
+                `,
+                language: "ts",
+                scale: 2,
+                offsety: 0,
+                title: "Abstraktion - Types",
+            },
+            {
+                code: dedent`
+                type Point = {
+                    x: number,
+                    y: number,
+                }
+
+                class Circle {
+                    x: number;
+                    y: number;
+                    radius: number;
+
+                    constructor(x: number, y: number, radius: number) {
+                        this.x = x;
+                        this.y = y;
+                        this.radius = radius;
+                    }
+
+                    is_inside(point: Point): boolean {
+                        const dx = this.x - point.x;
+                        const dy = this.y - point.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        return distance < this.radius;
+                    }
+                }
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Klassen",
+            },
+            {
+                code: dedent`
+                const circle = new Circle(10, 20, 5);
+                console.log(circle.is_inside({ x: 15, y: 25 })); // false
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 2.7,
+                title: "Abstraktion - Klassen",
+            },
+            {
+                code:
+                    dedent`
+                    // Ohne Klassen
+                    console.log(is_inside_circle(
+                        { x: 10, y: 20, radius: 5 },
+                        { x: 15, y: 25 },
+                    ));
+
+                    // Mit Klassen
+                    const circle = new Circle(10, 20, 5);
+                    console.log(circle.is_inside({ x: 15, y: 25 }));
+                    `,
+                language: "ts",
+                offsety: 0,
+                scale: 2.5,
+                title: "Abstraktion - Klassen",
             }
-        ],
+        ] satisfies {
+            code: string,
+            language: keyof typeof languages,
+            scale: number,
+            offsety: number,
+            title: string
+        }[],
         switch_duration: 1000,
+        disable: ['scale']
     }),
 ];

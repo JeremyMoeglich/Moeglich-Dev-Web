@@ -15,7 +15,7 @@ export interface Interpolate {
     interpolate(t: number, to: this): this;
 }
 
-function interpolateProps<T>(startProps: T, endProps: T, progress: number): T {
+function interpolateProps<T>(startProps: T, endProps: T, progress: number, disable?: (keyof T)[]): T {
     if (
         startProps === endProps ||
         startProps === undefined ||
@@ -53,11 +53,15 @@ function interpolateProps<T>(startProps: T, endProps: T, progress: number): T {
                 startProps.hasOwnProperty(key) &&
                 endProps.hasOwnProperty(key)
             ) {
-                result[key] = interpolateProps(
-                    startProps[key],
-                    endProps[key],
-                    progress
-                );
+                if ((!disable || !disable.includes(key as keyof T))) {
+                    result[key] = interpolateProps(
+                        startProps[key],
+                        endProps[key],
+                        progress,
+                    );
+                } else {
+                    result[key] = endProps[key];
+                }
             }
         }
         return result;
@@ -89,6 +93,7 @@ type Props<T> = {
     current: number;
     switch_duration: number;
     ease?: EasingFunctionName;
+    disable?: (keyof T)[];
 };
 
 export const Interpolator = <T,>({
@@ -97,6 +102,7 @@ export const Interpolator = <T,>({
     current,
     switch_duration,
     ease = "easeOutCubic",
+    disable = []
 }: Props<T>) => {
     const [interpolatedProps, setInterpolatedProps] = useState(
         () =>
@@ -123,19 +129,20 @@ export const Interpolator = <T,>({
             const progress = ease_func(t);
 
             const newProps = interpolateProps(
-                interpolatedProps,
-                props_list[current] ??
+                interpolatedProps as T,
+                (props_list[current] ??
                     (() => {
                         console.warn("Invalid current index");
                         return props_list[0];
                     })() ??
-                    panic("No props provided"),
-                progress
+                    panic("No props provided")) as T,
+                progress,
+                disable
             );
 
             if (!isEqual(prevProps.current, newProps)) {
-                setInterpolatedProps(newProps);
-                prevProps.current = newProps;
+                setInterpolatedProps(newProps as typeof interpolatedProps);
+                prevProps.current = newProps as PropsWithRef<T>;
             }
 
             if (progress < 1) {
@@ -166,6 +173,7 @@ type InterpolatorStageProps<T> = {
     Component: React.FC<T>;
     switch_duration: number;
     ease?: EasingFunctionName;
+    disable?: (keyof T)[];
 };
 
 export function InterpolatorStage<T>(props: InterpolatorStageProps<T>): Stage {
