@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { CrossText } from "~/utils/cross_text";
-import { split_include } from "~/utils/split_include";
+import { splitString } from "./code_block/word_split";
 
 const gradient = keyframes`
   0% {background-position: 0% 50%;}
@@ -70,7 +70,7 @@ export const FancyText = ({
     return (
         <div className="text-center">
             <CrossText
-                tokens={typeof text === "string" ? split_include(text, " ") : text}
+                tokens={typeof text === "string" ? splitString(text) : text}
                 animateId={animateId}
                 token_wrap={(token) => (
                     <Text fontSize={fontSize} color={color}>

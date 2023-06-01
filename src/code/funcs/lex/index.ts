@@ -1,6 +1,7 @@
 import { Lexer, createToken } from "chevrotain";
 import { Color } from "../color";
 import { panic } from "functional-utilities";
+import { splitString } from "../code_block/word_split";
 
 const colors = {
     Keyword: new Color(171, 106, 212),
@@ -394,6 +395,12 @@ function lex_to_lang(
                         token_map[token.token_type] ??
                         panic(`No color for token type ${token.token_type}`),
                 };
+            })
+            .flatMap((token) => {
+                return splitString(token.content).map((content) => ({
+                    ...token,
+                    content,
+                }));
             });
     };
 }

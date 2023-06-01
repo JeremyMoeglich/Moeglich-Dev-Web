@@ -65,14 +65,20 @@ export const stages: Stage[] = [
                 (bezier) =>
                     bezier.right_point_intersections(left_line_point) > 0
             );
-            const samples = bbox_opacity === 0 ? [] : new RectSolid(-300, -300, 600, 600).translate(
-                new Point(
-                    interpolate_between(time / 3000, -200, 1200),
-                    0
-                )
-            ).distribute_grid(2000).map((point) => {
-                return [point, text.contains(point, 0)] as const;
-            });
+            const samples =
+                bbox_opacity === 0
+                    ? []
+                    : new RectSolid(-300, -300, 600, 600)
+                          .translate(
+                              new Point(
+                                  interpolate_between(time / 3000, -200, 1200),
+                                  0
+                              )
+                          )
+                          .distribute_grid(2000)
+                          .map((point) => {
+                              return [point, text.contains(point, 0)] as const;
+                          });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -155,7 +161,10 @@ export const stages: Stage[] = [
                             />
                         </div>
                         <div>
-                            <motion.div style={{ opacity: code_opacity }} className="relative right-48" layoutId="slide_codeblock">
+                            <motion.div
+                                style={{ opacity: code_opacity }}
+                                layoutId="slide_codeblock"
+                            >
                                 <CodeBlock
                                     code={dedent`
                                     print("Hello World!")
@@ -167,7 +176,7 @@ export const stages: Stage[] = [
                             </motion.div>
                         </div>
                     </div>
-                </div >
+                </div>
             );
         },
         props_list: [
@@ -197,11 +206,21 @@ export const stages: Stage[] = [
     }),
     InterpolatorStage({
         Component: ({ code }) => {
-            return <div className="flex justify-center items-center h-full">
-                <motion.div layoutId="slide_codeblock">
-                    <CodeBlock animateId="codeblock1" code={code} language="python" scale={2.7} />
-                </motion.div>
-            </div>
+            return (
+                <div className="h-full">
+                    {defaults.title("Abstraktion - Funktionen")}
+                    <div className="flex h-full items-center justify-center">
+                        <motion.div layoutId="slide_codeblock">
+                            <CodeBlock
+                                animateId="codeblock1"
+                                code={code}
+                                language="python"
+                                scale={2.7}
+                            />
+                        </motion.div>
+                    </div>
+                </div>
+            );
         },
         props_list: [
             {
@@ -214,21 +233,32 @@ export const stages: Stage[] = [
                 print("Hello World!")
                 print("Hello Universe!")
                 print("Hello Galaxy!")
-                `
+                `,
             },
             {
                 code: dedent`
                 def greet(name):
-                    return "Hello {name}!"
+                    print("Hello {name}!")
                     
                 greet("Jeremy")
                 greet("Test")
                 greet("World")
                 greet("Universe")
                 greet("Galaxy")
+                `,
+            },
+            {
+                code: dedent`
+                def get_price(prices):
+                    total = 0
+                    for price in prices:
+                        total += price
+                    return total
+
+                print(get_price([1, 2, 3, 4, 5]))
                 `
             }
         ],
         switch_duration: 1000,
-    })
+    }),
 ];

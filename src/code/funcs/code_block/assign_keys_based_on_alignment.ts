@@ -4,7 +4,7 @@ import type { KeyedToken, Token } from "./tokens";
 export function assignKeysAndMinimizeMovement(
     previousSequences: KeyedToken[][],
     newSequences: Token[][],
-    alignment: Array<[KeyedToken | null, Token | null][]>
+    alignment: Array<[KeyedToken | null, Token | null]>
 ): KeyedToken[] {
     const keyedTokens: KeyedToken[] = [];
 

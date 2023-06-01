@@ -1,6 +1,6 @@
 import { CrossText } from "~/utils/cross_text";
 import { FancyText } from "../funcs/fancy_text";
-import { split_include } from "~/utils/split_include";
+import { splitString } from "../funcs/code_block/word_split";
 
 export const defaults = {
     title: (text: string | string[]) => (
@@ -22,7 +22,7 @@ export const defaults = {
                 >
                     <CrossText
                         animateId="aspect"
-                        tokens={split_include(aspect, " ")}
+                        tokens={splitString(aspect)}
                     />
                 </div>
             ))}
