@@ -168,4 +168,8 @@ export class Point
     interpolate(t: number, to: Point): this {
         return new Point(this.lerp(t, to.x), this.lerp(t, to.y)) as this;
     }
+
+    key(): string {
+        return `${this.x},${this.y}`;
+    }
 }

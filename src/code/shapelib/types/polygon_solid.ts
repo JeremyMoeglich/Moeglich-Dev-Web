@@ -10,13 +10,10 @@ import { create_collider } from "../funcs/create_collider";
 import { create_range_collider } from "../funcs/create_range_collider";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
+import type { Interpolate } from "~/code/funcs/interpolator";
 
 export class PolygonSolid
-    implements
-    SolidShape,
-    PointMap,
-    HasVertices,
-    PointMap
+    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate
 {
     points: Point[];
     private cache: {
@@ -33,6 +30,14 @@ export class PolygonSolid
         this.points = points;
     }
 
+    rotatePoints(index: number): this {
+        return new PolygonSolid(
+            this.points.concat([...this.points].splice(0, index))
+        ) as this;
+    }
+
+    interpolate(t: number, to: this): this {}
+
     invalidate() {
         this.cache = {};
     }
@@ -44,7 +49,9 @@ export class PolygonSolid
     }
 
     translate(p: Point): this {
-        return new PolygonSolid(this.points.map((p2) => p2.translate(p))) as this;
+        return new PolygonSolid(
+            this.points.map((p2) => p2.translate(p))
+        ) as this;
     }
 
     static make_ngon(corners: number): PolygonSolid {
@@ -66,9 +73,7 @@ export class PolygonSolid
 
     scale(scale: number, origin: Point = new Point(0, 0)): this {
         return new PolygonSolid(
-            this.points.map((p) =>
-                p.scale(scale, origin)
-            )
+            this.points.map((p) => p.scale(scale, origin))
         ) as this;
     }
 

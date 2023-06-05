@@ -42,6 +42,7 @@ const colorPresets: Record<ColorPreset, string> = {
 interface TextProps {
     fontSize: string;
     color: ColorPreset;
+    animationDelay: number;
 }
 
 const Text = styled.div<TextProps>`
@@ -51,10 +52,13 @@ const Text = styled.div<TextProps>`
     color: transparent;
     background: ${(props) => colorPresets[props.color]};
     background-size: 300% 300%;
+    background-attachment: fixed;
     animation: ${gradient} 15s ease-in-out infinite;
+    animation-delay: ${(props) => props.animationDelay}s;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 `;
+
 
 export const FancyText = ({
     text,
@@ -67,13 +71,21 @@ export const FancyText = ({
     fontSize: string;
     color: ColorPreset;
 }) => {
+    const animationDuration = 15;
+    const currentTime = window.performance.now() / 1000;
+    const animationDelay = animationDuration - (currentTime % animationDuration);
+
     return (
         <div className="text-center">
             <CrossText
                 tokens={typeof text === "string" ? splitString(text) : text}
                 animateId={animateId}
                 token_wrap={(token) => (
-                    <Text fontSize={fontSize} color={color}>
+                    <Text 
+                        fontSize={fontSize} 
+                        color={color} 
+                        animationDelay={animationDelay}  // <-- Pass it here
+                    >
                         {token}
                     </Text>
                 )}

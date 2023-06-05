@@ -8,9 +8,10 @@ import { TriangleSolid } from "./triangle_solid";
 import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
+import type { Interpolate } from "~/code/funcs/interpolator";
 
 export class RectSolid
-    implements SolidShape, HasVertices, PointMap
+    implements SolidShape, HasVertices, PointMap, Interpolate
 {
     x: number;
     y: number;
@@ -30,6 +31,15 @@ export class RectSolid
         const width = Math.max(...rects.map((r) => r.x + r.width)) - x;
         const height = Math.max(...rects.map((r) => r.y + r.height)) - y;
         return new RectSolid(x, y, width, height);
+    }
+
+    interpolate(t: number, to: this): this {
+        return new RectSolid(
+            this.x * (1 - t) + to.x * t,
+            this.y * (1 - t) + to.y * t,
+            this.width * (1 - t) + to.width * t,
+            this.height * (1 - t) + to.height * t
+        ) as this;
     }
 
     toString(): string {

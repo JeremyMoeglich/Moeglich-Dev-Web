@@ -1,13 +1,12 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { languages } from "../lex";
 import { CrossText } from "~/utils/cross_text";
 import { panic } from "functional-utilities";
 import { LRUCache } from "lru-cache";
-import { KeyedToken, Token } from "./tokens";
+import type { KeyedToken, Token } from "./tokens";
 import { assignKeys } from "./assign_keys";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { content } from "flo-poly";
+import { Point } from "~/code/shapelib";
 
 const IS_BROWSER = typeof window !== "undefined";
 
@@ -39,17 +38,19 @@ const measureTextWidth = (text: string, font: string) => {
     return 0;
 };
 
-const LanguageIcon: React.FC<{ language: keyof typeof languages }> = ({ language }) => {
+const LanguageIcon: React.FC<{ language: keyof typeof languages }> = ({
+    language,
+}) => {
     const path = `/images/languages/${language}.svg`;
     return (
         <motion.img
             src={path}
             alt={language}
-            className="inline-block w-full h-full"
+            className="inline-block h-full w-full"
             layoutId={`language-icon-${language}`}
         />
     );
-}
+};
 
 export const CodeBlock: React.FC<{
     code: string;
@@ -70,36 +71,43 @@ export const CodeBlock: React.FC<{
             return language_def(line).map((lex_info, x_index) => {
                 const token = {
                     x_index,
-                    x: current_x,
-                    y,
+                    position: new Point(current_x, y),
                     ...lex_info,
                 } satisfies Token;
                 current_x += measureTextWidth(token.content, font);
                 return token;
             });
         });
-        const size = new_tokens.reduce((acc, token) => {
-            return {
-                x: Math.max(acc.x, token.x + token.content.length),
-                y: Math.max(acc.y, token.y),
-            };
-        }, { x: 0, y: 0 });
+        const size = new_tokens.reduce(
+            (acc, token) => {
+                return {
+                    x: Math.max(acc.x, token.position.x + token.content.length),
+                    y: Math.max(acc.y, token.position.y),
+                };
+            },
+            { x: 0, y: 0 }
+        );
         const offset_tokens = new_tokens.map((token) => {
             return {
                 ...token,
-                y: token.y - size.y / 2,
-                x: token.x - size.x / 2,
-            }
+                position: new Point(
+                    token.position.x - size.x / 2,
+                    token.position.y - size.y / 2
+                ),
+            };
         });
         setCurrentTokens((prevTokens) => assignKeys(prevTokens, offset_tokens));
     }, [font, language_def, code]);
 
-    const icon_pos = currentTokens.reduce((acc, token) => {
-        return {
-            x: Math.max(acc.x, token.x + token.content.length),
-            y: Math.max(acc.y, token.y),
-        };
-    }, { x: 0, y: 0 });
+    const icon_pos = currentTokens.reduce(
+        (acc, token) => {
+            return {
+                x: Math.max(acc.x, token.position.x + token.content.length),
+                y: Math.max(acc.y, token.position.y),
+            };
+        },
+        { x: 0, y: 0 }
+    );
 
     return (
         <div className="relative" ref={fontRef}>
@@ -110,8 +118,8 @@ export const CodeBlock: React.FC<{
                         className="absolute min-w-max"
                         aria-label={`${animateId}-${token.key}-${i}`}
                         style={{
-                            top: `${token.y * scale}rem`,
-                            left: `${token.x}px`, // x is now in pixels
+                            top: `${token.position.y * scale}rem`,
+                            left: `${token.position.x}px`, // x is now in pixels
                             fontSize: `${scale}rem`,
                             ...token.color.textColorStyle(),
                             fontFamily: `"Fira Code", monospace`,
@@ -126,9 +134,11 @@ export const CodeBlock: React.FC<{
             })}
             {show_icon && currentTokens.length !== 0 && (
                 <div
-                    className="absolute top-0 left-0 w-16 h-16"
+                    className="absolute left-0 top-0 h-16 w-16"
                     style={{
-                        transform: `translate(${icon_pos.x + 20}px, ${(icon_pos.y + 1) * scale}rem)`,
+                        transform: `translate(${icon_pos.x + 20}px, ${
+                            (icon_pos.y + 1) * scale
+                        }rem)`,
                     }}
                 >
                     <LanguageIcon language={language} />
@@ -137,5 +147,3 @@ export const CodeBlock: React.FC<{
         </div>
     );
 };
-
-

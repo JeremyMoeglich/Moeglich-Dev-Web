@@ -1,63 +1,76 @@
 import { KeyedToken, Token } from "./tokens";
-import { identifySequences } from "./identify_sequences";
-import { alignSequences } from "./align_sequences";
-import {
-	assignKeysAndMinimizeMovement,
-} from "./assign_keys_based_on_alignment";
-import { v4 } from "uuid";
-import { Point } from "~/code/shapelib";
+import { v4 as uuidv4 } from "uuid";
 
-// export function assignKeys(
-//     previous_tokens: KeyedToken[],
-//     new_tokens: Token[]
-// ): KeyedToken[] {
-//     // Step 1: Identify multi-token sequences.
-//     const previousSequences = identifySequences(previous_tokens);
-//     const newSequences = identifySequences(new_tokens);
+type Sequence = { previous: number[]; new: number[] };
+type TokenMap = { [key: string]: Sequence[] };
 
-//     // Step 2: Align the sequences.
-//     const alignment = alignSequences(previousSequences, newSequences);
-
-//     // Step 3: Assign keys based on the alignment.
-//     const keyedTokens = assignKeysAndMinimizeMovement(
-//         previousSequences,
-//         newSequences,
-//         alignment
-//     );
-
-//     return keyedTokens;
-// }
-
+function token_iden(token: Token): string {
+    return `${token.token_type}:${token.content}`;
+}
 
 export function assignKeys(previous_tokens: KeyedToken[], new_tokens: Token[]): KeyedToken[] {
-	function token_iden(token: Token): string {
-		return `${token.token_type}:${token.content}`;
-	}
+    const identicalTokenMap: { [id: string]: Sequence[] } = {};
+    const startIndexMap: { [id: string]: Sequence[] } = {};
 
-	const previous_token_map = new Map<string, KeyedToken[]>();
-	const new_token_map = new Map<string, Token[]>();
+    // This will track which tokens have been used in a sequence
+    const usedPrevTokens = new Array(previous_tokens.length).fill(false);
+    const usedNewTokens = new Array(new_tokens.length).fill(false);
 
-	for (const token of previous_tokens) {
-		if (token.key) {
-			previous_token_map.set(token.key, token);
-		}
-	}
+    // Identify identical tokens and form initial sequences of length 1
+    previous_tokens.forEach((token, i) => {
+        const id = token_iden(token);
+        new_tokens.forEach((newToken, j) => {
+            if (!usedPrevTokens[i] && !usedNewTokens[j] && id === token_iden(newToken)) {
+                const sequence: Sequence = { previous: [i], new: [j] };
+                identicalTokenMap[id] = identicalTokenMap[id] ? [...identicalTokenMap[id], sequence] : [sequence];
+                startIndexMap[id] = identicalTokenMap[id];
+                // Mark the tokens as used
+                usedPrevTokens[i] = true;
+                usedNewTokens[j] = true;
+            }
+        });
+    });
 
-	for (const token of new_tokens) {
-		new_token_map.set(token_iden(token), token);
-	}
+    // Extend sequences
+    let sequencesCanBeExtended = true;
+    while (sequencesCanBeExtended) {
+        sequencesCanBeExtended = false;
+        for (const id in identicalTokenMap) {
+            identicalTokenMap[id].forEach(sequence => {
+                const lastIndexOfPrev = sequence.previous[sequence.previous.length - 1];
+                const lastIndexOfNew = sequence.new[sequence.new.length - 1];
+                if (lastIndexOfPrev + 1 < previous_tokens.length && lastIndexOfNew + 1 < new_tokens.length) {
+                    const nextIdPrev = token_iden(previous_tokens[lastIndexOfPrev + 1]);
+                    const nextIdNew = token_iden(new_tokens[lastIndexOfNew + 1]);
+                    if (!usedPrevTokens[lastIndexOfPrev + 1] && !usedNewTokens[lastIndexOfNew + 1] && nextIdPrev === nextIdNew && startIndexMap[nextIdPrev]) {
+                        startIndexMap[nextIdPrev].forEach(nextSequence => {
+                            if (nextSequence.previous[0] === lastIndexOfPrev + 1 && nextSequence.new[0] === lastIndexOfNew + 1) {
+                                // Extend the sequence
+                                sequence.previous.push(lastIndexOfPrev + 1);
+                                sequence.new.push(lastIndexOfNew + 1);
+                                // Remove the extended sequence from the startIndexMap
+                                startIndexMap[nextIdPrev] = startIndexMap[nextIdPrev].filter(seq => seq !== nextSequence);
+                                // Mark the tokens as used
+                                usedPrevTokens[lastIndexOfPrev + 1] = true;
+                                usedNewTokens[lastIndexOfNew + 1] = true;
+                                sequencesCanBeExtended = true;
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
 
-	const iden_matches = new Map<string, Token[]>();
-	for (const [iden, token] of new_token_map) {
-		const matches = previous_token_map.get(iden);
-		if (matches) {
-			iden_matches.set(iden, [matches, token]);
-		}
-	}
+    // Assign keys
+    const keyedNewTokens: KeyedToken[] = new_tokens.map(token => ({ ...token, key: uuidv4() }));
+    for (const id in identicalTokenMap) {
+        identicalTokenMap[id].forEach(sequence => {
+            sequence.new.forEach((index, i) => {
+                keyedNewTokens[index].key = previous_tokens[sequence.previous[i]].key;
+            });
+        });
+    }
 
-	const keyed = new_tokens.map(token => [token, undefined] as [Token, string | undefined]);
-
-	for (const [iden, matches] of iden_matches) {
-		
-	}
+    return keyedNewTokens;
 }

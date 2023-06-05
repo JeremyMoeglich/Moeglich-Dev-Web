@@ -8,14 +8,22 @@ import { PolygonSolid } from "./polygon_solid";
 import { RectSolid } from "./rect_solid";
 import type { TriangleSolid } from "./triangle_solid";
 import type { ShapeSet } from "./shape_set";
+import type { Interpolate } from "~/code/funcs/interpolator";
 
-export class CircleSolid implements SolidShape {
+export class CircleSolid implements SolidShape, Interpolate {
     position: Point;
     radius: number;
 
     constructor(position: Point, radius: number) {
         this.position = position;
         this.radius = radius;
+    }
+
+    interpolate(t: number, to: this): this {
+        return new CircleSolid(
+            this.position.interpolate(t, to.position),
+            this.radius * (1 - t) + to.radius * t
+        ) as this;
     }
 
     area(): number {
@@ -49,7 +57,10 @@ export class CircleSolid implements SolidShape {
     }
 
     translate(offset: Point): this {
-        return new CircleSolid(this.position.translate(offset), this.radius) as this;
+        return new CircleSolid(
+            this.position.translate(offset),
+            this.radius
+        ) as this;
     }
 
     scale(scale: number, origin = new Point(0, 0)): this {
