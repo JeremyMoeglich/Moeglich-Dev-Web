@@ -131,6 +131,10 @@ export class Point
         }
     }
 
+    similarity(to: this): number {
+        return this.distance(to);
+    }
+
     map_points(f: (p: Point) => Point): this {
         return f(this) as this;
     }
@@ -176,7 +180,15 @@ export class Point
         return this.lerp(t, to);
     }
 
+    to_start(): this {
+        return this;
+    }
+
     key(): string {
         return `${this.x},${this.y}`;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof Point;
     }
 }

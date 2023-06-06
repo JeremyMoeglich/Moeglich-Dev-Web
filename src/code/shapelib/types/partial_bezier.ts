@@ -1,7 +1,8 @@
+import { Interpolate } from "~/code/funcs/interpolator";
 import type { Axis, PointMap, Stringifiable } from "./interfaces";
 import { Point } from "./point";
 
-export class PartialBezier implements Stringifiable, PointMap {
+export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     handle1: Point;
     handle2: Point;
     end_point: Point;
@@ -22,6 +23,28 @@ export class PartialBezier implements Stringifiable, PointMap {
             this.handle2.translate(p),
             this.end_point.translate(p)
         );
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof PartialBezier;
+    }
+
+    similarity(to: this): number {
+        return this.handle1.similarity(to.handle1) +
+            this.handle2.similarity(to.handle2) +
+            this.end_point.similarity(to.end_point);
+    }
+
+    interpolate(t: number, to: this): this {
+        return new PartialBezier(
+            this.handle1.interpolate(t, to.handle1),
+            this.handle2.interpolate(t, to.handle2),
+            this.end_point.interpolate(t, to.end_point)
+        ) as this;
+    }
+
+    to_start(): this {
+        return this;
     }
 
     scale(scale: number, origin = new Point(0, 0)): PartialBezier {

@@ -13,6 +13,7 @@ import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
 import { find_roots_cubic, find_roots_quadratic } from "../../funcs/roots";
 import { debug_context } from "../funcs/render_debug";
+import { Interpolate } from "~/code/funcs/interpolator";
 
 export class FullBezier
     implements
@@ -21,7 +22,8 @@ export class FullBezier
         PointMap,
         BoundingBox,
         HasLength,
-        RenderableOutline
+        RenderableOutline,
+        Interpolate
 {
     start_point: Point;
     bezier: PartialBezier;
@@ -33,6 +35,28 @@ export class FullBezier
 
     toString(): string {
         return `FullBezier(sp=${this.start_point.toString()}, b=${this.bezier.toString()})`;
+    }
+
+    interpolate(t: number, to: this): this {
+        return new FullBezier(
+            this.start_point.interpolate(t, to.start_point),
+            this.bezier.interpolate(t, to.bezier)
+        ) as this;
+    }
+
+    similarity(to: this): number {
+        return (
+            this.start_point.similarity(to.start_point) +
+            this.bezier.similarity(to.bezier)
+        );
+    }
+
+    to_start(): this {
+        return this;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof FullBezier;
     }
 
     translate(p: Point): this {

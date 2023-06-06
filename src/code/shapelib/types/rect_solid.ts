@@ -11,8 +11,7 @@ import { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
 
 export class RectSolid
-    implements SolidShape, HasVertices, PointMap, Interpolate
-{
+    implements SolidShape, HasVertices, PointMap, Interpolate {
     x: number;
     y: number;
     width: number;
@@ -40,6 +39,22 @@ export class RectSolid
             this.width * (1 - t) + to.width * t,
             this.height * (1 - t) + to.height * t
         ) as this;
+    }
+
+    to_start(): this {
+        return new RectSolid(this.x + this.width / 2, this.y + this.height / 2, 0, 0) as this;
+    }
+
+    similarity(to: this): number {
+        const x = Math.abs(this.x - to.x);
+        const y = Math.abs(this.y - to.y);
+        const width = Math.abs(this.width - to.width);
+        const height = Math.abs(this.height - to.height);
+        return x + y + width + height;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof RectSolid;
     }
 
     toString(): string {

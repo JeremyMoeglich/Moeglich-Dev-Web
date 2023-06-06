@@ -6,7 +6,7 @@ import { zip } from "functional-utilities";
 import type { TriangleSolid } from "./triangle_solid";
 import { create_collider } from "../funcs/create_collider";
 
-export class ShapeSet<T extends Shape> {
+export class ShapeSet<T extends Shape> implements Shape {
     shapes: T[];
     private cache: {
         collider?: (p: Point) => boolean;
@@ -30,7 +30,7 @@ export class ShapeSet<T extends Shape> {
         return collider(p);
     }
 
-    flip(axis: Axis): ShapeSet<T> {
+    flip(axis: Axis): this {
         const bboxes = this.shapes.map((s) => s.bbox());
         const center = RectSolid.union(bboxes).center();
 
@@ -51,11 +51,11 @@ export class ShapeSet<T extends Shape> {
             return s.translate(axis_vec);
         });
 
-        return new ShapeSet(translatedShapes);
+        return new ShapeSet(translatedShapes) as this;
     }
 
-    translate(offset: Point): ShapeSet<T> {
-        return new ShapeSet(this.shapes.map((s) => s.translate(offset)));
+    translate(offset: Point): this {
+        return new ShapeSet(this.shapes.map((s) => s.translate(offset))) as this;
     }
 
     outline_intersects(other: ShapeSet<T>): boolean {
@@ -96,8 +96,8 @@ export class ShapeSet<T extends Shape> {
         );
     }
 
-    scale(scale: number, offset?: Point | undefined): ShapeSet<T> {
-        return new ShapeSet(this.shapes.map((s) => s.scale(scale, offset)));
+    scale(scale: number, offset?: Point | undefined): this {
+        return new ShapeSet(this.shapes.map((s) => s.scale(scale, offset))) as this;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {
@@ -136,18 +136,18 @@ export class ShapeSet<T extends Shape> {
         }) as MapContained<ShapeSet<T>, U>;
     }
 
-    recenter(axis: Axis): ShapeSet<T> {
+    recenter(axis: Axis): this {
         const offset = this.center().to_axis(axis).negate();
-        return this.translate(offset);
+        return this.translate(offset) as this;
     }
 
     center(): Point {
         return this.bbox().center();
     }
 
-    rotate(angle: number, origin?: Point): ShapeSet<T> {
+    rotate(angle: number, origin?: Point): this {
         const o = origin ?? this.center();
-        return new ShapeSet(this.shapes.map((s) => s.rotate(angle, o)));
+        return new ShapeSet(this.shapes.map((s) => s.rotate(angle, o))) as this;
     }
 }
 

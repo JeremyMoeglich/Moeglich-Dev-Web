@@ -13,6 +13,9 @@ import { v4 } from "uuid";
 
 export interface Interpolate {
     interpolate(t: number, to: this): this;
+    to_start(): this;
+    is_this(value: unknown): value is this;
+    similarity(to: this): number; // 0 is identical
 }
 
 function interpolateProps<T>(startProps: T, endProps: T, progress: number, disable?: (keyof T)[]): T {

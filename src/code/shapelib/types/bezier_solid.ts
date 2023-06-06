@@ -13,6 +13,7 @@ import type { TriangleSolid } from "./triangle_solid";
 import { debug_context } from "../funcs/render_debug";
 import type { ShapeSet } from "./shape_set";
 import { CurveSet } from "./curve_set";
+import { Interpolate } from "~/code/funcs/interpolator";
 
 export type PointWithHandles = {
     start_handle: Point;

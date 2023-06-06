@@ -26,6 +26,18 @@ export class CircleSolid implements SolidShape, Interpolate {
         ) as this;
     }
 
+    similarity(to: this): number {
+        return this.position.similarity(to.position) + Math.abs(this.radius - to.radius);
+    }
+
+    to_start(): this {
+        return new CircleSolid(this.position, 0) as this;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof CircleSolid;
+    }
+
     area(): number {
         return Math.PI * this.radius ** 2;
     }

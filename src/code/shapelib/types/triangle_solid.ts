@@ -7,8 +7,9 @@ import { RectSolid } from "./rect_solid";
 import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
+import { Interpolate } from "~/code/funcs/interpolator";
 
-export class TriangleSolid implements SolidShape, PointMap {
+export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     a: Point;
     b: Point;
     c: Point;
@@ -21,6 +22,34 @@ export class TriangleSolid implements SolidShape, PointMap {
 
     toString(): string {
         return `TriangleSolid(${this.a.toString()}, ${this.b.toString()}, ${this.c.toString()})`;
+    }
+
+    interpolate(t: number, to: this): this {
+        return new TriangleSolid(
+            this.a.interpolate(t, to.a),
+            this.b.interpolate(t, to.b),
+            this.c.interpolate(t, to.c)
+        ) as this;
+    }
+
+    to_start(): this {
+        const center = this.center();
+        return new TriangleSolid(
+            center,
+            center,
+            center
+        ) as this;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof TriangleSolid;
+    }
+
+    similarity(to: this): number {
+        const a = this.a.similarity(to.a);
+        const b = this.b.similarity(to.b);
+        const c = this.c.similarity(to.c);
+        return a + b + c;
     }
 
     translate(p: Point): this {
@@ -71,11 +100,11 @@ export class TriangleSolid implements SolidShape, PointMap {
         return (
             Math.abs(
                 this.a.x * this.b.y -
-                    this.a.y * this.b.x +
-                    this.b.x * this.c.y -
-                    this.b.y * this.c.x +
-                    this.c.x * this.a.y -
-                    this.c.y * this.a.x
+                this.a.y * this.b.x +
+                this.b.x * this.c.y -
+                this.b.y * this.c.x +
+                this.c.x * this.a.y -
+                this.c.y * this.a.x
             ) / 2
         );
     }

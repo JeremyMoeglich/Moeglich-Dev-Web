@@ -240,8 +240,8 @@ export const stages: Stage[] = [
                 print("Hello Jeremy!")
                 print("Hello Test!")
                 print("Hello World!")
-                print("Hello Universe!")
-                print("Hello Galaxy!")
+                print("Hello Philipp!")
+                print("Hello Possibilities!")
                 `,
                 language: "python",
                 scale: 2.7,
@@ -256,8 +256,8 @@ export const stages: Stage[] = [
                 greet("Jeremy")
                 greet("Test")
                 greet("World")
-                greet("Universe")
-                greet("Galaxy")
+                greet("Philipp")
+                greet("Possibilities")
                 `,
                 language: "python",
                 scale: 2.7,

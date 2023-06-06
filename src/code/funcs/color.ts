@@ -17,6 +17,23 @@ export class Color implements Interpolate {
         ) as this;
     }
 
+    is_this(value: unknown): value is this {
+        return value instanceof Color;
+    }
+
+    similarity(to: this): number {
+        const rgb1 = this.color.rgb();
+        const rgb2 = to.color.rgb();
+    
+        const dr = rgb1[0] - rgb2[0];
+        const dg = rgb1[1] - rgb2[1];
+        const db = rgb1[2] - rgb2[2];
+    
+        // Euclidean distance
+        return Math.sqrt(dr * dr + dg * dg + db * db);
+    }
+    
+
     getHex(): string {
         return this.color.hex();
     }
@@ -31,5 +48,9 @@ export class Color implements Interpolate {
 
     textColorStyle(): React.CSSProperties {
         return { color: this.getRGB() };
+    }
+
+    to_start(): this {
+        return this;
     }
 }
