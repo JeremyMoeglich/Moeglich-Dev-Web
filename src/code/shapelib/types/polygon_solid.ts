@@ -36,7 +36,9 @@ export class PolygonSolid
         ) as this;
     }
 
-    interpolate(t: number, to: this): this {}
+    interpolate(t: number, to: this): this {
+        
+    }
 
     invalidate() {
         this.cache = {};

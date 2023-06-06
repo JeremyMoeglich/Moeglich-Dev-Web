@@ -161,12 +161,19 @@ export class Point
         return new CircleSolid(this, radius);
     }
 
-    lerp(t: number, to: number): number {
-        return this.x + (to - this.x) * t;
+    lerp(t: number, to: Point): this {
+        return new Point(
+            this.x + (to.x - this.x) * t,
+            this.y + (to.y - this.y) * t
+        ) as this;
+    }
+
+    midpoint(p: Point): Point {
+        return this.lerp(0.5, p);
     }
 
     interpolate(t: number, to: Point): this {
-        return new Point(this.lerp(t, to.x), this.lerp(t, to.y)) as this;
+        return this.lerp(t, to);
     }
 
     key(): string {
