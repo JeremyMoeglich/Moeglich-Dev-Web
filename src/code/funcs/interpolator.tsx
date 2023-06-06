@@ -10,8 +10,9 @@ import { has_property, panic } from "functional-utilities";
 import { type Stage } from "../slides/stage";
 import { type EasingFunctionName, easingFunctions } from "./ease";
 import { v4 } from "uuid";
+import { Id } from "../shapelib/types/interfaces";
 
-export interface Interpolate {
+export interface Interpolate extends Id {
     interpolate(t: number, to: this): this;
     to_start(): this;
     is_this(value: unknown): value is this;

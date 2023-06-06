@@ -7,6 +7,7 @@ import { TriangleSolid } from "./triangle_solid";
 import { panic } from "functional-utilities";
 import earcut from "earcut";
 import { ShapeSet } from "./shape_set";
+import { v4 } from "uuid";
 
 export class HollowShape<T extends SolidShape> implements Shape {
     exterior: T;
@@ -16,11 +17,19 @@ export class HollowShape<T extends SolidShape> implements Shape {
         area?: number;
         triangulation?: ShapeSet<TriangleSolid>;
         approximation?: HollowShape<PolygonSolid>;
+        id?: string;
     } = {};
 
     constructor(exterior: T, holes: T[]) {
         this.exterior = exterior;
         this.holes = holes;
+    }
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     toString(): string {

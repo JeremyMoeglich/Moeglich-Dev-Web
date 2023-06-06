@@ -14,6 +14,7 @@ import { debug_context } from "../funcs/render_debug";
 import type { ShapeSet } from "./shape_set";
 import { CurveSet } from "./curve_set";
 import { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export type PointWithHandles = {
     start_handle: Point;
@@ -31,10 +32,18 @@ export class BezierSolid implements SolidShape, PointMap {
         contains_collider?: (p: Point) => boolean;
         right_point_counter?: (p: Point) => number;
         length_to_t?: (l: number) => number;
+        id?: string;
     } = {};
 
     constructor(bezier: PartialBezier[]) {
         this.bezier = bezier;
+    }
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     toString(): string {

@@ -1,16 +1,45 @@
-import { sum } from "lodash-es";
+import { maxBy, sum } from "lodash-es";
 import type { Axis, Shape } from "./interfaces";
 import { RectSolid } from "./rect_solid";
 import { Point } from "./point";
 import { zip } from "functional-utilities";
 import type { TriangleSolid } from "./triangle_solid";
 import { create_collider } from "../funcs/create_collider";
+import { Interpolate } from "~/code/funcs/interpolator";
 
-export class ShapeSet<T extends Shape> implements Shape {
+export class ShapeSet<T extends Shape & Interpolate> implements Shape, Interpolate {
     shapes: T[];
     private cache: {
         collider?: (p: Point) => boolean;
     } = {}
+
+    id(): string {
+        return this.shapes.map((s) => s.id()).join("-");
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof ShapeSet;
+    }
+
+    to_start(): this {
+        return new ShapeSet(this.shapes.map((s) => s.to_start())) as this;
+    }
+
+    interpolate(t: number, to: this): this {
+        const shapes = this.shapes.map((s1, i) => {
+            const matched = maxBy(
+                to.shapes.filter(s2 => s1.is_this(s2)),
+                (s2) => s1.similarity(s2)
+            )
+            if (!matched) return s1.to_start().interpolate(t, s1);
+            return s1.interpolate(t, matched);
+        });
+        return new ShapeSet(shapes) as this;
+    }
+
+    similarity(to: this): number {
+        return sum(zip([this.shapes, to.shapes] as [T[], T[]]).map(([s1, s2]) => s1.similarity(s2)));
+    }
 
     constructor(shapes: T[]) {
         this.shapes = shapes;
@@ -112,11 +141,11 @@ export class ShapeSet<T extends Shape> implements Shape {
         return ShapeSet.union(this.shapes.map((s) => s.triangulate(quality)));
     }
 
-    static union<T extends Shape>(sets: ShapeSet<T>[]): ShapeSet<T> {
+    static union<T extends Shape & Interpolate>(sets: ShapeSet<T>[]): ShapeSet<T> {
         return new ShapeSet(sets.flatMap((s) => s.shapes));
     }
 
-    map_shapes<U extends Shape>(f: (s: T) => U): ShapeSet<U> {
+    map_shapes<U extends Shape & Interpolate>(f: (s: T) => U): ShapeSet<U> {
         return new ShapeSet(this.shapes.map(f));
     }
 
@@ -124,7 +153,7 @@ export class ShapeSet<T extends Shape> implements Shape {
         return this.shapes.map(f);
     }
 
-    map_base<U extends Shape>(
+    map_base<U extends Shape & Interpolate>(
         f: (s: UnwrapSet<T>) => U
     ): MapContained<ShapeSet<T>, U> {
         return this.map_shapes((v) => {
@@ -153,6 +182,6 @@ export class ShapeSet<T extends Shape> implements Shape {
 
 type UnwrapSet<T> = T extends ShapeSet<infer U> ? UnwrapSet<U> : T;
 
-type MapContained<T, U extends Shape> = T extends ShapeSet<infer V>
+type MapContained<T, U extends Shape & Interpolate> = T extends ShapeSet<infer V>
     ? ShapeSet<MapContained<V, U>>
     : U;

@@ -14,6 +14,7 @@ import { RectSolid } from "./rect_solid";
 import { find_roots_cubic, find_roots_quadratic } from "../../funcs/roots";
 import { debug_context } from "../funcs/render_debug";
 import { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export class FullBezier
     implements
@@ -28,9 +29,20 @@ export class FullBezier
     start_point: Point;
     bezier: PartialBezier;
 
+    private cache: {
+        id?: string;
+    } = {};
+
     constructor(start_point: Point, bezier: PartialBezier) {
         this.start_point = start_point;
         this.bezier = bezier;
+    }
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     toString(): string {

@@ -8,8 +8,20 @@ import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
 import { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export class TriangleSolid implements SolidShape, PointMap, Interpolate {
+    private cache: {
+        id?: string;
+    } = {};
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
+    }
+
     a: Point;
     b: Point;
     c: Point;

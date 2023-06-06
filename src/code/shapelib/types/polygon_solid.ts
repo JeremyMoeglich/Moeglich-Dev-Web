@@ -1,20 +1,50 @@
-import { cyclic_pairs, panic } from "functional-utilities";
+import { cyclic_pairs, panic, zip } from "functional-utilities";
 import type { Axis, HasVertices, PointMap, SolidShape } from "./interfaces";
 import { LineSegment } from "./line_segment";
 import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
 import { TriangleSolid } from "./triangle_solid";
-import { chunk, sum } from "lodash-es";
+import { chunk, sum, sumBy } from "lodash-es";
 import earcut from "earcut";
 import { create_collider } from "../funcs/create_collider";
 import { create_range_collider } from "../funcs/create_range_collider";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
+
+const equalizePointCount = (shape1: PolygonSolid, shape2: PolygonSolid): [PolygonSolid, PolygonSolid] => {
+    // Find the number of points in each shape
+    const [nPoints1, nPoints2] = [shape1.points.length, shape2.points.length];
+
+    // Determine which shape needs to have points added, and which will be used for comparison
+    const [shapeToAdd, shapeComp] = nPoints1 < nPoints2 ? [shape1.clone(), shape2] : [shape2.clone(), shape1];
+
+    while (shapeToAdd.points.length < shapeComp.points.length) {
+        const lines = shapeComp.lines();
+
+        let maxDist = 0;
+        let maxIndex = 0;
+
+        // Find the edge with the longest distance in the shape to which we'll add a point
+        for (const [i, line] of lines.entries()) {
+            let len = line.outline_length();
+
+            if (len > maxDist) {
+                maxDist = len;
+                maxIndex = i;
+            }
+        }
+
+        // Add a point at the midpoint of the longest edge
+        shapeToAdd.bisect_line(maxIndex);
+    }
+
+    return nPoints1 < nPoints2 ? [shapeToAdd, shapeComp] : [shapeComp, shapeToAdd];
+};
 
 export class PolygonSolid
-    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate
-{
+    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate {
     points: Point[];
     private cache: {
         bbox?: RectSolid;
@@ -24,10 +54,40 @@ export class PolygonSolid
         right_point_counter?: (p: Point) => number;
         area?: number;
         length?: number;
+        identity?: string;
+        optimalRotation?: { id: string, solid: PolygonSolid };
     } = {};
+
+    similarity(to: this): number {
+        // Simple temporary solution
+        const dist = sumBy(zip([this.points, to.points] as [Point[], Point[]]), ([p1, p2]) => p1.distance(p2));
+        const len_diff = Math.abs(this.points.length - to.points.length);
+        return dist + len_diff * 2;
+    }
+
+    to_start(): this {
+        return this.scale(0);
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof PolygonSolid;
+    }
 
     constructor(points: Point[]) {
         this.points = points;
+    }
+
+    id(): string {
+        if (this.cache.identity) return this.cache.identity;
+        const id = v4();
+        this.cache.identity = id;
+        return id;
+    }
+
+    clone(): this {
+        const clone = new PolygonSolid([...this.points]);
+        clone.cache = this.cache;
+        return clone as this;
     }
 
     rotatePoints(index: number): this {
@@ -37,7 +97,31 @@ export class PolygonSolid
     }
 
     interpolate(t: number, to: this): this {
-        
+        // Check if cached optimal rotation points exist for `to`, if not or the ids don't match, preprocess `this` and `to`
+        if (!this.cache.optimalRotation || this.cache.optimalRotation.id !== to.id()) {
+            let [pthis, pto] = equalizePointCount(this, to);
+
+            // Compute optimal rotation for `to`
+            let minDistance = Infinity;
+            let optimalRotation: PolygonSolid = pto;
+            for (let i = 0; i < pto.points.length; i++) {
+                let rotatedPoints = pto.rotatePoints(i);
+                let totalDistance = sumBy(zip([pthis.points, rotatedPoints.points] as [Point[], Point[]]), ([p1, p2]) => p1.distance(p2));
+
+                if (totalDistance < minDistance) {
+                    minDistance = totalDistance;
+                    optimalRotation = rotatedPoints;
+                }
+            }
+
+            // Store optimal rotation points and `to`'s id in cache
+            this.cache.optimalRotation = { id: to.id(), solid: optimalRotation };
+        }
+
+        return new PolygonSolid(
+            zip([this.points, this.cache.optimalRotation.solid.points] as [Point[], Point[]])
+                .map(([p1, p2]) => p1.interpolate(t, p2))
+        ) as this;
     }
 
     invalidate() {
@@ -171,6 +255,13 @@ export class PolygonSolid
 
     lines(): LineSegment[] {
         return cyclic_pairs(this.points).map(([a, b]) => new LineSegment(a, b));
+    }
+
+    bisect_line(index: number): void {
+        const i1 = index % this.points.length;
+        const i2 = (index + 1) % this.points.length;
+        this.points.splice(i2, 0, (this.points[i1] ?? panic()).midpoint(this.points[i2] ?? panic()));
+        this.cache = {};
     }
 
     outline_intersects(other: PolygonSolid): boolean {

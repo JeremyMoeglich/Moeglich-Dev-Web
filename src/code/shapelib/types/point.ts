@@ -12,26 +12,34 @@ import type {
 import { LineSegment } from "./line_segment";
 import { RectSolid } from "./rect_solid";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export class Point
     implements
-        Stringifiable,
-        Transformable,
-        PointMap,
-        BoundingBox,
-        RenderableDebug,
-        Interpolate
-{
+    Stringifiable,
+    Transformable,
+    PointMap,
+    BoundingBox,
+    RenderableDebug,
+    Interpolate {
     x: number;
     y: number;
 
     private cache: {
         rotator: Map<number, (p: Point) => Point>;
+        id?: string;
     } = { rotator: new Map() };
 
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
+    }
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     toString(): string {

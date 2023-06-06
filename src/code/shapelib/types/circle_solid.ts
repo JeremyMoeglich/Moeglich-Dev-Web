@@ -9,14 +9,26 @@ import { RectSolid } from "./rect_solid";
 import type { TriangleSolid } from "./triangle_solid";
 import type { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export class CircleSolid implements SolidShape, Interpolate {
     position: Point;
     radius: number;
 
+    private cache: {
+        id?: string;
+    } = {};
+
     constructor(position: Point, radius: number) {
         this.position = position;
         this.radius = radius;
+    }
+    
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     interpolate(t: number, to: this): this {

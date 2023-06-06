@@ -78,6 +78,10 @@ export class LineSegment
             this.start.y + t * (this.end.y - this.start.y)
         );
     }
+    
+    midpoint(): Point {
+        return this.lerp(0.5);
+    }
 
     sample_points(n: number, variant: "evenly" | "rng") {
         if (variant === "evenly") {

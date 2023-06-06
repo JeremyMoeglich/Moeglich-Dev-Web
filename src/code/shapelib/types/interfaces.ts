@@ -43,6 +43,10 @@ export interface RenderableDebug {
     render_debug(ctx: CanvasRenderingContext2D): void;
 }
 
+export interface Id {
+    id(): string; // Unique identifier, only changes when the object changes
+}
+
 export interface HasArea extends BoundingBox {
     area(): number;
     triangulate(quality: number): ShapeSet<TriangleSolid>; // refer to approximated() for quality conventions
@@ -80,19 +84,20 @@ export interface SolidShape extends Shape {
 
 export interface Shape
     extends Transformable,
-        Stringifiable,
-        HasArea,
-        HasLength,
-        Renderable {
+    Stringifiable,
+    HasArea,
+    HasLength,
+    Renderable,
+    Id {
     center(): Point;
     recenter(axis: Axis): this;
 }
 
 export interface Curve
     extends RenderableOutline,
-        Transformable,
-        BoundingBox,
-        HasLength {}
+    Transformable,
+    BoundingBox,
+    HasLength { }
 
 export interface HasVertices {
     vertices(): Point[];
