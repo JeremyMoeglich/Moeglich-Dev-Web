@@ -1,11 +1,16 @@
-import { Interpolate } from "~/code/funcs/interpolator";
+import type { Interpolate } from "~/code/funcs/interpolator";
 import type { Axis, PointMap, Stringifiable } from "./interfaces";
 import { Point } from "./point";
+import { v4 } from "uuid";
 
 export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     handle1: Point;
     handle2: Point;
     end_point: Point;
+
+    private cache: {
+        id?: string;
+    } = {};
 
     constructor(handle1: Point, handle2: Point, end_point: Point) {
         this.handle1 = handle1;
@@ -30,9 +35,11 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     }
 
     similarity(to: this): number {
-        return this.handle1.similarity(to.handle1) +
+        return (
+            this.handle1.similarity(to.handle1) +
             this.handle2.similarity(to.handle2) +
-            this.end_point.similarity(to.end_point);
+            this.end_point.similarity(to.end_point)
+        );
     }
 
     interpolate(t: number, to: this): this {
@@ -41,6 +48,13 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
             this.handle2.interpolate(t, to.handle2),
             this.end_point.interpolate(t, to.end_point)
         ) as this;
+    }
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
     }
 
     to_start(): this {

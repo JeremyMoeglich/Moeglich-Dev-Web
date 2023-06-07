@@ -163,7 +163,7 @@ export const ShapeRender: React.FC<
                 }
             });
         }
-        return instructions;
+        return [];
     }, [shapeRef, instructions]);
     // We use an invisible div to get the position of the ShapeRender component
     return (

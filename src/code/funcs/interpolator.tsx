@@ -10,7 +10,7 @@ import { has_property, panic } from "functional-utilities";
 import { type Stage } from "../slides/stage";
 import { type EasingFunctionName, easingFunctions } from "./ease";
 import { v4 } from "uuid";
-import { Id } from "../shapelib/types/interfaces";
+import type { Id } from "../shapelib/types/interfaces";
 
 export interface Interpolate extends Id {
     interpolate(t: number, to: this): this;
@@ -19,7 +19,27 @@ export interface Interpolate extends Id {
     similarity(to: this): number; // 0 is identical
 }
 
-function interpolateProps<T>(startProps: T, endProps: T, progress: number, disable?: (keyof T)[]): T {
+function isInterpolate(value: unknown): value is Interpolate {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        has_property(value, "interpolate") &&
+        typeof value.interpolate === "function" &&
+        has_property(value, "to_start") &&
+        typeof value.to_start === "function" &&
+        has_property(value, "is_this") &&
+        typeof value.is_this === "function" &&
+        has_property(value, "similarity") &&
+        typeof value.similarity === "function"
+    );
+}
+
+function interpolateProps<T>(
+    startProps: T,
+    endProps: T,
+    progress: number,
+    disable?: (keyof T)[]
+): T {
     if (
         startProps === endProps ||
         startProps === undefined ||
@@ -29,13 +49,11 @@ function interpolateProps<T>(startProps: T, endProps: T, progress: number, disab
     ) {
         return endProps;
     } else if (
-        has_property(startProps, "interpolate") && // Checking if the startProps object has an interpolate method
-        has_property(endProps, "interpolate") && // Also checking if the endProps object has an interpolate method
-        typeof startProps.interpolate === "function" && // Ensuring the interpolate property is a function
-        typeof endProps.interpolate === "function"
+        isInterpolate(startProps) &&
+        isInterpolate(endProps) &&
+        startProps.is_this(endProps)
     ) {
-        // If both startProps and endProps objects have an interpolate method, we call it to perform the interpolation
-        return startProps.interpolate(progress, endProps) as T;
+        return startProps.interpolate(progress, endProps);
     } else if (
         Array.isArray(startProps) &&
         Array.isArray(endProps) &&
@@ -57,11 +75,11 @@ function interpolateProps<T>(startProps: T, endProps: T, progress: number, disab
                 startProps.hasOwnProperty(key) &&
                 endProps.hasOwnProperty(key)
             ) {
-                if ((!disable || !disable.includes(key as keyof T))) {
+                if (!disable || !disable.includes(key as keyof T)) {
                     result[key] = interpolateProps(
                         startProps[key],
                         endProps[key],
-                        progress,
+                        progress
                     );
                 } else {
                     result[key] = endProps[key];
@@ -106,7 +124,7 @@ export const Interpolator = <T,>({
     current,
     switch_duration,
     ease = "easeOutCubic",
-    disable = []
+    disable = [],
 }: Props<T>) => {
     const [interpolatedProps, setInterpolatedProps] = useState(
         () =>

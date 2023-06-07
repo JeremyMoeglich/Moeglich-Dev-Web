@@ -1,4 +1,4 @@
-import { chunk } from "lodash-es";
+import { chunk, sum } from "lodash-es";
 import type { Axis, Shape, SolidShape } from "./interfaces";
 import type { Point } from "./point";
 import type { PolygonSolid } from "./polygon_solid";
@@ -8,8 +8,11 @@ import { panic } from "functional-utilities";
 import earcut from "earcut";
 import { ShapeSet } from "./shape_set";
 import { v4 } from "uuid";
+import type { Interpolate } from "~/code/funcs/interpolator";
 
-export class HollowShape<T extends SolidShape> implements Shape {
+export class HollowShape<T extends SolidShape & Interpolate>
+    implements Shape, Interpolate
+{
     exterior: T;
     holes: T[];
 
@@ -30,6 +33,28 @@ export class HollowShape<T extends SolidShape> implements Shape {
         const id = v4();
         this.cache.id = id;
         return id;
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof HollowShape;
+    }
+
+    similarity(to: this): number {
+        return (
+            this.exterior.similarity(to.exterior) +
+            sum(this.holes.map((h) => h.similarity(to.exterior)))
+        );
+    }
+
+    to_start(): this {
+        return this.scale(0);
+    }
+
+    interpolate(t: number, to: this): this {
+        return new HollowShape(
+            this.exterior.interpolate(t, to.exterior),
+            this.holes.map((h) => h.interpolate(t, to.exterior))
+        ) as this;
     }
 
     toString(): string {

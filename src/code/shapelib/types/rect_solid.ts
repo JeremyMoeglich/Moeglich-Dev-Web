@@ -9,6 +9,7 @@ import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
 import { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import { v4 } from "uuid";
 
 export class RectSolid
     implements SolidShape, HasVertices, PointMap, Interpolate {
@@ -16,6 +17,17 @@ export class RectSolid
     y: number;
     width: number;
     height: number;
+
+    private cache: {
+        id?: string;
+    } = {};
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
+    }
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;

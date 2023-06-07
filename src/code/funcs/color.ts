@@ -1,8 +1,20 @@
 import chroma from "chroma-js";
 import type { Interpolate } from "./interpolator";
+import { v4 } from "uuid";
 
 export class Color implements Interpolate {
     color: chroma.Color;
+
+    private cache: {
+        id?: string;
+    } = {};
+
+    id(): string {
+        if (this.cache.id) return this.cache.id;
+        const id = v4();
+        this.cache.id = id;
+        return id;
+    }
 
     constructor(r: number, g: number, b: number) {
         this.color = chroma(r, g, b);

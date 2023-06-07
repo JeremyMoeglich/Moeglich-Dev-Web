@@ -1,6 +1,6 @@
 import { cyclic_pairs, panic, zip } from "functional-utilities";
 import { FullBezier } from "./full_bezier";
-import type { Axis, PointMap, SolidShape } from "./interfaces";
+import type { Axis, Id, PointMap, SolidShape } from "./interfaces";
 import type { PartialBezier } from "./partial_bezier";
 import type { Point } from "./point";
 import { PolygonSolid } from "./polygon_solid";
@@ -13,7 +13,7 @@ import type { TriangleSolid } from "./triangle_solid";
 import { debug_context } from "../funcs/render_debug";
 import type { ShapeSet } from "./shape_set";
 import { CurveSet } from "./curve_set";
-import { Interpolate } from "~/code/funcs/interpolator";
+import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
 
 export type PointWithHandles = {
@@ -22,7 +22,7 @@ export type PointWithHandles = {
     end_handle: Point;
 };
 
-export class BezierSolid implements SolidShape, PointMap {
+export class BezierSolid implements SolidShape, PointMap, Interpolate, Id {
     bezier: PartialBezier[];
     private cache: {
         outline_length?: number;
@@ -44,6 +44,36 @@ export class BezierSolid implements SolidShape, PointMap {
         const id = v4();
         this.cache.id = id;
         return id;
+    }
+
+    to_start(): this {
+        return this.scale(0);
+    }
+
+    is_this(value: unknown): value is this {
+        return value instanceof BezierSolid;
+    }
+
+    interpolate(t: number, to: this): this {
+        if (this.bezier.length !== to.bezier.length) {
+            panic("Can't interpolate bezier solids with different lengths");
+        }
+        return new BezierSolid(
+            zip([this.bezier, to.bezier] as [
+                PartialBezier[],
+                PartialBezier[]
+            ]).map(([a, b]) => a.interpolate(t, b))
+        ) as this;
+    }
+
+    similarity(to: this): number {
+        if (this.bezier.length !== to.bezier.length) return 0;
+        return sum(
+            zip([this.bezier, to.bezier] as [
+                PartialBezier[],
+                PartialBezier[]
+            ]).map(([a, b]) => a.similarity(b))
+        );
     }
 
     toString(): string {

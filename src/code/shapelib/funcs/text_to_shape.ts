@@ -6,6 +6,7 @@ import type { SolidShape } from "../types/interfaces";
 import { Point } from "../types/point";
 import { PartialBezier } from "../types/partial_bezier";
 import { ShapeSet } from "../types/shape_set";
+import type { Interpolate } from "~/code/funcs/interpolator";
 
 const font_cache: Map<string, Awaited<ReturnType<typeof load>>> = new Map();
 
@@ -24,7 +25,7 @@ export async function textToShapes(
         }
     })();
 
-    function convert_coords<T extends SolidShape>(
+    function convert_coords<T extends SolidShape & Interpolate>(
         shape: HollowShape<T>
     ): HollowShape<T> {
         return shape.flip("y");

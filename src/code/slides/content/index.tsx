@@ -1,8 +1,14 @@
-import { InterpolatorStage } from "~/code/funcs/interpolator";
+import { Interpolate, InterpolatorStage } from "~/code/funcs/interpolator";
 import { AspectSlide, TitleSlide } from "./basic_slides";
 import type { Stage } from "../stage";
 import { defaults } from "../defaults";
-import { Point, RectSolid, ShapeSet } from "~/code/shapelib";
+import {
+    CircleSolid,
+    Point,
+    RectSolid,
+    Shape,
+    ShapeSet,
+} from "~/code/shapelib";
 import { useTextShape } from "~/code/shapelib/funcs/use_text";
 import { CodeBlock } from "~/code/funcs/code_block";
 import { dedent } from "~/utils/dedent";
@@ -71,16 +77,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                        .translate(
-                            new Point(
-                                interpolate_between(time / 3000, -200, 1200),
-                                0
-                            )
-                        )
-                        .distribute_grid(2000)
-                        .map((point) => {
-                            return [point, text.contains(point, 0)] as const;
-                        });
+                          .translate(
+                              new Point(
+                                  interpolate_between(time / 3000, -200, 1200),
+                                  0
+                              )
+                          )
+                          .distribute_grid(2000)
+                          .map((point) => {
+                              return [point, text.contains(point, 0)] as const;
+                          });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -207,15 +213,36 @@ export const stages: Stage[] = [
         switch_duration: 1000,
     }),
     InterpolatorStage({
-        Component: ({ code, language, scale, offsety, title }) => {
+        Component: ({ code, language, scale, offsety, title, visual }) => {
             return (
                 <div className="h-full">
                     {defaults.title(title)}
                     <div className="flex h-full items-center justify-center">
-                        <motion.div layoutId="slide_codeblock" style={{
-                            top: `${offsety}px`,
-                            position: "relative",
-                        }}>
+                        <motion.div
+                            layoutId="shape_render"
+                            className="relative"
+                        >
+                            <ShapeRender
+                                render_id="abstraction"
+                                instructions={[
+                                    {
+                                        action: "fill",
+                                        obj: visual,
+                                        ctx_setter: (ctx) => {
+                                            ctx.fillStyle = "white";
+                                        },
+                                        z_index: 0,
+                                    },
+                                ]}
+                            />
+                        </motion.div>
+                        <motion.div
+                            layoutId="slide_codeblock"
+                            style={{
+                                top: `${offsety}px`,
+                                position: "relative",
+                            }}
+                        >
                             <CodeBlock
                                 animateId="codeblock1"
                                 code={code}
@@ -234,6 +261,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -247,6 +275,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -263,6 +292,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -278,6 +308,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -287,6 +318,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -302,6 +334,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -319,6 +352,7 @@ export const stages: Stage[] = [
                 scale: 2.5,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -336,6 +370,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -362,6 +397,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -375,6 +411,7 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([new CircleSolid(new Point(0, 0), 50)]),
             },
             {
                 code: dedent`
@@ -393,6 +430,7 @@ export const stages: Stage[] = [
                 scale: 2.6,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -418,6 +456,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -430,6 +469,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -455,6 +495,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -486,6 +527,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2,
                 title: "Abstraktion - Klassen",
+                visual: new ShapeSet([]),
             },
             {
                 code: dedent`
@@ -496,10 +538,10 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2.7,
                 title: "Abstraktion - Klassen",
+                visual: new ShapeSet([]),
             },
             {
-                code:
-                    dedent`
+                code: dedent`
                     // Ohne Klassen
                     console.log(is_inside_circle(
                         { x: 10, y: 20, radius: 5 },
@@ -514,15 +556,17 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2.5,
                 title: "Abstraktion - Klassen",
-            }
+                visual: new ShapeSet([]),
+            },
         ] satisfies {
-            code: string,
-            language: keyof typeof languages,
-            scale: number,
-            offsety: number,
-            title: string
+            code: string;
+            language: keyof typeof languages;
+            scale: number;
+            offsety: number;
+            title: string;
+            visual: ShapeSet<Shape & Interpolate>;
         }[],
         switch_duration: 1000,
-        disable: ['scale']
+        disable: ["scale"],
     }),
 ];

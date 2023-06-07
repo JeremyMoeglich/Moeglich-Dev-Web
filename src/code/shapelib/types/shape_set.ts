@@ -26,16 +26,25 @@ export class ShapeSet<T extends Shape & Interpolate> implements Shape, Interpola
     }
 
     interpolate(t: number, to: this): this {
-        const shapes = this.shapes.map((s1, i) => {
+        const shapes = to.shapes.map((s1) => {
             const matched = maxBy(
-                to.shapes.filter(s2 => s1.is_this(s2)),
+                this.shapes.filter(s2 => s1.is_this(s2)),
                 (s2) => s1.similarity(s2)
             )
             if (!matched) return s1.to_start().interpolate(t, s1);
             return s1.interpolate(t, matched);
         });
-        return new ShapeSet(shapes) as this;
+    
+        const absentInTo = this.shapes.filter(s1 => !to.shapes.some(s2 => s1.is_this(s2)));
+        const animatingOutShapes = absentInTo.map(s1 => s1.interpolate(t, s1.to_start()));
+    
+        // Filter out shapes that have reached their "start" state
+        const survivingShapes = animatingOutShapes.filter(s => t < 1);
+    
+        // Combine the interpolated shapes and the animating out shapes
+        return new ShapeSet([...shapes, ...survivingShapes]) as this;
     }
+    
 
     similarity(to: this): number {
         return sum(zip([this.shapes, to.shapes] as [T[], T[]]).map(([s1, s2]) => s1.similarity(s2)));
@@ -167,7 +176,7 @@ export class ShapeSet<T extends Shape & Interpolate> implements Shape, Interpola
 
     recenter(axis: Axis): this {
         const offset = this.center().to_axis(axis).negate();
-        return this.translate(offset) as this;
+        return this.translate(offset);
     }
 
     center(): Point {
