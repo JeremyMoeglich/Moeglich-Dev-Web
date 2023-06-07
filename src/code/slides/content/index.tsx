@@ -18,6 +18,7 @@ import { CurveSet } from "~/code/shapelib/types/curve_set";
 import { motion } from "framer-motion";
 import { languages } from "~/code/funcs/lex";
 import { join_horizontal } from "~/code/funcs/join_horizontal";
+import { CtxWrap } from "~/code/shapelib/types/ctx_wrap";
 
 function interpolate_between(t: number, a: number, b: number) {
     const range = b - a;
@@ -77,16 +78,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                          .translate(
-                              new Point(
-                                  interpolate_between(time / 3000, -200, 1200),
-                                  0
-                              )
-                          )
-                          .distribute_grid(2000)
-                          .map((point) => {
-                              return [point, text.contains(point, 0)] as const;
-                          });
+                        .translate(
+                            new Point(
+                                interpolate_between(time / 3000, -200, 1200),
+                                0
+                            )
+                        )
+                        .distribute_grid(2000)
+                        .map((point) => {
+                            return [point, text.contains(point, 0)] as const;
+                        });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -213,7 +214,7 @@ export const stages: Stage[] = [
         switch_duration: 1000,
     }),
     InterpolatorStage({
-        Component: ({ code, language, scale, offsety, title, visual }) => {
+        Component: ({ code, language, scale, offsety, title, visual, xgap, static_props }) => {
             return (
                 <div className="h-full">
                     {defaults.title(title)}
@@ -227,7 +228,7 @@ export const stages: Stage[] = [
                                 instructions={[
                                     {
                                         action: "fill",
-                                        obj: visual,
+                                        obj: visual.translate(new Point(xgap / 2, 0)),
                                         ctx_setter: (ctx) => {
                                             ctx.fillStyle = "white";
                                         },
@@ -241,6 +242,7 @@ export const stages: Stage[] = [
                             style={{
                                 top: `${offsety}px`,
                                 position: "relative",
+                                right: `${static_props.xgap / 2}px`,
                             }}
                         >
                             <CodeBlock
@@ -262,6 +264,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -276,6 +279,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -293,6 +297,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -309,6 +314,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -319,6 +325,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -335,6 +342,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -353,6 +361,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -371,6 +380,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -398,6 +408,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -411,7 +422,10 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([new CircleSolid(new Point(0, 0), 50)]),
+                visual: new ShapeSet([CtxWrap(new CircleSolid(new Point(0, 0), 100), {
+                    fillStyle: "rgba(0, 0, 0, 0.1)",
+                })]),
+                xgap: 700,
             },
             {
                 code: dedent`
@@ -431,6 +445,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -457,6 +472,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -470,6 +486,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -496,6 +513,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 title: "Abstraktion - Types",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -528,6 +546,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 title: "Abstraktion - Klassen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -539,6 +558,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 title: "Abstraktion - Klassen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
             {
                 code: dedent`
@@ -557,6 +577,7 @@ export const stages: Stage[] = [
                 scale: 2.5,
                 title: "Abstraktion - Klassen",
                 visual: new ShapeSet([]),
+                xgap: 0,
             },
         ] satisfies {
             code: string;
@@ -565,6 +586,7 @@ export const stages: Stage[] = [
             offsety: number;
             title: string;
             visual: ShapeSet<Shape & Interpolate>;
+            xgap: number;
         }[],
         switch_duration: 1000,
         disable: ["scale"],

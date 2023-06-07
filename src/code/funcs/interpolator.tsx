@@ -110,8 +110,8 @@ function interpolateProps<T>(
 
 // Define the prop types
 type Props<T> = {
-    props_list: PropsWithRef<T>[];
-    Component: React.FC<T>;
+    props_list: T[];
+    Component: React.FC<T & { static_props: T }>;
     current: number;
     switch_duration: number;
     ease?: EasingFunctionName;
@@ -126,16 +126,16 @@ export const Interpolator = <T,>({
     ease = "easeOutCubic",
     disable = [],
 }: Props<T>) => {
+    const props = props_list[current] ??
+        (() => {
+            console.warn("Invalid current index");
+            return props_list[0];
+        })() ??
+        panic("No props provided");
     const [interpolatedProps, setInterpolatedProps] = useState(
-        () =>
-            props_list[current] ??
-            (() => {
-                console.warn("Invalid current index");
-                return props_list[0];
-            })() ??
-            panic("No props provided")
+        () => props
     );
-    const prevProps = useRef<PropsWithRef<T>>(interpolatedProps);
+    const prevProps = useRef<T>(interpolatedProps);
     const requestRef = useRef<number>();
 
     const ease_func = easingFunctions[ease];
@@ -149,22 +149,17 @@ export const Interpolator = <T,>({
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / switch_duration, 1);
             const progress = ease_func(t);
-
+            interpolatedProps
             const newProps = interpolateProps(
                 interpolatedProps as T,
-                (props_list[current] ??
-                    (() => {
-                        console.warn("Invalid current index");
-                        return props_list[0];
-                    })() ??
-                    panic("No props provided")) as T,
+                props as T,
                 progress,
                 disable
             );
 
             if (!isEqual(prevProps.current, newProps)) {
                 setInterpolatedProps(newProps as typeof interpolatedProps);
-                prevProps.current = newProps as PropsWithRef<T>;
+                prevProps.current = newProps;
             }
 
             if (progress < 1) {
@@ -187,12 +182,15 @@ export const Interpolator = <T,>({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props_list, Component, current, switch_duration]);
 
-    return <MemoizedComponent {...interpolatedProps} />;
+    return <MemoizedComponent {...{
+        ...interpolatedProps,
+        static_props: props,
+    }} />;
 };
 
 type InterpolatorStageProps<T> = {
-    props_list: PropsWithRef<T>[];
-    Component: React.FC<T>;
+    props_list: T[];
+    Component: React.FC<T & { static_props: T }>;
     switch_duration: number;
     ease?: EasingFunctionName;
     disable?: (keyof T)[];
