@@ -25,7 +25,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
         id?: string;
     } = {};
 
-    constructor(exterior: T, holes: T[]) {
+    constructor(exterior: T, holes: T[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.exterior = exterior;
         this.holes = holes;
     }
@@ -59,7 +59,8 @@ export class HollowShape<T extends SolidShape & Interpolate>
     interpolate(t: number, to: this): this & ThisMarker {
         return new HollowShape(
             this.exterior.interpolate(t, to.exterior),
-            this.holes.map((h) => h.interpolate(t, to.exterior))
+            this.holes.map((h) => h.interpolate(t, to.exterior)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -76,21 +77,24 @@ export class HollowShape<T extends SolidShape & Interpolate>
     translate(p: Point): this & ThisMarker {
         return new HollowShape(
             this.exterior.translate(p) as T,
-            this.holes.map((h) => h.translate(p))
+            this.holes.map((h) => h.translate(p)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     scale(scale: number, offset?: Point): this & ThisMarker {
         return new HollowShape(
             this.exterior.scale(scale, offset) as T,
-            this.holes.map((h) => h.scale(scale, offset))
+            this.holes.map((h) => h.scale(scale, offset)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     flip(axis: Axis): this & ThisMarker {
         return new HollowShape(
             this.exterior.flip(axis) as T,
-            this.holes.map((h) => h.flip(axis))
+            this.holes.map((h) => h.flip(axis)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -152,7 +156,8 @@ export class HollowShape<T extends SolidShape & Interpolate>
         if (this.cache.approximation) return this.cache.approximation;
         const approximation = new HollowShape<PolygonSolid>(
             this.exterior.approximated(quality),
-            this.holes.map((h) => h.approximated(quality))
+            this.holes.map((h) => h.approximated(quality)),
+            this.ctx_setter
         );
         this.cache.approximation = approximation;
         return approximation;
@@ -174,11 +179,13 @@ export class HollowShape<T extends SolidShape & Interpolate>
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         this.exterior.render_outline(ctx);
         this.holes.forEach((h) => h.render_outline(ctx));
     }
 
     render_fill(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         (ctx as unknown as { mozFillRule: string }).mozFillRule = "evenodd"; // For old Firefox versions, doesn't really matter as it's likely broken anyway
@@ -196,7 +203,8 @@ export class HollowShape<T extends SolidShape & Interpolate>
     ): HollowShape<PolygonSolid> {
         return new HollowShape(
             this.exterior.map_points(f),
-            this.holes.map((h) => h.map_points(f))
+            this.holes.map((h) => h.map_points(f)),
+            this.ctx_setter
         );
     }
 
@@ -242,11 +250,11 @@ export class HollowShape<T extends SolidShape & Interpolate>
         const o = origin ?? this.center();
         return new HollowShape(
             this.exterior.rotate(angle, o) as T,
-            this.holes.map((h) => h.rotate(angle, o))
+            this.holes.map((h) => h.rotate(angle, o)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

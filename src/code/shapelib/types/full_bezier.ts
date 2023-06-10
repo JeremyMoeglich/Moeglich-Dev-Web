@@ -32,7 +32,7 @@ export class FullBezier
         id?: string;
     } = {};
 
-    constructor(start_point: Point, bezier: PartialBezier) {
+    constructor(start_point: Point, bezier: PartialBezier, public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.start_point = start_point;
         this.bezier = bezier;
     }
@@ -55,7 +55,8 @@ export class FullBezier
     interpolate(t: number, to: this) {
         return new FullBezier(
             this.start_point.interpolate(t, to.start_point),
-            this.bezier.interpolate(t, to.bezier)
+            this.bezier.interpolate(t, to.bezier),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -77,28 +78,32 @@ export class FullBezier
     translate(p: Point) {
         return new FullBezier(
             this.start_point.translate(p),
-            this.bezier.translate(p)
+            this.bezier.translate(p),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     scale(scale: number, origin: Point) {
         return new FullBezier(
             this.start_point.scale(scale, origin),
-            this.bezier.scale(scale, origin)
+            this.bezier.scale(scale, origin),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     flip(axis: Axis) {
         return new FullBezier(
             this.start_point.flip(axis),
-            this.bezier.flip(axis)
+            this.bezier.flip(axis),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     map_points(f: (p: Point) => Point) {
         return new FullBezier(
             f(this.start_point),
-            this.bezier.map_points(f)
+            this.bezier.map_points(f),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -351,7 +356,8 @@ export class FullBezier
         const o = origin ?? this.bbox().center();
         return new FullBezier(
             this.start_point.rotate(angle, o),
-            this.bezier.map_points((p) => p.rotate(angle, o))
+            this.bezier.map_points((p) => p.rotate(angle, o)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -368,6 +374,7 @@ export class FullBezier
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
@@ -383,7 +390,6 @@ export class FullBezier
         });
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

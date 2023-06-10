@@ -7,7 +7,7 @@ import { v4 } from "uuid";
 import { is_Id, type Id, id_bundler } from "../shapelib/types/interfaces/id";
 import { type Bundle, type Bundler, createBundle, is_bundle } from "../bundle";
 
-export interface Interpolate extends Id {
+export interface Interpolate {
     interpolate(t: number, to: this): this;
     to_start(): this;
     can_interpolate(value: unknown): boolean;
@@ -19,15 +19,13 @@ function is_Interpolate(value: unknown): value is Interpolate {
         (value as Interpolate).interpolate !== undefined &&
         (value as Interpolate).to_start !== undefined &&
         (value as Interpolate).can_interpolate !== undefined &&
-        (value as Interpolate).similarity !== undefined &&
-        is_Id(value)
+        (value as Interpolate).similarity !== undefined
     );
 }
 
 export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
     isType: is_Interpolate,
     functionality: {
-        ...id_bundler.functionality,
         interpolate: (from, t, to) => {
             if (!is_bundle(to, is_Interpolate))
                 return to.to_start().interpolate(t, to);

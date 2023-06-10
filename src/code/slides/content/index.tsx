@@ -80,16 +80,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                          .translate(
-                              new Point(
-                                  interpolate_between(time / 3000, -200, 1200),
-                                  0
-                              )
-                          )
-                          .distribute_grid(2000)
-                          .map((point) => {
-                              return [point, text.contains(point, 0)] as const;
-                          });
+                        .translate(
+                            new Point(
+                                interpolate_between(time / 3000, -200, 1200),
+                                0
+                            )
+                        )
+                        .distribute_grid(2000)
+                        .map((point) => {
+                            return [point, text.contains(point, 0)] as const;
+                        });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -253,9 +253,9 @@ export const stages: Stage[] = [
                         <motion.div
                             layoutId="slide_codeblock"
                             style={{
-                                top: `${offsety}px`,
-                                position: "relative",
-                                right: `${static_props.xgap / 2}px`,
+                                transform: `translate(${-static_props.xgap / 2
+                                    }px,${offsety}px)`,
+                                transition: "transform 700ms",
                             }}
                         >
                             <CodeBlock
@@ -435,12 +435,15 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: createBundle([
-                    new CircleSolid(new Point(0, 0), 100).set_setter((ctx) => {
-                        ctx.fillStyle = "red";
-                    }),
-                ]),
-                xgap: 700,
+                visual:
+                    createBundle([
+                        new CircleSolid(new Point(0, 0), 150).set_setter(
+                            (ctx) => {
+                                ctx.fillStyle = "red";
+                            }
+                        ),
+                    ]),
+                xgap: 800,
             },
             {
                 code: dedent`
@@ -594,7 +597,7 @@ export const stages: Stage[] = [
                 visual: empty_render,
                 xgap: 0,
             },
-        ] satisfies {
+        ] as {
             code: string;
             language: keyof typeof languages;
             scale: number;

@@ -28,7 +28,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     b: Point;
     c: Point;
 
-    constructor(a: Point, b: Point, c: Point) {
+    constructor(a: Point, b: Point, c: Point, public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -50,13 +50,14 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return new TriangleSolid(
             this.a.interpolate(t, to.a),
             this.b.interpolate(t, to.b),
-            this.c.interpolate(t, to.c)
+            this.c.interpolate(t, to.c),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     to_start() {
         const center = this.center();
-        return new TriangleSolid(center, center, center) as this & ThisMarker;
+        return new TriangleSolid(center, center, center, this.ctx_setter) as this & ThisMarker;
     }
 
     can_interpolate(value: unknown): value is this {
@@ -74,7 +75,8 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return new TriangleSolid(
             this.a.translate(p),
             this.b.translate(p),
-            this.c.translate(p)
+            this.c.translate(p),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -82,7 +84,8 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return new TriangleSolid(
             this.a.scale(scale, origin),
             this.b.scale(scale, origin),
-            this.c.scale(scale, origin)
+            this.c.scale(scale, origin),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -90,12 +93,13 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return new TriangleSolid(
             this.a.flip(axis),
             this.b.flip(axis),
-            this.c.flip(axis)
+            this.c.flip(axis),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     map_points(f: (p: Point) => Point) {
-        return new TriangleSolid(f(this.a), f(this.b), f(this.c)) as this &
+        return new TriangleSolid(f(this.a), f(this.b), f(this.c), this.ctx_setter) as this &
             ThisMarker;
     }
 
@@ -279,12 +283,14 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
     }
 
     render_fill(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.fill();
@@ -296,7 +302,6 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         });
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

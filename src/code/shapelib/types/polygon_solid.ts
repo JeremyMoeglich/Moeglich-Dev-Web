@@ -55,8 +55,7 @@ const equalizePointCount = (
 };
 
 export class PolygonSolid
-    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate
-{
+    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate {
     points: Point[];
     private cache: {
         bbox?: RectSolid;
@@ -88,7 +87,7 @@ export class PolygonSolid
         return value instanceof PolygonSolid;
     }
 
-    constructor(points: Point[]) {
+    constructor(points: Point[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.points = points;
     }
 
@@ -104,14 +103,14 @@ export class PolygonSolid
     }
 
     clone() {
-        const clone = new PolygonSolid([...this.points]);
+        const clone = new PolygonSolid([...this.points], this.ctx_setter);
         clone.cache = this.cache;
         return clone as this & ThisMarker;
     }
 
     rotatePoints(index: number) {
         return new PolygonSolid(
-            this.points.concat([...this.points].splice(0, index))
+            this.points.concat([...this.points].splice(0, index)), this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -153,7 +152,8 @@ export class PolygonSolid
             zip([this.points, this.cache.optimalRotation.solid.points] as [
                 Point[],
                 Point[]
-            ]).map(([p1, p2]) => p1.interpolate(t, p2))
+            ]).map(([p1, p2]) => p1.interpolate(t, p2)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -169,7 +169,7 @@ export class PolygonSolid
 
     translate(p: Point) {
         return new PolygonSolid(
-            this.points.map((p2) => p2.translate(p))
+            this.points.map((p2) => p2.translate(p)), this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -192,17 +192,18 @@ export class PolygonSolid
 
     scale(scale: number, origin: Point = new Point(0, 0)) {
         return new PolygonSolid(
-            this.points.map((p) => p.scale(scale, origin))
+            this.points.map((p) => p.scale(scale, origin)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     flip(axis: Axis) {
-        return new PolygonSolid(this.points.map((p) => p.flip(axis))) as this &
+        return new PolygonSolid(this.points.map((p) => p.flip(axis)), this.ctx_setter) as this &
             ThisMarker;
     }
 
     map_points(f: (p: Point) => Point) {
-        return new PolygonSolid(this.points.map(f)) as this & ThisMarker;
+        return new PolygonSolid(this.points.map(f), this.ctx_setter) as this & ThisMarker;
     }
 
     bbox(): RectSolid {
@@ -380,6 +381,7 @@ export class PolygonSolid
 
     render_outline(ctx: CanvasRenderingContext2D): void {
         if (this.points.length === 0) return;
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
@@ -387,6 +389,7 @@ export class PolygonSolid
 
     render_fill(ctx: CanvasRenderingContext2D): void {
         if (this.points.length === 0) return;
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.fill();
@@ -416,7 +419,6 @@ export class PolygonSolid
         return this.translate(offset);
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

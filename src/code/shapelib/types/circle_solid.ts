@@ -20,7 +20,11 @@ export class CircleSolid implements SolidShape, Interpolate {
         id?: string;
     } = {};
 
-    constructor(position: Point, radius: number) {
+    constructor(
+        position: Point,
+        radius: number,
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.position = position;
         this.radius = radius;
     }
@@ -39,7 +43,8 @@ export class CircleSolid implements SolidShape, Interpolate {
     interpolate(t: number, to: this) {
         return new CircleSolid(
             this.position.interpolate(t, to.position),
-            this.radius * (1 - t) + to.radius * t
+            this.radius * (1 - t) + to.radius * t,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -51,7 +56,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     to_start() {
-        return new CircleSolid(this.position, 0) as this & ThisMarker;
+        return new CircleSolid(this.position, 0, this.ctx_setter) as this & ThisMarker;
     }
 
     can_interpolate(value: unknown): value is this {
@@ -91,14 +96,16 @@ export class CircleSolid implements SolidShape, Interpolate {
     translate(offset: Point) {
         return new CircleSolid(
             this.position.translate(offset),
-            this.radius
+            this.radius,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     scale(scale: number, origin = new Point(0, 0)) {
         return new CircleSolid(
             this.position.scale(scale, origin),
-            this.radius * scale
+            this.radius * scale,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -225,12 +232,14 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     render_fill(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.fill();
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
@@ -263,11 +272,11 @@ export class CircleSolid implements SolidShape, Interpolate {
     rotate(angle: number, origin?: Point | undefined) {
         return new CircleSolid(
             this.position.rotate(angle, origin),
-            this.radius
+            this.radius,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

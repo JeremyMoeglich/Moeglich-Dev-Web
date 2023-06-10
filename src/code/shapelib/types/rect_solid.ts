@@ -15,8 +15,7 @@ import { type HasVertices } from "./interfaces/hasvertices";
 import { type ThisMarker } from "~/code/bundle";
 
 export class RectSolid
-    implements SolidShape, HasVertices, PointMap, Interpolate
-{
+    implements SolidShape, HasVertices, PointMap, Interpolate {
     x: number;
     y: number;
     width: number;
@@ -33,7 +32,7 @@ export class RectSolid
         return id;
     }
 
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x: number, y: number, width: number, height: number, public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -57,7 +56,8 @@ export class RectSolid
             this.x * (1 - t) + to.x * t,
             this.y * (1 - t) + to.y * t,
             this.width * (1 - t) + to.width * t,
-            this.height * (1 - t) + to.height * t
+            this.height * (1 - t) + to.height * t,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -66,7 +66,8 @@ export class RectSolid
             this.x + this.width / 2,
             this.y + this.height / 2,
             0,
-            0
+            0,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -91,7 +92,8 @@ export class RectSolid
             this.x + p.x,
             this.y + p.y,
             this.width,
-            this.height
+            this.height,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -102,7 +104,8 @@ export class RectSolid
             this.x * scale + offsetX,
             this.y * scale + offsetY,
             this.width * scale,
-            this.height * scale
+            this.height * scale,
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -113,21 +116,24 @@ export class RectSolid
                     -this.x - this.width,
                     this.y,
                     this.width,
-                    this.height
+                    this.height,
+                    this.ctx_setter
                 ) as this & ThisMarker;
             case "y":
                 return new RectSolid(
                     this.x,
                     -this.y - this.height,
                     this.width,
-                    this.height
+                    this.height,
+                    this.ctx_setter
                 ) as this & ThisMarker;
             case "both":
                 return new RectSolid(
                     -this.x - this.width,
                     -this.y - this.height,
                     this.width,
-                    this.height
+                    this.height,
+                    this.ctx_setter
                 ) as this & ThisMarker;
         }
     }
@@ -225,7 +231,7 @@ export class RectSolid
     map_points(f: (p: Point) => Point) {
         const tl = f(new Point(this.x, this.y));
         const br = f(new Point(this.x + this.width, this.y + this.height));
-        return new RectSolid(tl.x, tl.y, br.x - tl.x, br.y - tl.y) as this &
+        return new RectSolid(tl.x, tl.y, br.x - tl.x, br.y - tl.y, this.ctx_setter) as this &
             ThisMarker;
     }
 
@@ -300,12 +306,14 @@ export class RectSolid
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
     }
 
     render_fill(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.fill();
@@ -327,7 +335,6 @@ export class RectSolid
         );
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;

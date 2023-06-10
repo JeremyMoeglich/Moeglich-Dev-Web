@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { languages } from "../lex";
-import { CrossText } from "~/utils/cross_text";
 import { panic } from "functional-utilities";
 import { LRUCache } from "lru-cache";
 import type { KeyedToken, Token } from "./tokens";
 import { assignKeys } from "./assign_keys";
-import { motion } from "framer-motion";
 import { Point } from "~/code/shapelib";
 
 const IS_BROWSER = typeof window !== "undefined";
@@ -43,12 +41,7 @@ const LanguageIcon: React.FC<{ language: keyof typeof languages }> = ({
 }) => {
     const path = `/images/languages/${language}.svg`;
     return (
-        <motion.img
-            src={path}
-            alt={language}
-            className="inline-block h-full w-full"
-            layoutId={`language-icon-${language}`}
-        />
+        <img src={path} alt={language} className="inline-block h-full w-full" />
     );
 };
 
@@ -114,21 +107,19 @@ export const CodeBlock: React.FC<{
             {currentTokens.map((token, i) => {
                 return (
                     <div
-                        key={`${animateId}-${token.key}-${i}`}
-                        className="absolute min-w-max"
+                        key={`${animateId}-${token.key}`}
+                        className="absolute min-w-max transition-all duration-[700ms]"
                         aria-label={`${animateId}-${token.key}-${i}`}
                         style={{
-                            top: `${token.position.y * scale}rem`,
-                            left: `${token.position.x}px`, // x is now in pixels
+                            transform: `translate(${token.position.x}px, ${`${
+                                token.position.y * scale
+                            }rem`})`,
                             fontSize: `${scale}rem`,
                             ...token.color.textColorStyle(),
                             fontFamily: `"Fira Code", monospace`,
                         }}
                     >
-                        <CrossText
-                            tokens={[token.content]}
-                            animateId={`${animateId}-${token.key}`}
-                        />
+                        {token.content}
                     </div>
                 );
             })}
@@ -139,6 +130,7 @@ export const CodeBlock: React.FC<{
                         transform: `translate(${icon_pos.x + 20}px, ${
                             (icon_pos.y + 1) * scale
                         }rem)`,
+                        transition: "transform 700ms",
                     }}
                 >
                     <LanguageIcon language={language} />

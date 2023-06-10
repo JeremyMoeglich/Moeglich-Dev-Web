@@ -37,7 +37,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         id?: string;
     } = {};
 
-    constructor(bezier: PartialBezier[]) {
+    constructor(bezier: PartialBezier[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
         this.bezier = bezier;
     }
 
@@ -68,7 +68,8 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
             zip([this.bezier, to.bezier] as [
                 PartialBezier[],
                 PartialBezier[]
-            ]).map(([a, b]) => a.interpolate(t, b))
+            ]).map(([a, b]) => a.interpolate(t, b)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -97,24 +98,26 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     translate(p: Point) {
-        return new BezierSolid(this.bezier.map((b) => b.translate(p))) as this &
+        return new BezierSolid(this.bezier.map((b) => b.translate(p)), this.ctx_setter) as this &
             ThisMarker;
     }
 
     scale(scale: number, offset?: Point) {
         return new BezierSolid(
-            this.bezier.map((b) => b.scale(scale, offset))
+            this.bezier.map((b) => b.scale(scale, offset)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
     flip(axis: Axis) {
-        return new BezierSolid(this.bezier.map((b) => b.flip(axis))) as this &
+        return new BezierSolid(this.bezier.map((b) => b.flip(axis)), this.ctx_setter) as this &
             ThisMarker;
     }
 
     map_points(f: (p: Point) => Point) {
         return new BezierSolid(
-            this.bezier.map((b) => b.map_points(f))
+            this.bezier.map((b) => b.map_points(f)),
+            this.ctx_setter
         ) as this & ThisMarker;
     }
 
@@ -292,12 +295,14 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     render_fill(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.fill();
     }
 
     render_outline(ctx: CanvasRenderingContext2D): void {
+        this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         ctx.stroke();
@@ -354,7 +359,6 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         return this.map_points((p) => p.rotate(angle, o));
     }
 
-    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
         return this as this & ThisMarker;
