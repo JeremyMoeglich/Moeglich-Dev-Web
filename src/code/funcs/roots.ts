@@ -1,4 +1,4 @@
-import { panic, pipe } from "functional-utilities";
+import { panic } from "functional-utilities";
 
 export function find_roots_cubic(
     a3: number,

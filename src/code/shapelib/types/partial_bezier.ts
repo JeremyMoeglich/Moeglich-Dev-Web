@@ -1,7 +1,10 @@
 import type { Interpolate } from "~/code/funcs/interpolator";
-import type { Axis, PointMap, Stringifiable } from "./interfaces";
+import type { Axis } from "./types";
 import { Point } from "./point";
 import { v4 } from "uuid";
+import type { Stringifiable } from "./interfaces/stringifiable";
+import type { PointMap } from "./interfaces/pointmap";
+import { type ThisMarker } from "~/code/bundle";
 
 export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     handle1: Point;
@@ -18,6 +21,14 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         this.end_point = end_point;
     }
 
+    static empty(): PartialBezier {
+        return new PartialBezier(
+            new Point(0, 0),
+            new Point(0, 0),
+            new Point(0, 0)
+        );
+    }
+
     toString(): string {
         return `BezierSegment(h1=${this.handle1.toString()}, h2=${this.handle2.toString()}, ep=${this.end_point.toString()})`;
     }
@@ -30,7 +41,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         );
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof PartialBezier;
     }
 
@@ -42,12 +53,12 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         );
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this) {
         return new PartialBezier(
             this.handle1.interpolate(t, to.handle1),
             this.handle2.interpolate(t, to.handle2),
             this.end_point.interpolate(t, to.end_point)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     id(): string {
@@ -57,7 +68,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return id;
     }
 
-    to_start(): this {
+    to_start() {
         return this;
     }
 
@@ -77,11 +88,11 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         );
     }
 
-    map_points(f: (p: Point) => Point): this {
+    map_points(f: (p: Point) => Point) {
         return new PartialBezier(
             f(this.handle1),
             f(this.handle2),
             f(this.end_point)
-        ) as this;
+        ) as this & ThisMarker;
     }
 }

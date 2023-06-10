@@ -2,14 +2,15 @@ import { range } from "functional-utilities";
 import { quality_to_amount_per_unit } from "../funcs/quality";
 import { debug_context } from "../funcs/render_debug";
 import { sample_amount_default } from "../funcs/sample_amount";
-import type { Axis, SolidShape } from "./interfaces";
+import type { Axis } from "./types";
 import { Point } from "./point";
 import { PolygonSolid } from "./polygon_solid";
 import { RectSolid } from "./rect_solid";
 import type { TriangleSolid } from "./triangle_solid";
-import type { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
+import type { SolidShape } from "./interfaces/solidshape";
+import { type ThisMarker } from "~/code/bundle";
 
 export class CircleSolid implements SolidShape, Interpolate {
     position: Point;
@@ -23,7 +24,11 @@ export class CircleSolid implements SolidShape, Interpolate {
         this.position = position;
         this.radius = radius;
     }
-    
+
+    static empty(): CircleSolid {
+        return new CircleSolid(new Point(0, 0), 0);
+    }
+
     id(): string {
         if (this.cache.id) return this.cache.id;
         const id = v4();
@@ -31,22 +36,25 @@ export class CircleSolid implements SolidShape, Interpolate {
         return id;
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this) {
         return new CircleSolid(
             this.position.interpolate(t, to.position),
             this.radius * (1 - t) + to.radius * t
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     similarity(to: this): number {
-        return this.position.similarity(to.position) + Math.abs(this.radius - to.radius);
+        return (
+            this.position.similarity(to.position) +
+            Math.abs(this.radius - to.radius)
+        );
     }
 
-    to_start(): this {
-        return new CircleSolid(this.position, 0) as this;
+    to_start() {
+        return new CircleSolid(this.position, 0) as this & ThisMarker;
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof CircleSolid;
     }
 
@@ -76,22 +84,22 @@ export class CircleSolid implements SolidShape, Interpolate {
         return p.distance(this.position) <= this.radius;
     }
 
-    flip(): this {
-        return this;
+    flip() {
+        return this as this & ThisMarker;
     }
 
-    translate(offset: Point): this {
+    translate(offset: Point) {
         return new CircleSolid(
             this.position.translate(offset),
             this.radius
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    scale(scale: number, origin = new Point(0, 0)): this {
+    scale(scale: number, origin = new Point(0, 0)) {
         return new CircleSolid(
             this.position.scale(scale, origin),
             this.radius * scale
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     toString(): string {
@@ -142,7 +150,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         }
     }
 
-    triangulate(quality: number): ShapeSet<TriangleSolid> {
+    triangulate(quality: number): TriangleSolid[] {
         return this.approximated(quality).triangulate();
     }
 
@@ -247,15 +255,21 @@ export class CircleSolid implements SolidShape, Interpolate {
         return this.position;
     }
 
-    recenter(axis: Axis): this {
+    recenter(axis: Axis) {
         const offset = this.center().to_axis(axis).negate();
         return this.translate(offset);
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         return new CircleSolid(
             this.position.rotate(angle, origin),
             this.radius
-        ) as this;
+        ) as this & ThisMarker;
+    }
+
+    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
+    set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
+        this.ctx_setter = ctx_setter;
+        return this as this & ThisMarker;
     }
 }

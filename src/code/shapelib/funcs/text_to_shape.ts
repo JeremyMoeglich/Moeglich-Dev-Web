@@ -2,18 +2,23 @@ import { pairs, panic } from "functional-utilities";
 import { type PathCommand, load, type Glyph } from "opentype.js";
 import { HollowShape } from "../types/hollow_shape";
 import { BezierSolid } from "../types/bezier_solid";
-import type { SolidShape } from "../types/interfaces";
 import { Point } from "../types/point";
 import { PartialBezier } from "../types/partial_bezier";
-import { ShapeSet } from "../types/shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import {
+    type Bundle,
+    emptyBundle,
+    createBundle,
+    mark_this,
+} from "~/code/bundle";
+import { type SolidShape } from "../types/interfaces/solidshape";
 
 const font_cache: Map<string, Awaited<ReturnType<typeof load>>> = new Map();
 
 export async function textToShapes(
     text: string,
     fontFilePath = "/fonts/roboto/Roboto-Bold.ttf"
-): Promise<ShapeSet<HollowShape<BezierSolid>>> {
+): Promise<Bundle<HollowShape<BezierSolid>>> {
     // Load the font file using opentype.js
     const font = await (async () => {
         if (font_cache.has(fontFilePath)) {
@@ -43,7 +48,7 @@ export async function textToShapes(
     const glyphs = [...text].map((char) => font.charToGlyph(char));
     let current_offset = 0;
     if (glyphs.length === 0) {
-        return new ShapeSet([]);
+        return emptyBundle(new HollowShape(new BezierSolid([]), []));
     }
     const shapes = shapes_from_glyph(glyphs[0] ?? panic(), current_offset);
     pairs(glyphs).forEach(([prev_glyph, glyph]) => {
@@ -57,7 +62,7 @@ export async function textToShapes(
         shapes.push(...new_shapes);
     });
 
-    return new ShapeSet(shapes);
+    return createBundle(shapes);
 }
 
 function parseCommands(commands: PathCommand[]): HollowShape<BezierSolid>[] {
@@ -121,7 +126,7 @@ function beziersToShapes(beziers: BezierSolid[]): HollowShape<BezierSolid>[] {
     for (const solid of beziers.slice(1)) {
         let found = false;
         for (const shape of [...shapes]) {
-            const relation = shape.exterior.relation_to(solid);
+            const relation = shape.exterior.relation_to(mark_this(solid));
             if (relation === "this_inside_other") {
                 // The shape is inside the path, meaning the path is the exterior of the shape and the current exterior is a hole
                 shape.push_hole(shape.exterior);

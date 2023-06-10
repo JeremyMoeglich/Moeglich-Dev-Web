@@ -1,20 +1,19 @@
 import { bezierBezierIntersectionFast } from "flo-bezier3";
-import type {
-    Axis,
-    BoundingBox,
-    HasLength,
-    PointMap,
-    RenderableOutline,
-    Stringifiable,
-    Transformable,
-} from "./interfaces";
-import type { PartialBezier } from "./partial_bezier";
+import type { Axis } from "./types";
+import { PartialBezier } from "./partial_bezier";
 import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
 import { find_roots_cubic, find_roots_quadratic } from "../../funcs/roots";
 import { debug_context } from "../funcs/render_debug";
-import { Interpolate } from "~/code/funcs/interpolator";
+import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
+import type { Transformable } from "./interfaces/transformable";
+import type { PointMap } from "./interfaces/pointmap";
+import type { BoundingBox } from "./interfaces/boundingbox";
+import type { RenderableOutline } from "./interfaces/renderable";
+import { type Stringifiable } from "./interfaces/stringifiable";
+import { type HasLength } from "./interfaces/haslength";
+import { type ThisMarker } from "~/code/bundle";
 
 export class FullBezier
     implements
@@ -38,6 +37,10 @@ export class FullBezier
         this.bezier = bezier;
     }
 
+    static empty(): FullBezier {
+        return new FullBezier(Point.empty(), PartialBezier.empty());
+    }
+
     id(): string {
         if (this.cache.id) return this.cache.id;
         const id = v4();
@@ -49,11 +52,11 @@ export class FullBezier
         return `FullBezier(sp=${this.start_point.toString()}, b=${this.bezier.toString()})`;
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this) {
         return new FullBezier(
             this.start_point.interpolate(t, to.start_point),
             this.bezier.interpolate(t, to.bezier)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     similarity(to: this): number {
@@ -63,40 +66,40 @@ export class FullBezier
         );
     }
 
-    to_start(): this {
+    to_start() {
         return this;
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof FullBezier;
     }
 
-    translate(p: Point): this {
+    translate(p: Point) {
         return new FullBezier(
             this.start_point.translate(p),
             this.bezier.translate(p)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    scale(scale: number, origin: Point): this {
+    scale(scale: number, origin: Point) {
         return new FullBezier(
             this.start_point.scale(scale, origin),
             this.bezier.scale(scale, origin)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    flip(axis: Axis): this {
+    flip(axis: Axis) {
         return new FullBezier(
             this.start_point.flip(axis),
             this.bezier.flip(axis)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    map_points(f: (p: Point) => Point): this {
+    map_points(f: (p: Point) => Point) {
         return new FullBezier(
             f(this.start_point),
             this.bezier.map_points(f)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     bbox(): RectSolid {
@@ -344,12 +347,12 @@ export class FullBezier
         );
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         const o = origin ?? this.bbox().center();
         return new FullBezier(
             this.start_point.rotate(angle, o),
             this.bezier.map_points((p) => p.rotate(angle, o))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {
@@ -378,5 +381,11 @@ export class FullBezier
             this.bezier.handle2.render_debug(ctx);
             this.bezier.end_point.render_debug(ctx);
         });
+    }
+
+    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
+    set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
+        this.ctx_setter = ctx_setter;
+        return this as this & ThisMarker;
     }
 }

@@ -1,38 +1,78 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-    useMemo,
-    type PropsWithRef,
-} from "react";
-import { isEqual } from "lodash-es";
-import { has_property, panic } from "functional-utilities";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { isEqual, maxBy, sum } from "lodash-es";
+import { panic, zip } from "functional-utilities";
 import { type Stage } from "../slides/stage";
 import { type EasingFunctionName, easingFunctions } from "./ease";
 import { v4 } from "uuid";
-import type { Id } from "../shapelib/types/interfaces";
+import { is_Id, type Id, id_bundler } from "../shapelib/types/interfaces/id";
+import { type Bundle, type Bundler, createBundle, is_bundle } from "../bundle";
 
 export interface Interpolate extends Id {
     interpolate(t: number, to: this): this;
     to_start(): this;
-    is_this(value: unknown): value is this;
+    can_interpolate(value: unknown): boolean;
     similarity(to: this): number; // 0 is identical
 }
 
-function isInterpolate(value: unknown): value is Interpolate {
+function is_Interpolate(value: unknown): value is Interpolate {
     return (
-        typeof value === "object" &&
-        value !== null &&
-        has_property(value, "interpolate") &&
-        typeof value.interpolate === "function" &&
-        has_property(value, "to_start") &&
-        typeof value.to_start === "function" &&
-        has_property(value, "is_this") &&
-        typeof value.is_this === "function" &&
-        has_property(value, "similarity") &&
-        typeof value.similarity === "function"
+        (value as Interpolate).interpolate !== undefined &&
+        (value as Interpolate).to_start !== undefined &&
+        (value as Interpolate).can_interpolate !== undefined &&
+        (value as Interpolate).similarity !== undefined &&
+        is_Id(value)
     );
 }
+
+export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
+    isType: is_Interpolate,
+    functionality: {
+        ...id_bundler.functionality,
+        interpolate: (from, t, to) => {
+            if (!is_bundle(to, is_Interpolate))
+                return to.to_start().interpolate(t, to);
+            const interpolated = to.objs.map((s1) => {
+                const matched = maxBy(
+                    from.filter((s2) => s1.can_interpolate(s2)),
+                    (s2) => s1.similarity(s2)
+                );
+                if (!matched) return s1.to_start().interpolate(t, s1);
+                return s1.interpolate(t, matched);
+            });
+
+            const absentInTo = from.filter(
+                (s1) => !to.objs.some((s2) => s1.can_interpolate(s2))
+            );
+            const animatingOutShapes = absentInTo.map((s1) =>
+                s1.interpolate(t, s1.to_start())
+            );
+
+            // Filter out shapes that have reached their "start" state
+            const survivingShapes = animatingOutShapes.filter(() => t < 1);
+
+            // Combine the interpolated shapes and the animating out shapes
+            return createBundle([...interpolated, ...survivingShapes]);
+        },
+        to_start: (from) => {
+            return createBundle(from.map((s) => s.to_start()));
+        },
+        can_interpolate: (_, value): value is Bundle<Interpolate> => {
+            if (is_bundle(value, is_Interpolate)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        similarity: (from, to) => {
+            if (!is_bundle(to, is_Interpolate)) return Infinity;
+            return sum(
+                zip([from, to.objs] as [Interpolate[], Interpolate[]]).map(
+                    ([s1, s2]) => s1.similarity(s2)
+                )
+            );
+        },
+    },
+};
 
 function interpolateProps<T>(
     startProps: T,
@@ -49,9 +89,9 @@ function interpolateProps<T>(
     ) {
         return endProps;
     } else if (
-        isInterpolate(startProps) &&
-        isInterpolate(endProps) &&
-        startProps.is_this(endProps)
+        is_Interpolate(startProps) &&
+        is_Interpolate(endProps) &&
+        startProps.can_interpolate(endProps)
     ) {
         return startProps.interpolate(progress, endProps);
     } else if (
@@ -126,15 +166,14 @@ export const Interpolator = <T,>({
     ease = "easeOutCubic",
     disable = [],
 }: Props<T>) => {
-    const props = props_list[current] ??
+    const props =
+        props_list[current] ??
         (() => {
             console.warn("Invalid current index");
             return props_list[0];
         })() ??
         panic("No props provided");
-    const [interpolatedProps, setInterpolatedProps] = useState(
-        () => props
-    );
+    const [interpolatedProps, setInterpolatedProps] = useState(() => props);
     const prevProps = useRef<T>(interpolatedProps);
     const requestRef = useRef<number>();
 
@@ -149,7 +188,7 @@ export const Interpolator = <T,>({
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / switch_duration, 1);
             const progress = ease_func(t);
-            interpolatedProps
+            interpolatedProps;
             const newProps = interpolateProps(
                 interpolatedProps as T,
                 props as T,
@@ -182,10 +221,14 @@ export const Interpolator = <T,>({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props_list, Component, current, switch_duration]);
 
-    return <MemoizedComponent {...{
-        ...interpolatedProps,
-        static_props: props,
-    }} />;
+    return (
+        <MemoizedComponent
+            {...{
+                ...interpolatedProps,
+                static_props: props,
+            }}
+        />
+    );
 };
 
 type InterpolatorStageProps<T> = {

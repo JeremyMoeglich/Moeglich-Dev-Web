@@ -61,7 +61,7 @@ export const AspectSlide: StageGen<{
     Component: () => (
         <div className="h-full">
             {defaults.title(props.title)}
-            <ul className="flex flex-col gap-8 p-16 text-4xl text-white justify-center h-full pb-40">
+            <ul className="flex h-full flex-col justify-center gap-8 p-16 pb-40 text-4xl text-white">
                 {props.aspects.map((item, index) => (
                     <li key={index}>{item}</li>
                 ))}

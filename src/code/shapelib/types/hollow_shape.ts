@@ -1,14 +1,16 @@
 import { chunk, sum } from "lodash-es";
-import type { Axis, Shape, SolidShape } from "./interfaces";
+import type { Axis } from "./types";
 import type { Point } from "./point";
 import type { PolygonSolid } from "./polygon_solid";
-import type { RectSolid } from "./rect_solid";
+import { type RectSolid } from "./rect_solid";
 import { TriangleSolid } from "./triangle_solid";
 import { panic } from "functional-utilities";
 import earcut from "earcut";
-import { ShapeSet } from "./shape_set";
 import { v4 } from "uuid";
 import type { Interpolate } from "~/code/funcs/interpolator";
+import type { SolidShape } from "./interfaces/solidshape";
+import type { Shape } from "./interfaces/shape";
+import { type ThisMarker } from "~/code/bundle";
 
 export class HollowShape<T extends SolidShape & Interpolate>
     implements Shape, Interpolate
@@ -18,7 +20,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
 
     private cache: {
         area?: number;
-        triangulation?: ShapeSet<TriangleSolid>;
+        triangulation?: TriangleSolid[];
         approximation?: HollowShape<PolygonSolid>;
         id?: string;
     } = {};
@@ -28,6 +30,10 @@ export class HollowShape<T extends SolidShape & Interpolate>
         this.holes = holes;
     }
 
+    static empty<T extends SolidShape & Interpolate>(exterior: T) {
+        return new HollowShape(exterior, []);
+    }
+
     id(): string {
         if (this.cache.id) return this.cache.id;
         const id = v4();
@@ -35,7 +41,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return id;
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof HollowShape;
     }
 
@@ -46,15 +52,15 @@ export class HollowShape<T extends SolidShape & Interpolate>
         );
     }
 
-    to_start(): this {
+    to_start() {
         return this.scale(0);
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this): this & ThisMarker {
         return new HollowShape(
             this.exterior.interpolate(t, to.exterior),
             this.holes.map((h) => h.interpolate(t, to.exterior))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     toString(): string {
@@ -67,25 +73,25 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return [this.exterior, ...this.holes];
     }
 
-    translate(p: Point): this {
+    translate(p: Point): this & ThisMarker {
         return new HollowShape(
-            this.exterior.translate(p),
+            this.exterior.translate(p) as T,
             this.holes.map((h) => h.translate(p))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    scale(scale: number, offset?: Point): this {
+    scale(scale: number, offset?: Point): this & ThisMarker {
         return new HollowShape(
-            this.exterior.scale(scale, offset),
+            this.exterior.scale(scale, offset) as T,
             this.holes.map((h) => h.scale(scale, offset))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    flip(axis: Axis) {
+    flip(axis: Axis): this & ThisMarker {
         return new HollowShape(
-            this.exterior.flip(axis),
+            this.exterior.flip(axis) as T,
             this.holes.map((h) => h.flip(axis))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     bbox(): RectSolid {
@@ -104,12 +110,12 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return this.approximated(1).sample_on_area(min_per_unit, variant);
     }
 
-    recenter(axis: Axis): this {
+    recenter(axis: Axis) {
         const offset = this.center().to_axis(axis).negate();
         return this.translate(offset);
     }
 
-    triangulate(quality: number): ShapeSet<TriangleSolid> {
+    triangulate(quality: number): TriangleSolid[] {
         if (this.cache.triangulation) return this.cache.triangulation;
         const points = this.exterior.approximated(quality).points;
         const earcut_input = points.flatMap((p) => [p.x, p.y]);
@@ -134,9 +140,8 @@ export class HollowShape<T extends SolidShape & Interpolate>
                     c ?? panic("Invalid earcut output length")
                 )
         );
-        const shape_set = new ShapeSet(triangles);
-        this.cache.triangulation = shape_set;
-        return shape_set;
+        this.cache.triangulation = triangles;
+        return triangles;
     }
 
     contains(p: Point): boolean {
@@ -176,7 +181,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
     render_fill(ctx: CanvasRenderingContext2D): void {
         ctx.beginPath();
         this.select_shape(ctx);
-        (ctx as unknown as { mozFillRule: string }).mozFillRule = "evenodd"; // For old Firefox versions
+        (ctx as unknown as { mozFillRule: string }).mozFillRule = "evenodd"; // For old Firefox versions, doesn't really matter as it's likely broken anyway
         ctx.fill("evenodd");
     }
 
@@ -233,11 +238,17 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return this.exterior.center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined): this & ThisMarker {
         const o = origin ?? this.center();
         return new HollowShape(
-            this.exterior.rotate(angle, o),
+            this.exterior.rotate(angle, o) as T,
             this.holes.map((h) => h.rotate(angle, o))
-        ) as this;
+        ) as this & ThisMarker;
+    }
+
+    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
+    set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
+        this.ctx_setter = ctx_setter;
+        return this as this & ThisMarker;
     }
 }

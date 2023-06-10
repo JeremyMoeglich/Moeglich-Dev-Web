@@ -32,6 +32,8 @@ const config = {
             "warn",
             { argsIgnorePattern: "^_" },
         ],
+        "no-empty-function": "off",
+        "@typescript-eslint/no-empty-function": "off",
     },
 };
 

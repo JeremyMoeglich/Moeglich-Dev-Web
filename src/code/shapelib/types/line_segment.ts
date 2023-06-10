@@ -1,23 +1,17 @@
 import { range } from "functional-utilities";
 import { sample_amount_default } from "../funcs/sample_amount";
-import type {
-    Axis,
-    BoundingBox,
-    HasLength,
-    PointMap,
-    Stringifiable,
-    Transformable,
-} from "./interfaces";
+import type { Axis } from "./types";
 import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
+import { type Stringifiable } from "./interfaces/stringifiable";
+import { type Transformable } from "./interfaces/transformable";
+import { type PointMap } from "./interfaces/pointmap";
+import { type HasLength } from "./interfaces/haslength";
+import { type BoundingBox } from "./interfaces/boundingbox";
+import { type ThisMarker } from "~/code/bundle";
 
 export class LineSegment
-    implements
-        Stringifiable,
-        Transformable,
-        PointMap,
-        HasLength,
-        BoundingBox
+    implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox
 {
     start: Point;
     end: Point;
@@ -27,28 +21,38 @@ export class LineSegment
         this.end = end;
     }
 
+    static empty(): LineSegment {
+        return new LineSegment(new Point(0, 0), new Point(0, 0));
+    }
+
     toString(): string {
         return `Line(${this.start.toString()}, ${this.end.toString()})`;
     }
 
-    translate(p: Point): this {
-        return new LineSegment(this.start.translate(p), this.end.translate(p)) as this;
+    translate(p: Point) {
+        return new LineSegment(
+            this.start.translate(p),
+            this.end.translate(p)
+        ) as this & ThisMarker;
     }
 
-    scale(scale: number, origin?: Point): this {
+    scale(scale: number, origin?: Point) {
         const norigin = origin ?? new Point(0, 0);
         return new LineSegment(
             this.start.scale(scale, norigin),
             this.end.scale(scale, norigin)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    flip(axis: Axis): this {
-        return new LineSegment(this.start.flip(axis), this.end.flip(axis)) as this;
+    flip(axis: Axis) {
+        return new LineSegment(
+            this.start.flip(axis),
+            this.end.flip(axis)
+        ) as this & ThisMarker;
     }
 
-    map_points(f: (p: Point) => Point): this {
-        return new LineSegment(f(this.start), f(this.end)) as this;
+    map_points(f: (p: Point) => Point) {
+        return new LineSegment(f(this.start), f(this.end)) as this & ThisMarker;
     }
 
     outline_length(): number {
@@ -78,7 +82,7 @@ export class LineSegment
             this.start.y + t * (this.end.y - this.start.y)
         );
     }
-    
+
     midpoint(): Point {
         return this.lerp(0.5);
     }
@@ -179,11 +183,11 @@ export class LineSegment
         );
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         const o = origin ?? this.center();
         return new LineSegment(
             this.start.rotate(angle, o),
             this.end.rotate(angle, o)
-        ) as this;
+        ) as this & ThisMarker;
     }
 }

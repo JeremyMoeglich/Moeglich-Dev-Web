@@ -1,15 +1,16 @@
 // useDraw takes a ref to a canvas and an array of renderable objects and draws them to the canvas
 
 import React, { useEffect, useRef, useContext, useMemo } from "react";
-import type {
-    BoundingBox,
-    Renderable,
-    RenderableOutline,
-    Transformable,
-} from "../types/interfaces";
+
 import { Point } from "../types/point";
 import type { RectSolid } from "../types/rect_solid";
 import { panic } from "functional-utilities";
+import {
+    type Renderable,
+    type RenderableOutline,
+} from "../types/interfaces/renderable";
+import { type Transformable } from "../types/interfaces/transformable";
+import { type BoundingBox } from "../types/interfaces/boundingbox";
 
 export type DrawParams = {
     debug?: boolean;

@@ -1,6 +1,6 @@
 import RBush, { type BBox } from "rbush";
-import type { BoundingBox } from "../types/interfaces";
 import type { RectSolid } from "../types/rect_solid";
+import { type BoundingBox } from "../types/interfaces/boundingbox";
 
 interface RBushElement<T extends BoundingBox> {
     bbox: RectSolid;

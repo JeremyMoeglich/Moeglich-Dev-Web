@@ -1,5 +1,5 @@
 import { cyclic_pairs, panic, zip } from "functional-utilities";
-import type { Axis, HasVertices, PointMap, SolidShape } from "./interfaces";
+import type { Axis } from "./types";
 import { LineSegment } from "./line_segment";
 import { Point } from "./point";
 import { RectSolid } from "./rect_solid";
@@ -9,16 +9,25 @@ import earcut from "earcut";
 import { create_collider } from "../funcs/create_collider";
 import { create_range_collider } from "../funcs/create_range_collider";
 import { debug_context } from "../funcs/render_debug";
-import { ShapeSet } from "./shape_set";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
+import { type SolidShape } from "./interfaces/solidshape";
+import { type PointMap } from "./interfaces/pointmap";
+import { type HasVertices } from "./interfaces/hasvertices";
+import { type ThisMarker } from "~/code/bundle";
 
-const equalizePointCount = (shape1: PolygonSolid, shape2: PolygonSolid): [PolygonSolid, PolygonSolid] => {
+const equalizePointCount = (
+    shape1: PolygonSolid,
+    shape2: PolygonSolid
+): [PolygonSolid, PolygonSolid] => {
     // Find the number of points in each shape
     const [nPoints1, nPoints2] = [shape1.points.length, shape2.points.length];
 
     // Determine which shape needs to have points added, and which will be used for comparison
-    const [shapeToAdd, shapeComp] = nPoints1 < nPoints2 ? [shape1.clone(), shape2] : [shape2.clone(), shape1];
+    const [shapeToAdd, shapeComp] =
+        nPoints1 < nPoints2
+            ? [shape1.clone(), shape2]
+            : [shape2.clone(), shape1];
 
     while (shapeToAdd.points.length < shapeComp.points.length) {
         const lines = shapeComp.lines();
@@ -28,7 +37,7 @@ const equalizePointCount = (shape1: PolygonSolid, shape2: PolygonSolid): [Polygo
 
         // Find the edge with the longest distance in the shape to which we'll add a point
         for (const [i, line] of lines.entries()) {
-            let len = line.outline_length();
+            const len = line.outline_length();
 
             if (len > maxDist) {
                 maxDist = len;
@@ -40,41 +49,51 @@ const equalizePointCount = (shape1: PolygonSolid, shape2: PolygonSolid): [Polygo
         shapeToAdd.bisect_line(maxIndex);
     }
 
-    return nPoints1 < nPoints2 ? [shapeToAdd, shapeComp] : [shapeComp, shapeToAdd];
+    return nPoints1 < nPoints2
+        ? [shapeToAdd, shapeComp]
+        : [shapeComp, shapeToAdd];
 };
 
 export class PolygonSolid
-    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate {
+    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate
+{
     points: Point[];
     private cache: {
         bbox?: RectSolid;
-        triangulation?: ShapeSet<TriangleSolid>;
+        triangulation?: TriangleSolid[];
         area_collider?: (p: Point) => boolean;
         outline_collider?: (l: LineSegment) => boolean;
         right_point_counter?: (p: Point) => number;
         area?: number;
         length?: number;
         identity?: string;
-        optimalRotation?: { id: string, solid: PolygonSolid };
+        optimalRotation?: { id: string; solid: PolygonSolid };
     } = {};
 
     similarity(to: this): number {
         // Simple temporary solution
-        const dist = sumBy(zip([this.points, to.points] as [Point[], Point[]]), ([p1, p2]) => p1.distance(p2));
+        const dist = sumBy(
+            zip([this.points, to.points] as [Point[], Point[]]),
+            ([p1, p2]) => p1.distance(p2)
+        );
         const len_diff = Math.abs(this.points.length - to.points.length);
         return dist + len_diff * 2;
     }
 
-    to_start(): this {
+    to_start() {
         return this.scale(0);
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof PolygonSolid;
     }
 
     constructor(points: Point[]) {
         this.points = points;
+    }
+
+    static empty(): PolygonSolid {
+        return new PolygonSolid([]);
     }
 
     id(): string {
@@ -84,29 +103,38 @@ export class PolygonSolid
         return id;
     }
 
-    clone(): this {
+    clone() {
         const clone = new PolygonSolid([...this.points]);
         clone.cache = this.cache;
-        return clone as this;
+        return clone as this & ThisMarker;
     }
 
-    rotatePoints(index: number): this {
+    rotatePoints(index: number) {
         return new PolygonSolid(
             this.points.concat([...this.points].splice(0, index))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this) {
         // Check if cached optimal rotation points exist for `to`, if not or the ids don't match, preprocess `this` and `to`
-        if (!this.cache.optimalRotation || this.cache.optimalRotation.id !== to.id()) {
-            let [pthis, pto] = equalizePointCount(this, to);
+        if (
+            !this.cache.optimalRotation ||
+            this.cache.optimalRotation.id !== to.id()
+        ) {
+            const [pthis, pto] = equalizePointCount(this, to);
 
             // Compute optimal rotation for `to`
             let minDistance = Infinity;
             let optimalRotation: PolygonSolid = pto;
             for (let i = 0; i < pto.points.length; i++) {
-                let rotatedPoints = pto.rotatePoints(i);
-                let totalDistance = sumBy(zip([pthis.points, rotatedPoints.points] as [Point[], Point[]]), ([p1, p2]) => p1.distance(p2));
+                const rotatedPoints = pto.rotatePoints(i);
+                const totalDistance = sumBy(
+                    zip([pthis.points, rotatedPoints.points] as [
+                        Point[],
+                        Point[]
+                    ]),
+                    ([p1, p2]) => p1.distance(p2)
+                );
 
                 if (totalDistance < minDistance) {
                     minDistance = totalDistance;
@@ -115,13 +143,18 @@ export class PolygonSolid
             }
 
             // Store optimal rotation points and `to`'s id in cache
-            this.cache.optimalRotation = { id: to.id(), solid: optimalRotation };
+            this.cache.optimalRotation = {
+                id: to.id(),
+                solid: optimalRotation,
+            };
         }
 
         return new PolygonSolid(
-            zip([this.points, this.cache.optimalRotation.solid.points] as [Point[], Point[]])
-                .map(([p1, p2]) => p1.interpolate(t, p2))
-        ) as this;
+            zip([this.points, this.cache.optimalRotation.solid.points] as [
+                Point[],
+                Point[]
+            ]).map(([p1, p2]) => p1.interpolate(t, p2))
+        ) as this & ThisMarker;
     }
 
     invalidate() {
@@ -134,10 +167,10 @@ export class PolygonSolid
             .join(", ")})`;
     }
 
-    translate(p: Point): this {
+    translate(p: Point) {
         return new PolygonSolid(
             this.points.map((p2) => p2.translate(p))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     static make_ngon(corners: number): PolygonSolid {
@@ -157,18 +190,19 @@ export class PolygonSolid
         return new PolygonSolid(points);
     }
 
-    scale(scale: number, origin: Point = new Point(0, 0)): this {
+    scale(scale: number, origin: Point = new Point(0, 0)) {
         return new PolygonSolid(
             this.points.map((p) => p.scale(scale, origin))
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    flip(axis: Axis): this {
-        return new PolygonSolid(this.points.map((p) => p.flip(axis))) as this;
+    flip(axis: Axis) {
+        return new PolygonSolid(this.points.map((p) => p.flip(axis))) as this &
+            ThisMarker;
     }
 
-    map_points(f: (p: Point) => Point): this {
-        return new PolygonSolid(this.points.map(f)) as this;
+    map_points(f: (p: Point) => Point) {
+        return new PolygonSolid(this.points.map(f)) as this & ThisMarker;
     }
 
     bbox(): RectSolid {
@@ -201,7 +235,7 @@ export class PolygonSolid
         return area;
     }
 
-    triangulate(): ShapeSet<TriangleSolid> {
+    triangulate(): TriangleSolid[] {
         if (this.cache.triangulation) return this.cache.triangulation;
         const triangles = chunk(
             earcut(this.points.flatMap((p) => [p.x, p.y])).map(
@@ -216,15 +250,14 @@ export class PolygonSolid
                     c ?? panic("Invalid earcut output length")
                 )
         );
-        const shape_set = new ShapeSet(triangles);
-        this.cache.triangulation = shape_set;
-        return shape_set;
+        this.cache.triangulation = triangles;
+        return triangles;
     }
 
     sample_on_area(avr_per_unit: number, variant: "min" | "rng"): Point[] {
         const triangles = this.triangulate();
         return triangles
-            .map_arr((t) => t.sample_on_area(avr_per_unit, variant))
+            .map((t) => t.sample_on_area(avr_per_unit, variant))
             .flat();
     }
 
@@ -260,7 +293,11 @@ export class PolygonSolid
     bisect_line(index: number): void {
         const i1 = index % this.points.length;
         const i2 = (index + 1) % this.points.length;
-        this.points.splice(i2, 0, (this.points[i1] ?? panic()).midpoint(this.points[i2] ?? panic()));
+        this.points.splice(
+            i2,
+            0,
+            (this.points[i1] ?? panic()).midpoint(this.points[i2] ?? panic())
+        );
         this.cache = {};
     }
 
@@ -292,7 +329,7 @@ export class PolygonSolid
     }
 
     relation_to(
-        other: PolygonSolid
+        other: this & ThisMarker
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -369,13 +406,19 @@ export class PolygonSolid
         return this.bbox().center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         const o = origin ?? this.center();
         return this.map_points((p) => p.rotate(angle, o));
     }
 
-    recenter(axis: Axis): this {
+    recenter(axis: Axis) {
         const offset = this.center().to_axis(axis).negate();
         return this.translate(offset);
+    }
+
+    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
+    set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
+        this.ctx_setter = ctx_setter;
+        return this as this & ThisMarker;
     }
 }

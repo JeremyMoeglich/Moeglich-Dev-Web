@@ -1,27 +1,27 @@
 import { panic } from "functional-utilities";
 import { debug_context } from "../funcs/render_debug";
 import { CircleSolid } from "./circle_solid";
-import type {
-    Axis,
-    BoundingBox,
-    PointMap,
-    RenderableDebug,
-    Stringifiable,
-    Transformable,
-} from "./interfaces";
+import type { Axis } from "./types";
 import { LineSegment } from "./line_segment";
 import { RectSolid } from "./rect_solid";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
+import { type Stringifiable } from "./interfaces/stringifiable";
+import { type Transformable } from "./interfaces/transformable";
+import { type PointMap } from "./interfaces/pointmap";
+import { type BoundingBox } from "./interfaces/boundingbox";
+import { type RenderableDebug } from "./interfaces/renderable";
+import type { ThisMarker } from "~/code/bundle";
 
 export class Point
     implements
-    Stringifiable,
-    Transformable,
-    PointMap,
-    BoundingBox,
-    RenderableDebug,
-    Interpolate {
+        Stringifiable,
+        Transformable,
+        PointMap,
+        BoundingBox,
+        RenderableDebug,
+        Interpolate
+{
     x: number;
     y: number;
 
@@ -35,6 +35,10 @@ export class Point
         this.y = y;
     }
 
+    static empty(): Point {
+        return new Point(0, 0);
+    }
+
     id(): string {
         if (this.cache.id) return this.cache.id;
         const id = v4();
@@ -46,12 +50,12 @@ export class Point
         return `Point(${this.x}, ${this.y})`;
     }
 
-    to_axis(axis: Axis): this {
+    to_axis(axis: Axis) {
         switch (axis) {
             case "x":
-                return new Point(this.x, 0) as this;
+                return new Point(this.x, 0) as this & ThisMarker;
             case "y":
-                return new Point(0, this.y) as this;
+                return new Point(0, this.y) as this & ThisMarker;
             case "both":
                 return this;
         }
@@ -86,26 +90,26 @@ export class Point
         return func;
     }
 
-    negate(): this {
-        return new Point(-this.x, -this.y) as this;
+    negate() {
+        return new Point(-this.x, -this.y) as this & ThisMarker;
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         if (!origin) {
-            return this;
+            return this as this & ThisMarker;
         }
-        return origin.as_center(angle)(this) as this;
+        return origin.as_center(angle)(this) as this & ThisMarker;
     }
 
-    translate(p: Point): this {
-        return new Point(this.x + p.x, this.y + p.y) as this;
+    translate(p: Point) {
+        return new Point(this.x + p.x, this.y + p.y) as this & ThisMarker;
     }
 
-    multiply(scale: number): this {
-        return new Point(this.x * scale, this.y * scale) as this;
+    multiply(scale: number) {
+        return new Point(this.x * scale, this.y * scale) as this & ThisMarker;
     }
 
-    scale(scale: number, origin: Point): this {
+    scale(scale: number, origin: Point) {
         // Scale the point relative to the origin
         const translatedX = this.x - origin.x;
         const translatedY = this.y - origin.y;
@@ -117,7 +121,7 @@ export class Point
         const finalX = scaledX + origin.x;
         const finalY = scaledY + origin.y;
 
-        return new Point(finalX, finalY) as this;
+        return new Point(finalX, finalY) as this & ThisMarker;
     }
 
     subtract(p: Point): Point {
@@ -128,14 +132,14 @@ export class Point
         return new Point(this.x * f, this.y * f);
     }
 
-    flip(axis: Axis): this {
+    flip(axis: Axis) {
         switch (axis) {
             case "x":
-                return new Point(-this.x, this.y) as this;
+                return new Point(-this.x, this.y) as this & ThisMarker;
             case "y":
-                return new Point(this.x, -this.y) as this;
+                return new Point(this.x, -this.y) as this & ThisMarker;
             case "both":
-                return new Point(-this.x, -this.y) as this;
+                return new Point(-this.x, -this.y) as this & ThisMarker;
         }
     }
 
@@ -143,8 +147,8 @@ export class Point
         return this.distance(to);
     }
 
-    map_points(f: (p: Point) => Point): this {
-        return f(this) as this;
+    map_points(f: (p: Point) => Point) {
+        return f(this) as this & ThisMarker;
     }
 
     distance(p: Point): number {
@@ -173,22 +177,22 @@ export class Point
         return new CircleSolid(this, radius);
     }
 
-    lerp(t: number, to: Point): this {
+    lerp(t: number, to: Point) {
         return new Point(
             this.x + (to.x - this.x) * t,
             this.y + (to.y - this.y) * t
-        ) as this;
+        ) as this & ThisMarker;
     }
 
     midpoint(p: Point): Point {
         return this.lerp(0.5, p);
     }
 
-    interpolate(t: number, to: Point): this {
+    interpolate(t: number, to: Point) {
         return this.lerp(t, to);
     }
 
-    to_start(): this {
+    to_start() {
         return this;
     }
 
@@ -196,7 +200,7 @@ export class Point
         return `${this.x},${this.y}`;
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof Point;
     }
 }

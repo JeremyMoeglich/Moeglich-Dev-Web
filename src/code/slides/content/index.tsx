@@ -1,4 +1,4 @@
-import { Interpolate, InterpolatorStage } from "~/code/funcs/interpolator";
+import { type Interpolate, InterpolatorStage } from "~/code/funcs/interpolator";
 import { AspectSlide, TitleSlide } from "./basic_slides";
 import type { Stage } from "../stage";
 import { defaults } from "../defaults";
@@ -6,19 +6,20 @@ import {
     CircleSolid,
     Point,
     RectSolid,
-    Shape,
-    ShapeSet,
+    type Transformable,
 } from "~/code/shapelib";
 import { useTextShape } from "~/code/shapelib/funcs/use_text";
 import { CodeBlock } from "~/code/funcs/code_block";
 import { dedent } from "~/utils/dedent";
 import { ShapeRender } from "~/code/shapelib/funcs/shape_render";
 import { useAnimationFrame } from "~/utils/use_update";
-import { CurveSet } from "~/code/shapelib/types/curve_set";
 import { motion } from "framer-motion";
-import { languages } from "~/code/funcs/lex";
-import { join_horizontal } from "~/code/funcs/join_horizontal";
-import { CtxWrap } from "~/code/shapelib/types/ctx_wrap";
+import type { languages } from "~/code/funcs/lex";
+import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
+import { type Renderable } from "~/code/shapelib/types/interfaces/renderable";
+
+const empty_render: Bundle<Renderable & Interpolate & Transformable> =
+    emptyBundle(CircleSolid.empty());
 
 function interpolate_between(t: number, a: number, b: number) {
     const range = b - a;
@@ -55,14 +56,15 @@ export const stages: Stage[] = [
                 .recenter("both")
                 .scale(0.06 * text_scale)
                 .translate(offset);
-            const full_beziers = text.shapes.flatMap((shape) =>
-                shape
+            const full_beziers = text.objs.flatMap((obj) =>
+                obj
                     .all_shapes()
                     .flatMap((shape) => [
-                        ...shape.fullBeziers().curves,
-                        ...shape.fullBeziers().curves.map((fb) => fb),
+                        ...shape.fullBeziers().objs,
+                        ...shape.fullBeziers().objs.map((fb) => fb),
                     ])
             );
+
             const text_bbox = text.bbox();
             const line_y = interpolate_between(
                 time / 1000,
@@ -78,16 +80,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                        .translate(
-                            new Point(
-                                interpolate_between(time / 3000, -200, 1200),
-                                0
-                            )
-                        )
-                        .distribute_grid(2000)
-                        .map((point) => {
-                            return [point, text.contains(point, 0)] as const;
-                        });
+                          .translate(
+                              new Point(
+                                  interpolate_between(time / 3000, -200, 1200),
+                                  0
+                              )
+                          )
+                          .distribute_grid(2000)
+                          .map((point) => {
+                              return [point, text.contains(point, 0)] as const;
+                          });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -107,7 +109,7 @@ export const stages: Stage[] = [
                                     },
                                     {
                                         action: "outline",
-                                        obj: new ShapeSet(bboxes),
+                                        obj: createBundle(bboxes),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "blue";
                                             ctx.lineWidth = 1;
@@ -118,7 +120,7 @@ export const stages: Stage[] = [
                                     },
                                     {
                                         action: "outline",
-                                        obj: new CurveSet(intersecting),
+                                        obj: createBundle(intersecting),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "red";
                                             ctx.lineWidth = 1;
@@ -129,7 +131,7 @@ export const stages: Stage[] = [
                                     },
                                     {
                                         action: "fill",
-                                        obj: new ShapeSet(
+                                        obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
                                                     return is_inside;
@@ -148,7 +150,7 @@ export const stages: Stage[] = [
                                     },
                                     {
                                         action: "fill",
-                                        obj: new ShapeSet(
+                                        obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
                                                     return !is_inside;
@@ -214,7 +216,16 @@ export const stages: Stage[] = [
         switch_duration: 1000,
     }),
     InterpolatorStage({
-        Component: ({ code, language, scale, offsety, title, visual, xgap, static_props }) => {
+        Component: ({
+            code,
+            language,
+            scale,
+            offsety,
+            title,
+            visual,
+            xgap,
+            static_props,
+        }) => {
             return (
                 <div className="h-full">
                     {defaults.title(title)}
@@ -228,7 +239,9 @@ export const stages: Stage[] = [
                                 instructions={[
                                     {
                                         action: "fill",
-                                        obj: visual.translate(new Point(xgap / 2, 0)),
+                                        obj: visual.translate(
+                                            new Point(xgap / 2, 0)
+                                        ),
                                         ctx_setter: (ctx) => {
                                             ctx.fillStyle = "white";
                                         },
@@ -263,7 +276,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -278,7 +291,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -296,7 +309,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -313,7 +326,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -324,7 +337,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -341,7 +354,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -360,7 +373,7 @@ export const stages: Stage[] = [
                 scale: 2.5,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -379,7 +392,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -407,7 +420,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -422,9 +435,11 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([CtxWrap(new CircleSolid(new Point(0, 0), 100), {
-                    fillStyle: "rgba(0, 0, 0, 0.1)",
-                })]),
+                visual: createBundle([
+                    new CircleSolid(new Point(0, 0), 100).set_setter((ctx) => {
+                        ctx.fillStyle = "red";
+                    }),
+                ]),
                 xgap: 700,
             },
             {
@@ -444,7 +459,7 @@ export const stages: Stage[] = [
                 scale: 2.6,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -471,7 +486,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -485,7 +500,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -512,7 +527,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -545,7 +560,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2,
                 title: "Abstraktion - Klassen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -557,7 +572,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2.7,
                 title: "Abstraktion - Klassen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
             {
@@ -576,7 +591,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 2.5,
                 title: "Abstraktion - Klassen",
-                visual: new ShapeSet([]),
+                visual: empty_render,
                 xgap: 0,
             },
         ] satisfies {
@@ -585,7 +600,7 @@ export const stages: Stage[] = [
             scale: number;
             offsety: number;
             title: string;
-            visual: ShapeSet<Shape & Interpolate>;
+            visual: Bundle<Interpolate & Renderable & Transformable>;
             xgap: number;
         }[],
         switch_duration: 1000,

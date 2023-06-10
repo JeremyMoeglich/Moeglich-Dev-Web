@@ -24,6 +24,7 @@
     "include": [
         ".eslintrc.cjs",
         "next-env.d.ts",
+        "deno.d.ts",
         "**/*.ts",
         "**/*.tsx",
         "**/*.cjs",

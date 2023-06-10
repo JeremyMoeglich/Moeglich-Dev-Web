@@ -1,14 +1,16 @@
 import { cyclic_pairs } from "functional-utilities";
 import { sample_amount_default } from "../funcs/sample_amount";
-import type { Axis, PointMap, SolidShape } from "./interfaces";
+import type { Axis } from "./types";
 import { Point } from "./point";
 import { PolygonSolid } from "./polygon_solid";
 import { RectSolid } from "./rect_solid";
 import { LineSegment } from "./line_segment";
 import { debug_context } from "../funcs/render_debug";
-import { ShapeSet } from "./shape_set";
-import { Interpolate } from "~/code/funcs/interpolator";
+import { type Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
+import { type SolidShape } from "./interfaces/solidshape";
+import { type PointMap } from "./interfaces/pointmap";
+import { type ThisMarker } from "~/code/bundle";
 
 export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     private cache: {
@@ -32,28 +34,32 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         this.c = c;
     }
 
+    static empty(): TriangleSolid {
+        return new TriangleSolid(
+            new Point(0, 0),
+            new Point(0, 0),
+            new Point(0, 0)
+        );
+    }
+
     toString(): string {
         return `TriangleSolid(${this.a.toString()}, ${this.b.toString()}, ${this.c.toString()})`;
     }
 
-    interpolate(t: number, to: this): this {
+    interpolate(t: number, to: this) {
         return new TriangleSolid(
             this.a.interpolate(t, to.a),
             this.b.interpolate(t, to.b),
             this.c.interpolate(t, to.c)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    to_start(): this {
+    to_start() {
         const center = this.center();
-        return new TriangleSolid(
-            center,
-            center,
-            center
-        ) as this;
+        return new TriangleSolid(center, center, center) as this & ThisMarker;
     }
 
-    is_this(value: unknown): value is this {
+    can_interpolate(value: unknown): value is this {
         return value instanceof TriangleSolid;
     }
 
@@ -64,32 +70,33 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return a + b + c;
     }
 
-    translate(p: Point): this {
+    translate(p: Point) {
         return new TriangleSolid(
             this.a.translate(p),
             this.b.translate(p),
             this.c.translate(p)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    scale(scale: number, origin = new Point(0, 0)): this {
+    scale(scale: number, origin = new Point(0, 0)) {
         return new TriangleSolid(
             this.a.scale(scale, origin),
             this.b.scale(scale, origin),
             this.c.scale(scale, origin)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    flip(axis: Axis): this {
+    flip(axis: Axis) {
         return new TriangleSolid(
             this.a.flip(axis),
             this.b.flip(axis),
             this.c.flip(axis)
-        ) as this;
+        ) as this & ThisMarker;
     }
 
-    map_points(f: (p: Point) => Point): this {
-        return new TriangleSolid(f(this.a), f(this.b), f(this.c)) as this;
+    map_points(f: (p: Point) => Point) {
+        return new TriangleSolid(f(this.a), f(this.b), f(this.c)) as this &
+            ThisMarker;
     }
 
     bbox(): RectSolid {
@@ -112,17 +119,17 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return (
             Math.abs(
                 this.a.x * this.b.y -
-                this.a.y * this.b.x +
-                this.b.x * this.c.y -
-                this.b.y * this.c.x +
-                this.c.x * this.a.y -
-                this.c.y * this.a.x
+                    this.a.y * this.b.x +
+                    this.b.x * this.c.y -
+                    this.b.y * this.c.x +
+                    this.c.x * this.a.y -
+                    this.c.y * this.a.x
             ) / 2
         );
     }
 
-    triangulate(): ShapeSet<TriangleSolid> {
-        return new ShapeSet<TriangleSolid>([this]);
+    triangulate(): TriangleSolid[] {
+        return [this];
     }
 
     sample_points(amount: number): Point[] {
@@ -188,7 +195,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return u >= 0 && v >= 0 && u + v < 1;
     }
 
-    rotate(angle: number, origin?: Point | undefined): this {
+    rotate(angle: number, origin?: Point | undefined) {
         const o = origin ?? this.center();
         const rotator = o.as_center(angle);
         return this.map_points(rotator);
@@ -249,7 +256,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return "disjoint";
     }
 
-    recenter(axis: Axis): this {
+    recenter(axis: Axis) {
         const offset = this.center().to_axis(axis).negate();
         return this.translate(offset);
     }
@@ -287,5 +294,11 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         debug_context(ctx, (ctx) => {
             this.vertices().map((p) => p.to_circle_solid(2).render_debug(ctx));
         });
+    }
+
+    ctx_setter: (ctx: CanvasRenderingContext2D) => void = () => {};
+    set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
+        this.ctx_setter = ctx_setter;
+        return this as this & ThisMarker;
     }
 }
