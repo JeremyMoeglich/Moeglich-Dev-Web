@@ -47,7 +47,7 @@ export async function textToShapes(
 ): Promise<Bundle<HollowShape<BezierSolid>>> {
     const rconfig = get_config(config);
     await load_font(rconfig.fontFilePath);
-    return syncTextToShapes(text, rconfig) ?? panic("syncTextToShapes failed");
+    return syncTextToShapes(text, rconfig);
 }
 
 const glyphCache: Map<number, HollowShape<BezierSolid>[]> = new Map();
@@ -79,12 +79,12 @@ function convert_coords<T extends SolidShape & Interpolate>(
 export function syncTextToShapes(
     text: string,
     config?: TextToShapeConfig
-): Bundle<HollowShape<BezierSolid>> | undefined {
+): Bundle<HollowShape<BezierSolid>> {
     const rconfig = get_config(config);
     const font = font_cache.get(rconfig.fontFilePath);
     if (!font) {
         void load_font(rconfig.fontFilePath);
-        return undefined;
+        return emptyBundle(new HollowShape(new BezierSolid([]), []));
     }
 
     const lines = text.split("\n");

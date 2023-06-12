@@ -1,0 +1,129 @@
+import { createBundle } from "~/code/bundle";
+import { default_shape_color } from "~/code/constants";
+import { type Interpolate } from "~/code/funcs/interpolator";
+import {
+    CircleSolid,
+    Point,
+    PolygonSolid,
+    type Renderable,
+    type Transformable,
+} from "~/code/shapelib";
+import { syncTextToShapes } from "~/code/shapelib/funcs/text_to_shape";
+import { InterBlock } from "~/code/shapelib/types/InterBlock";
+import { InterFunc } from "~/code/shapelib/types/InterFunc";
+import { zerozero } from "~/code/shapelib/types/point";
+import { Text } from "~/code/shapelib/types/text";
+import { dedent } from "~/utils/dedent";
+import { interpolate_between } from "~/utils/interpolate_between";
+import { shape_interface } from "./commons";
+
+
+export function multi_shape_visual(labels: boolean, show_interface: boolean) {
+    return new InterFunc(({ t }: { t: number }) => {
+        const size = interpolate_between(t / 3000, 40, 50);
+        const setter = (ctx: CanvasRenderingContext2D) =>
+            (ctx.fillStyle = default_shape_color);
+        const gap = 270;
+        const angle = t / 1000;
+        const gap_offset = (n: number) => new Point(n, 0);
+        const shape_offset = labels ? new Point(0, -50) : zerozero;
+        const label_offset = new Point(0, 20);
+        const shapes: (Renderable & Interpolate & Transformable)[] = [
+            PolygonSolid.make_ngon(3, size)
+                .set_setter(setter)
+                .translate(gap_offset(-gap))
+                .translate(shape_offset)
+                .rotate(angle),
+            new CircleSolid(new Point(0, 0), size)
+                .set_setter(setter)
+                .translate(shape_offset),
+            syncTextToShapes("Test")
+                .scale(0.03)
+                .recenter("both")
+                .set_setter(setter)
+                .translate(gap_offset(gap).translate(shape_offset))
+                .rotate(interpolate_between(t / 3000, -0.2, 0.2)),
+        ];
+        labels &&
+            shapes.push(
+                new InterBlock(
+                    new Text(
+                        dedent`
+                    class Triangle ${show_interface ? "implements Shape " : ""}{
+                        p1: Point;
+                        p2: Point;
+                        p3: Point;
+
+                        is_inside(p: Point): boolean {
+                            // ...
+                        }
+                    }
+                `,
+                        label_offset,
+                        10
+                    )
+                        .recenter("x")
+                        .translate(gap_offset(-gap))
+                        .highlight("ts"),
+                    "Triangle"
+                )
+            );
+        labels &&
+            shapes.push(
+                new InterBlock(
+                    new Text(
+                        dedent`
+                    class Circle ${show_interface ? "implements Shape " : ""}{
+                        x: number;
+                        y: number;
+                        radius: number;
+
+                        is_inside(p: Point): boolean {
+                            // ...
+                        }
+                    }
+                `,
+                        label_offset,
+                        10
+                    )
+                        .recenter("x")
+                        .highlight("ts"),
+                    "Circle"
+                )
+            );
+        labels &&
+            shapes.push(
+                new InterBlock(
+                    new Text(
+                        dedent`
+                    class Text ${show_interface ? "implements Shape " : ""}{
+                        text: string;
+                        x: number;
+                        y: number;
+                        size: number;
+
+                        is_inside(p: Point): boolean {
+                            // ...
+                        }
+                    }
+                `,
+                        label_offset,
+                        10
+                    )
+                        .recenter("x")
+                        .translate(gap_offset(gap))
+                        .highlight("ts"),
+                    "Text"
+                )
+            );
+        show_interface &&
+            shapes.push(
+                shape_interface
+                    .translate(label_offset)
+                    .translate(new Point(0, -250))
+            );
+        return createBundle(shapes)
+            .scale(!show_interface ? 2 : 1.5, zerozero)
+            .translate(show_interface ? new Point(0, 100) : new Point(0, 0));
+    });
+}

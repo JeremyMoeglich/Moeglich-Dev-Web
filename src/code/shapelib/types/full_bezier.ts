@@ -385,12 +385,25 @@ export class FullBezier
     }
 
     rotate(angle: number, origin?: Point | undefined) {
-        const o = origin ?? this.bbox().center();
+        const o = origin ?? this.center();
         return new FullBezier(
             this.start_point.rotate(angle, o),
             this.bezier.map_points((p) => p.rotate(angle, o)),
             this.ctx_setter
         ) as this & ThisReturn;
+    }
+
+    center(): Point {
+        return this.bbox().center();
+    }
+
+    recenter(axis: Axis): this & ThisReturn {
+        const center = this.center();
+        const offset = new Point(
+            axis !== 'y' ? -center.x : 0,
+            axis !== 'x' ? -center.y : 0
+        );
+        return this.translate(offset);
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {

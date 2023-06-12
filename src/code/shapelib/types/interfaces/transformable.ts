@@ -14,6 +14,8 @@ export interface Transformable extends BoundingBox {
     flip(axis: Axis): this & ThisReturn;
     rotate(angle: number, origin?: Point): this & ThisReturn; // origin is infered as center of bbox
     scale(scale: number | Point, origin?: Point): this & ThisReturn; // origin is infered as center of bbox
+    center(): Point;
+    recenter(axis: Axis): this & ThisReturn;
 }
 
 export function is_Transformable(value: unknown): value is Transformable {
@@ -65,6 +67,17 @@ export const transformable_bundler: Bundler<Transformable, Transformable> = {
             const o =
                 origin ?? RectSolid.union(objs.map((s) => s.bbox())).center();
             return createBundle(objs.map((s) => s.scale(scale, o)));
+        },
+        center: (objects) => {
+            return bounding_box_bundler.functionality.bbox(objects).center();
+        },
+        recenter: (objects, axis) => {
+            const offset = bounding_box_bundler.functionality
+                .bbox(objects)
+                .center()
+                .to_axis(axis)
+                .negate();
+            return createBundle(objects.map((o) => o.translate(offset)));
         },
     },
 };

@@ -105,14 +105,13 @@ export class RectSolid
         ) as this & ThisReturn;
     }
 
-    scale(scale: number | Point, offset?: Point) {
-        const offsetX = offset?.x ?? 0;
-        const offsetY = offset?.y ?? 0;
+    scale(scale: number | Point, origin?: Point) {
+        const o = origin ?? this.center();
         const scale_x = typeof scale === "number" ? scale : scale.x;
         const scale_y = typeof scale === "number" ? scale : scale.y;
         return new RectSolid(
-            this.x * scale_x + offsetX,
-            this.y * scale_x + offsetY,
+            this.x * scale_x + o.x * (1 - scale_x),
+            this.y * scale_y + o.y * (1 - scale_y),
             this.width * scale_x,
             this.height * scale_y,
             this.ctx_setter
@@ -171,12 +170,12 @@ export class RectSolid
         return this.width * this.height;
     }
 
-    as_polygon(): PolygonSolid {
+    to_polygon(): PolygonSolid {
         return new PolygonSolid([...this.vertices()]);
     }
 
     approximated(): PolygonSolid {
-        return this.as_polygon();
+        return this.to_polygon();
     }
 
     sample_points_area(n: number): Point[] {

@@ -32,8 +32,7 @@ export interface Shape
         HasLength,
         Renderable,
         Id {
-    center(): Point;
-    recenter(axis: Axis): this & ThisReturn;
+
 }
 
 export function is_Shape(value: unknown): value is Shape {
@@ -48,30 +47,3 @@ export function is_Shape(value: unknown): value is Shape {
         (value as Shape).recenter !== undefined
     );
 }
-
-export const shape_bundler: Bundler<Shape, Shape> = {
-    isType: is_Shape,
-    functionality: {
-        ...rebundle_functionality<typeof transformable_bundler, Shape>(
-            transformable_bundler
-        ),
-        ...stringifiable_bundler.functionality,
-        ...has_area_bundler.functionality,
-        ...has_length_bundler.functionality,
-        ...rebundle_functionality<typeof renderable_bundler, Shape>(
-            renderable_bundler
-        ),
-        ...id_bundler.functionality,
-        center: (objects) => {
-            return bounding_box_bundler.functionality.bbox(objects).center();
-        },
-        recenter: (objects, axis) => {
-            const offset = bounding_box_bundler.functionality
-                .bbox(objects)
-                .center()
-                .to_axis(axis)
-                .negate();
-            return createBundle(objects.map((o) => o.translate(offset)));
-        },
-    },
-};

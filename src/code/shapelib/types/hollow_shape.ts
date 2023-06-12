@@ -4,7 +4,7 @@ import type { Point } from "./point";
 import type { PolygonSolid } from "./polygon_solid";
 import { type RectSolid } from "./rect_solid";
 import { TriangleSolid } from "./triangle_solid";
-import { panic } from "functional-utilities";
+import { panic, zip } from "functional-utilities";
 import earcut from "earcut";
 import { v4 } from "uuid";
 import type { Interpolate } from "~/code/funcs/interpolator";
@@ -47,7 +47,10 @@ export class HollowShape<T extends SolidShape & Interpolate>
     }
 
     can_interpolate(value: unknown): value is this {
-        return value instanceof HollowShape && this.exterior.can_interpolate(value.exterior);
+        return (
+            value instanceof HollowShape &&
+            this.exterior.can_interpolate(value.exterior)
+        );
     }
 
     similarity(to: this): number {
@@ -64,8 +67,10 @@ export class HollowShape<T extends SolidShape & Interpolate>
     interpolate(t: number, to: this): this & ThisReturn {
         return new HollowShape(
             unmark_this(this.exterior.interpolate(t, to.exterior)),
-            this.holes.map((h) => h.interpolate(t, to.exterior)),
-            this.ctx_setter
+            zip([this.holes, to.holes] as [T[], T[]]).map(([a, b]) =>
+                unmark_this(a.interpolate(t, b))
+            ),
+            to.ctx_setter
         ) as this & ThisReturn;
     }
 
@@ -183,7 +188,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
         this.holes.forEach((h) => h.select_shape(ctx));
     }
 
-    render(ctx: CanvasRenderingContext2D, action: 'fill' | 'stroke'): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);

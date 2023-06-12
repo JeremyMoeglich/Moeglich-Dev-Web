@@ -87,6 +87,15 @@ export class LineSegment
         return this.lerp(0.5);
     }
 
+    recenter(axis: Axis): this & ThisReturn {
+        const center = this.center();
+        const offset = new Point(
+            axis !== "y" ? -center.x : 0,
+            axis !== "x" ? -center.y : 0
+        );
+        return this.translate(offset);
+    }
+
     sample_points(n: number, variant: "evenly" | "rng") {
         if (variant === "evenly") {
             return range(0, n).map((i) => this.lerp(i / (n - 1)));

@@ -73,6 +73,9 @@ dependencies:
   functional-utilities:
     specifier: ^3.2.1
     version: 3.2.1
+  levenshtein-edit-distance:
+    specifier: ^3.0.1
+    version: 3.0.1
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
@@ -4410,6 +4413,11 @@ packages:
     dependencies:
       language-subtag-registry: 0.3.22
     dev: true
+
+  /levenshtein-edit-distance@3.0.1:
+    resolution: {integrity: sha512-/qMCkZbrAF7jZP/voqlkfNrBtEn0TMdhCK7OEBh/zb39t/c3wCnTjwU1ZvrMfQ3OxB8sBQXIpWRMM6FiQJVG3g==}
+    hasBin: true
+    dev: false
 
   /levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}

@@ -1,21 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import type { Simplify } from "type-fest";
 import { point_map_bundler } from "./shapelib/types/interfaces/pointmap";
-import {
-    renderable_bundler,
-} from "./shapelib/types/interfaces/renderable";
+import { renderable_bundler } from "./shapelib/types/interfaces/renderable";
 import { bounding_box_bundler } from "./shapelib/types/interfaces/boundingbox";
-import {
-    transformable_bundler,
-} from "./shapelib/types/interfaces/transformable";
+import { transformable_bundler } from "./shapelib/types/interfaces/transformable";
 import { stringifiable_bundler } from "./shapelib/types/interfaces/stringifiable";
 import { has_area_bundler } from "./shapelib/types/interfaces/hasarea";
 import { has_length_bundler } from "./shapelib/types/interfaces/haslength";
 import { has_vertices_bundler } from "./shapelib/types/interfaces/hasvertices";
 import { interpolate_bundler } from "./funcs/interpolator";
-import { shape_bundler } from "./shapelib/types/interfaces/shape";
 
 type AddFirstArgument<T, A> = {
     [K in keyof T]: T[K] extends (...args: infer U) => infer R
@@ -69,7 +63,6 @@ const bundlers = [
     has_length_bundler,
     has_vertices_bundler,
     interpolate_bundler,
-    shape_bundler,
 ] as const;
 
 type MapBundler<T extends Bundler<any, any>> = {
@@ -142,11 +135,11 @@ type AccumulatedBundle<T, Bs extends Array<Bundler<any, any>>> = Bs extends [
         : never
     : Record<string, never>;
 
-export type Bundle<T> = Simplify<
-    {
-        objs: T[];
-    } & AccumulatedBundle<T, typeof this_bundlers>
->;
+export type Bundle<T> = (T extends any // This maps each union type in T seperately. This technically doesn't change the type, but it avoid exponential complexity. Without this takes hours even for just 4 types.
+    ? AccumulatedBundle<T, typeof this_bundlers>
+    : never) & {
+    objs: T[];
+};
 
 export function createBundle<T>(values: T[]) {
     const object: any = {
@@ -184,10 +177,12 @@ export function is_bundle<T>(
 }
 
 export type ThisReturn = { _this: true };
-export type UnMarkThis<T extends object> = Omit<T, '_this'>;
+export type UnMarkThis<T extends object> = Omit<T, "_this">;
 export function mark_this<T extends object>(obj: T): T & ThisReturn {
     return obj as T & ThisReturn;
 }
-export function unmark_this<T extends object & ThisReturn>(obj: T): UnMarkThis<T> {
+export function unmark_this<T extends object & ThisReturn>(
+    obj: T
+): UnMarkThis<T> {
     return obj as UnMarkThis<T>;
 }

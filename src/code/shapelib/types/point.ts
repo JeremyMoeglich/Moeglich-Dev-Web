@@ -83,6 +83,17 @@ export class Point
         return func;
     }
 
+    center(): Point {
+        return this;
+    }
+
+    recenter(axis: Axis) {
+        return new Point(
+            axis !== "y" ? this.x : 0,
+            axis !== "x" ? this.y : 0
+        ) as this & ThisReturn;
+    }
+
     negate() {
         return new Point(-this.x, -this.y) as this & ThisReturn;
     }
@@ -165,7 +176,7 @@ export class Point
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
-            this.to_circle_solid(2).render(ctx, 'fill');
+            this.to_circle_solid(2).render(ctx, "fill");
         });
     }
 

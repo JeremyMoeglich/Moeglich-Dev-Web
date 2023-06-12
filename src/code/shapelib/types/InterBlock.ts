@@ -82,10 +82,7 @@ export class InterBlock<T extends Renderable & Transformable>
         ) as this & ThisReturn;
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'fill' | 'stroke'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.element.render(ctx, action);
     }
 
@@ -121,5 +118,18 @@ export class InterBlock<T extends Renderable & Transformable>
             unmark_this(this.element.translate(offset)),
             this.key
         ) as this & ThisReturn;
+    }
+
+    center(): Point {
+        return this.element.center();
+    }
+
+    recenter(axis: Axis): this & ThisReturn {
+        const center = this.center();
+        const offset = new Point(
+            axis !== "y" ? -center.x : 0,
+            axis !== "x" ? -center.y : 0
+        );
+        return this.translate(offset);
     }
 }

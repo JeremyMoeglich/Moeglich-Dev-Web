@@ -32,6 +32,10 @@ const equalizePointCount = (
             ? [shape1.clone(), shape2]
             : [shape2.clone(), shape1];
 
+    if (shapeToAdd.points.length === 0) {
+        shapeToAdd.points.push(zerozero);
+    }
+
     while (shapeToAdd.points.length < shapeComp.points.length) {
         const lines = shapeComp.lines();
 
@@ -161,7 +165,7 @@ export class PolygonSolid
                 Point[],
                 Point[]
             ]).map(([p1, p2]) => p1.interpolate(t, p2)),
-            this.ctx_setter
+            to.ctx_setter
         ) as this & ThisReturn;
     }
 
@@ -182,7 +186,7 @@ export class PolygonSolid
         ) as this & ThisReturn;
     }
 
-    static make_ngon(corners: number): PolygonSolid {
+    static make_ngon(corners: number, radius: number): PolygonSolid {
         if (corners < 3)
             throw new Error("A polygon must have at least 3 corners.");
 
@@ -191,8 +195,8 @@ export class PolygonSolid
             // Each corner is evenly spaced around the circle
             const angle = (i / corners) * 2 * Math.PI;
             // Calculate the x and y position using trigonometric functions
-            const x = Math.cos(angle);
-            const y = Math.sin(angle);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
             points.push(new Point(x, y));
         }
 
@@ -413,10 +417,7 @@ export class PolygonSolid
         }
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'fill' | 'stroke'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         if (this.points.length === 0) return;
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
@@ -427,14 +428,10 @@ export class PolygonSolid
     render_debug(ctx: CanvasRenderingContext2D): void {
         if (this.points.length === 0) return;
         debug_context(ctx, (ctx) => {
-            this.points.map((p) =>
-                p.to_circle_solid(2).render(ctx, 'fill')
-            );
+            this.points.map((p) => p.to_circle_solid(2).render(ctx, "fill"));
             // mark [0] as red
             ctx.fillStyle = "red";
-            (this.points[0] ?? panic())
-                .to_circle_solid(4)
-                .render(ctx, 'fill');
+            (this.points[0] ?? panic()).to_circle_solid(4).render(ctx, "fill");
         });
     }
 
@@ -442,8 +439,17 @@ export class PolygonSolid
         return this.bbox().center();
     }
 
+    centroid(): Point {
+        const points = this.points;
+        const n = points.length;
+        if (n === 0) return new Point(0, 0);
+        const x = sum(points.map((p) => p.x)) / n;
+        const y = sum(points.map((p) => p.y)) / n;
+        return new Point(x, y);
+    }
+
     rotate(angle: number, origin?: Point | undefined) {
-        const o = origin ?? this.center();
+        const o = origin ?? this.centroid();
         return this.map_points((p) => p.rotate(angle, o));
     }
 

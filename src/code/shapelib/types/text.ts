@@ -16,6 +16,8 @@ import {
 import { type Axis } from "./types";
 import { split_include } from "~/utils/split_include";
 import { languages } from "~/code/funcs/lex";
+import { max } from "lodash-es";
+import { levenshteinEditDistance } from "levenshtein-edit-distance";
 
 const IS_BROWSER = typeof window !== "undefined";
 
@@ -63,7 +65,11 @@ export const measureTextSize = (
         (() => {
             if (!context) return { width: 0, height: 0 };
             context.font = `1${unit} ${fontName}`;
-            const width = context.measureText(text).width;
+            const width = max(
+                text
+                    .split("\n")
+                    .map((line) => (context ?? panic()).measureText(line).width)
+            ) ?? 0;
 
             const metaData: MetaData = {
                 rootFontSize: parseFloat(
@@ -73,7 +79,10 @@ export const measureTextSize = (
                 viewportHeight: window.innerHeight,
             };
             const unitConverter = getUnitConverter(unit);
-            const height = unitConverter(line_height_factor * text.split('\n').length, metaData);
+            const height = unitConverter(
+                line_height_factor * text.split("\n").length,
+                metaData
+            );
 
             const size = { width, height };
             textSizeCache.set(cacheKey, size);
@@ -210,11 +219,12 @@ export class Text implements Interpolate, Renderable, Transformable {
     }
 
     similarity(to: UnMarkThis<this>): number {
-        return (
+        const size_sim = (
             this.position.similarity(to.position) +
             Math.abs(this.size - to.size) +
             Math.abs(this.rotation - to.rotation)
         );
+        return size_sim;
     }
 
     to_start(): this & ThisReturn {
@@ -314,7 +324,13 @@ export class Text implements Interpolate, Renderable, Transformable {
         const texts = result.map((token) => {
             const real_line = token.line - 1; // the tokenizer starts at line 1
             if (real_line !== last_line) {
-                x = measureTextSize(" ".repeat(token.column - 1), this.size, this.line_height_factor, 'px', this.font).width;
+                x = measureTextSize(
+                    " ".repeat(token.column - 1),
+                    this.size,
+                    this.line_height_factor,
+                    "px",
+                    this.font
+                ).width;
                 last_line = real_line;
             }
             const text = new Text(
@@ -333,5 +349,18 @@ export class Text implements Interpolate, Renderable, Transformable {
             .scale(new Point(this.scalex, this.scaley))
             .rotate(this.rotation)
             .translate(this.position);
+    }
+
+    center(): Point {
+        return this.bbox().center();
+    }
+
+    recenter(axis: Axis): this & ThisReturn {
+        const center = this.center();
+        const offset = new Point(
+            axis !== "y" ? -center.x : 0,
+            axis !== "x" ? -center.y : 0
+        );
+        return this.translate(offset);
     }
 }

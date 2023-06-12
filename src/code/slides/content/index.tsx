@@ -20,6 +20,7 @@ import { type Renderable } from "~/code/shapelib/types/interfaces/renderable";
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { interpolate_between } from "~/utils/interpolate_between";
 import { intersect_visual } from "./intersect_visual";
+import { multi_shape_visual } from "./multi_shape";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -96,9 +97,7 @@ export const stages: Stage[] = [
                             <ShapeRender
                                 instructions={[
                                     {
-                                        action: show_debug
-                                            ? 'stroke'
-                                            : 'both',
+                                        action: show_debug ? "stroke" : "both",
                                         obj: text,
                                         ctx_setter: (ctx) => {
                                             ctx.fillStyle = "white";
@@ -107,7 +106,7 @@ export const stages: Stage[] = [
                                         z_index: 0,
                                     },
                                     {
-                                        action: 'stroke',
+                                        action: "stroke",
                                         obj: createBundle(bboxes),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "blue";
@@ -118,7 +117,7 @@ export const stages: Stage[] = [
                                         z_index: 1,
                                     },
                                     {
-                                        action: 'stroke',
+                                        action: "stroke",
                                         obj: createBundle(intersecting),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "red";
@@ -129,7 +128,7 @@ export const stages: Stage[] = [
                                         z_index: 2,
                                     },
                                     {
-                                        action: 'fill',
+                                        action: "fill",
                                         obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
@@ -148,7 +147,7 @@ export const stages: Stage[] = [
                                         z_index: 3,
                                     },
                                     {
-                                        action: 'fill',
+                                        action: "fill",
                                         obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
@@ -229,7 +228,7 @@ export const stages: Stage[] = [
             return (
                 <div className="h-full">
                     {defaults.title(title)}
-                    <div className="relative flex h-full items-center justify-center bottom-12">
+                    <div className="relative bottom-12 flex h-full items-center justify-center">
                         <motion.div
                             layoutId="shape_render"
                             className="relative"
@@ -238,7 +237,7 @@ export const stages: Stage[] = [
                                 render_id="abstraction"
                                 instructions={[
                                     {
-                                        action: 'fill',
+                                        action: "fill",
                                         obj: visual
                                             .calc({ t })
                                             .translate(new Point(xgap / 2, 0)),
@@ -437,7 +436,12 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: intersect_visual(new Point(-100, 0), false, false, 'func'),
+                visual: intersect_visual(
+                    new Point(-100, 0),
+                    false,
+                    false,
+                    "func"
+                ),
                 xgap: 800,
             },
             {
@@ -457,7 +461,12 @@ export const stages: Stage[] = [
                 scale: 2.6,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: intersect_visual(new Point(-100, 0), true, false, 'func'),
+                visual: intersect_visual(
+                    new Point(-100, 0),
+                    true,
+                    false,
+                    "func"
+                ),
                 xgap: 800,
             },
             {
@@ -484,7 +493,12 @@ export const stages: Stage[] = [
                 scale: 1.7,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: intersect_visual(new Point(0, -160), true, true, 'func'),
+                visual: intersect_visual(
+                    new Point(0, -160),
+                    true,
+                    true,
+                    "func"
+                ),
                 xgap: 500,
             },
             {
@@ -517,8 +531,40 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Klassen",
-                visual: intersect_visual(new Point(-70, -50), true, true, 'class'),
+                visual: intersect_visual(
+                    new Point(-70, -50),
+                    true,
+                    true,
+                    "class"
+                ),
                 xgap: 700,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Interfaces",
+                visual: multi_shape_visual(false, false),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Interfaces",
+                visual: multi_shape_visual(true, false),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Interfaces",
+                visual: multi_shape_visual(true, true),
+                xgap: 0,
             },
         ] as {
             code: string;

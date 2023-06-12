@@ -1,4 +1,5 @@
 import { createBundle } from "~/code/bundle";
+import { default_shape_color } from "~/code/constants";
 import { deg_to_rad } from "~/code/funcs/angle";
 import { type Interpolate } from "~/code/funcs/interpolator";
 import {
@@ -22,7 +23,7 @@ export function intersect_visual(
     return new InterFunc(({ t }: { t: number }) => {
         const radius = interpolate_between(t / 4000, 90, 100);
         const circle = new CircleSolid(zerozero, radius).set_setter((ctx) => {
-            ctx.fillStyle = "#1ffcb2";
+            ctx.fillStyle = default_shape_color;
         });
         const label_size = 18;
         const circle_label = new Text(
