@@ -3,14 +3,17 @@ import { quality_to_amount_per_unit } from "../funcs/quality";
 import { debug_context } from "../funcs/render_debug";
 import { sample_amount_default } from "../funcs/sample_amount";
 import type { Axis } from "./types";
-import { Point } from "./point";
+import { Point, zerozero } from "./point";
 import { PolygonSolid } from "./polygon_solid";
 import { RectSolid } from "./rect_solid";
 import type { TriangleSolid } from "./triangle_solid";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
 import type { SolidShape } from "./interfaces/solidshape";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
+import { BezierSolid } from "./bezier_solid";
+import { PartialBezier } from "./partial_bezier";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 export class CircleSolid implements SolidShape, Interpolate {
     position: Point;
@@ -30,7 +33,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     static empty(): CircleSolid {
-        return new CircleSolid(new Point(0, 0), 0);
+        return new CircleSolid(zerozero, 0);
     }
 
     id(): string {
@@ -45,7 +48,7 @@ export class CircleSolid implements SolidShape, Interpolate {
             this.position.interpolate(t, to.position),
             this.radius * (1 - t) + to.radius * t,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     similarity(to: this): number {
@@ -56,7 +59,8 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     to_start() {
-        return new CircleSolid(this.position, 0, this.ctx_setter) as this & ThisMarker;
+        return new CircleSolid(this.position, 0, this.ctx_setter) as this &
+            ThisReturn;
     }
 
     can_interpolate(value: unknown): value is this {
@@ -90,7 +94,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     flip() {
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 
     translate(offset: Point) {
@@ -98,28 +102,30 @@ export class CircleSolid implements SolidShape, Interpolate {
             this.position.translate(offset),
             this.radius,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, origin = new Point(0, 0)) {
+    scale(scale: number | Point, origin = zerozero) {
+        const scale_num =
+            typeof scale === "number" ? scale : (scale.x + scale.y) / 2;
         return new CircleSolid(
             this.position.scale(scale, origin),
-            this.radius * scale,
+            this.radius * scale_num,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     toString(): string {
         return `CircleSolid(${this.position.toString()}, ${this.radius})`;
     }
 
-    intersects(other: CircleSolid): boolean {
+    intersects(other: this): boolean {
         return (
             this.position.distance(other.position) < this.radius + other.radius
         );
     }
 
-    outline_intersects(other: CircleSolid): boolean {
+    outline_intersects(other: this): boolean {
         const distanceBetweenCenters = this.position.distance(other.position);
         const radiiSum = this.radius + other.radius;
         const radiiDiff = Math.abs(this.radius - other.radius);
@@ -131,7 +137,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     relation_to(
-        other: CircleSolid
+        other: this
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -231,18 +237,14 @@ export class CircleSolid implements SolidShape, Interpolate {
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
     }
 
-    render_fill(ctx: CanvasRenderingContext2D): void {
+    render(
+        ctx: CanvasRenderingContext2D,
+        action: 'fill' | 'stroke'
+    ): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        ctx.fill();
-    }
-
-    render_outline(ctx: CanvasRenderingContext2D): void {
-        this.ctx_setter && this.ctx_setter(ctx);
-        ctx.beginPath();
-        this.select_shape(ctx);
-        ctx.stroke();
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
@@ -260,6 +262,51 @@ export class CircleSolid implements SolidShape, Interpolate {
         });
     }
 
+    as_bezier(): BezierSolid {
+        const kappa = 4 * ((Math.sqrt(2) - 1) / 3);
+        const x = this.position.x;
+        const y = this.position.y;
+        const r = this.radius;
+
+        const bezierArray: PartialBezier[] = [];
+
+        const handleLength = r * kappa;
+
+        bezierArray.push(
+            new PartialBezier(
+                new Point(x + handleLength, y + r),
+                new Point(x + r, y + handleLength),
+                new Point(x + r, y)
+            )
+        );
+
+        bezierArray.push(
+            new PartialBezier(
+                new Point(x + r, y - handleLength),
+                new Point(x + handleLength, y - r),
+                new Point(x, y - r)
+            )
+        );
+
+        bezierArray.push(
+            new PartialBezier(
+                new Point(x - handleLength, y - r),
+                new Point(x - r, y - handleLength),
+                new Point(x - r, y)
+            )
+        );
+
+        bezierArray.push(
+            new PartialBezier(
+                new Point(x - r, y + handleLength),
+                new Point(x - handleLength, y + r),
+                new Point(x, y + r)
+            )
+        );
+
+        return new BezierSolid(bezierArray);
+    }
+
     center(): Point {
         return this.position;
     }
@@ -274,11 +321,11 @@ export class CircleSolid implements SolidShape, Interpolate {
             this.position.rotate(angle, origin),
             this.radius,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 }

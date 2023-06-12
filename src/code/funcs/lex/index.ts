@@ -381,6 +381,9 @@ function lex_to_lang(
             .map((token) => ({
                 content: token.image,
                 token_type: token.tokenType.name,
+                start_offset: token.startOffset,
+                line: token.startLine ?? panic("No line number"),
+                column: token.startColumn ?? panic("No column number"),
             }))
             .map((token) => {
                 if (
@@ -409,4 +412,7 @@ type Language = (code: string) => {
     content: string;
     token_type: string;
     color: Color;
+    start_offset: number;
+    line: number;
+    column: number;
 }[];

@@ -1,47 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { languages } from "../lex";
-import { panic } from "functional-utilities";
-import { LRUCache } from "lru-cache";
 import type { KeyedToken, Token } from "./tokens";
 import { assignKeys } from "./assign_keys";
 import { Point } from "~/code/shapelib";
-
-const IS_BROWSER = typeof window !== "undefined";
-
-let context: CanvasRenderingContext2D | null = null;
-if (IS_BROWSER) {
-    const canvas = document.createElement("canvas");
-    context = canvas.getContext("2d") ?? panic("no context");
-}
-
-const textWidthCache = new LRUCache<string, number>({
-    max: 1000,
-});
-
-const measureTextWidth = (text: string, font: string) => {
-    if (!IS_BROWSER) return 0;
-
-    const cacheKey = `${text}_${font}`;
-    const cache_result = textWidthCache.get(cacheKey);
-    if (cache_result !== undefined) {
-        return cache_result;
-    }
-
-    if (context) {
-        context.font = font;
-        const measurement = context.measureText(text).width;
-        textWidthCache.set(cacheKey, measurement);
-        return measurement;
-    }
-    return 0;
-};
+import { measureTextSize } from "~/code/shapelib/types/text";
+import { AnimatePresence, motion } from "framer-motion";
 
 const LanguageIcon: React.FC<{ language: keyof typeof languages }> = ({
     language,
 }) => {
     const path = `/images/languages/${language}.svg`;
     return (
-        <img src={path} alt={language} className="inline-block h-full w-full" />
+        <AnimatePresence>
+            <motion.img
+                src={path}
+                alt={language}
+                className="absolute h-full w-full"
+                key={language}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+            />
+        </AnimatePresence>
     );
 };
 
@@ -55,7 +35,7 @@ export const CodeBlock: React.FC<{
     const [currentTokens, setCurrentTokens] = useState<KeyedToken[]>([]);
     const language_def = languages[language];
     const fontRef = useRef<HTMLDivElement>(null);
-    const font = `${scale}rem "Fira Code", monospace`; // The font you want to use
+    const font = `"Fira Code", monospace`;
 
     useEffect(() => {
         const lines = code.split("\n");
@@ -67,7 +47,13 @@ export const CodeBlock: React.FC<{
                     position: new Point(current_x, y),
                     ...lex_info,
                 } satisfies Token;
-                current_x += measureTextWidth(token.content, font);
+                current_x += measureTextSize(
+                    token.content,
+                    scale,
+                    1.2,
+                    "rem",
+                    font
+                ).width;
                 return token;
             });
         });
@@ -90,7 +76,7 @@ export const CodeBlock: React.FC<{
             };
         });
         setCurrentTokens((prevTokens) => assignKeys(prevTokens, offset_tokens));
-    }, [font, language_def, code]);
+    }, [font, language_def, code, scale]);
 
     const icon_pos = currentTokens.reduce(
         (acc, token) => {
@@ -108,7 +94,7 @@ export const CodeBlock: React.FC<{
                 return (
                     <div
                         key={`${animateId}-${token.key}`}
-                        className="absolute min-w-max transition-all duration-[700ms]"
+                        className="absolute min-w-max font-normal transition-all duration-[700ms]"
                         aria-label={`${animateId}-${token.key}-${i}`}
                         style={{
                             transform: `translate(${token.position.x}px, ${`${
@@ -128,7 +114,7 @@ export const CodeBlock: React.FC<{
                     className="absolute left-0 top-0 h-16 w-16"
                     style={{
                         transform: `translate(${icon_pos.x + 20}px, ${
-                            (icon_pos.y + 1) * scale
+                            (icon_pos.y + 1.3) * scale
                         }rem)`,
                         transition: "transform 700ms",
                     }}

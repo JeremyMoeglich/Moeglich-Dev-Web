@@ -12,10 +12,12 @@ import { v4 } from "uuid";
 import { type PointMap } from "./interfaces/pointmap";
 import { type SolidShape } from "./interfaces/solidshape";
 import { type HasVertices } from "./interfaces/hasvertices";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 export class RectSolid
-    implements SolidShape, HasVertices, PointMap, Interpolate {
+    implements SolidShape, HasVertices, PointMap, Interpolate
+{
     x: number;
     y: number;
     width: number;
@@ -32,7 +34,13 @@ export class RectSolid
         return id;
     }
 
-    constructor(x: number, y: number, width: number, height: number, public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
+    constructor(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -58,7 +66,7 @@ export class RectSolid
             this.width * (1 - t) + to.width * t,
             this.height * (1 - t) + to.height * t,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     to_start() {
@@ -68,7 +76,7 @@ export class RectSolid
             0,
             0,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     similarity(to: this): number {
@@ -94,19 +102,21 @@ export class RectSolid
             this.width,
             this.height,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, offset?: Point) {
+    scale(scale: number | Point, offset?: Point) {
         const offsetX = offset?.x ?? 0;
         const offsetY = offset?.y ?? 0;
+        const scale_x = typeof scale === "number" ? scale : scale.x;
+        const scale_y = typeof scale === "number" ? scale : scale.y;
         return new RectSolid(
-            this.x * scale + offsetX,
-            this.y * scale + offsetY,
-            this.width * scale,
-            this.height * scale,
+            this.x * scale_x + offsetX,
+            this.y * scale_x + offsetY,
+            this.width * scale_x,
+            this.height * scale_y,
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
@@ -118,7 +128,7 @@ export class RectSolid
                     this.width,
                     this.height,
                     this.ctx_setter
-                ) as this & ThisMarker;
+                ) as this & ThisReturn;
             case "y":
                 return new RectSolid(
                     this.x,
@@ -126,7 +136,7 @@ export class RectSolid
                     this.width,
                     this.height,
                     this.ctx_setter
-                ) as this & ThisMarker;
+                ) as this & ThisReturn;
             case "both":
                 return new RectSolid(
                     -this.x - this.width,
@@ -134,7 +144,7 @@ export class RectSolid
                     this.width,
                     this.height,
                     this.ctx_setter
-                ) as this & ThisMarker;
+                ) as this & ThisReturn;
         }
     }
 
@@ -161,8 +171,12 @@ export class RectSolid
         return this.width * this.height;
     }
 
-    approximated(): PolygonSolid {
+    as_polygon(): PolygonSolid {
         return new PolygonSolid([...this.vertices()]);
+    }
+
+    approximated(): PolygonSolid {
+        return this.as_polygon();
     }
 
     sample_points_area(n: number): Point[] {
@@ -231,8 +245,13 @@ export class RectSolid
     map_points(f: (p: Point) => Point) {
         const tl = f(new Point(this.x, this.y));
         const br = f(new Point(this.x + this.width, this.y + this.height));
-        return new RectSolid(tl.x, tl.y, br.x - tl.x, br.y - tl.y, this.ctx_setter) as this &
-            ThisMarker;
+        return new RectSolid(
+            tl.x,
+            tl.y,
+            br.x - tl.x,
+            br.y - tl.y,
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
     contains(p: Point): boolean {
@@ -245,7 +264,7 @@ export class RectSolid
     }
 
     relation_to(
-        other: RectSolid
+        other: this
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -277,11 +296,11 @@ export class RectSolid
         }
     }
 
-    intersects(other: RectSolid): boolean {
+    intersects(other: this): boolean {
         return this.relation_to(other) !== "disjoint";
     }
 
-    outline_intersects(other: RectSolid): boolean {
+    outline_intersects(other: this): boolean {
         return this.relation_to(other) === "outline_intersect";
     }
 
@@ -305,23 +324,21 @@ export class RectSolid
         ctx.rect(this.x, this.y, this.width, this.height);
     }
 
-    render_outline(ctx: CanvasRenderingContext2D): void {
+    render(
+        ctx: CanvasRenderingContext2D,
+        action: 'fill' | 'stroke'
+    ): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        ctx.stroke();
-    }
-
-    render_fill(ctx: CanvasRenderingContext2D): void {
-        this.ctx_setter && this.ctx_setter(ctx);
-        ctx.beginPath();
-        this.select_shape(ctx);
-        ctx.fill();
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
-            this.vertices().map((p) => p.to_circle_solid(2).render_fill(ctx));
+            this.vertices().map((p) =>
+                p.to_circle_solid(2).render(ctx, 'fill')
+            );
         });
     }
 
@@ -337,6 +354,6 @@ export class RectSolid
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 }

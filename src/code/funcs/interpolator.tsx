@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { isEqual, maxBy, sum } from "lodash-es";
+import { isEqual, minBy, sum } from "lodash-es";
 import { panic, zip } from "functional-utilities";
 import { type Stage } from "../slides/stage";
 import { type EasingFunctionName, easingFunctions } from "./ease";
 import { v4 } from "uuid";
-import { is_Id, type Id, id_bundler } from "../shapelib/types/interfaces/id";
-import { type Bundle, type Bundler, createBundle, is_bundle } from "../bundle";
+import {
+    type Bundle,
+    type Bundler,
+    createBundle,
+    is_bundle,
+    type ThisReturn,
+    type UnMarkThis,
+} from "../bundle";
 
 export interface Interpolate {
-    interpolate(t: number, to: this): this;
-    to_start(): this;
+    interpolate(t: number, to: UnMarkThis<this>): this & ThisReturn;
+    to_start(): this & ThisReturn;
     can_interpolate(value: unknown): boolean;
-    similarity(to: this): number; // 0 is identical
+    similarity(to: UnMarkThis<this>): number; // 0 is identical
 }
 
 function is_Interpolate(value: unknown): value is Interpolate {
@@ -30,12 +36,12 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
             if (!is_bundle(to, is_Interpolate))
                 return to.to_start().interpolate(t, to);
             const interpolated = to.objs.map((s1) => {
-                const matched = maxBy(
+                const matched = minBy(
                     from.filter((s2) => s1.can_interpolate(s2)),
                     (s2) => s1.similarity(s2)
                 );
                 if (!matched) return s1.to_start().interpolate(t, s1);
-                return s1.interpolate(t, matched);
+                return matched.interpolate(t, s1);
             });
 
             const absentInTo = from.filter(
@@ -72,13 +78,17 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
     },
 };
 
-function interpolateProps<T>(
+export function interpolateProps<T>(
     startProps: T,
     endProps: T,
     progress: number,
     disable?: (keyof T)[]
 ): T {
-    if (
+    if (progress === 1) {
+        return endProps;
+    } else if (progress === 0) {
+        return startProps;
+    } else if (
         startProps === endProps ||
         startProps === undefined ||
         startProps === null ||

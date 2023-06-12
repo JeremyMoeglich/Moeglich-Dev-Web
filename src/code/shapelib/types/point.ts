@@ -10,17 +10,10 @@ import { type Stringifiable } from "./interfaces/stringifiable";
 import { type Transformable } from "./interfaces/transformable";
 import { type PointMap } from "./interfaces/pointmap";
 import { type BoundingBox } from "./interfaces/boundingbox";
-import { type RenderableDebug } from "./interfaces/renderable";
-import type { ThisMarker } from "~/code/bundle";
+import type { ThisReturn } from "~/code/bundle";
 
 export class Point
-    implements
-        Stringifiable,
-        Transformable,
-        PointMap,
-        BoundingBox,
-        RenderableDebug,
-        Interpolate
+    implements Stringifiable, Transformable, PointMap, BoundingBox, Interpolate
 {
     x: number;
     y: number;
@@ -36,7 +29,7 @@ export class Point
     }
 
     static empty(): Point {
-        return new Point(0, 0);
+        return zerozero;
     }
 
     id(): string {
@@ -53,9 +46,9 @@ export class Point
     to_axis(axis: Axis) {
         switch (axis) {
             case "x":
-                return new Point(this.x, 0) as this & ThisMarker;
+                return new Point(this.x, 0) as this & ThisReturn;
             case "y":
-                return new Point(0, this.y) as this & ThisMarker;
+                return new Point(0, this.y) as this & ThisReturn;
             case "both":
                 return this;
         }
@@ -91,37 +84,40 @@ export class Point
     }
 
     negate() {
-        return new Point(-this.x, -this.y) as this & ThisMarker;
+        return new Point(-this.x, -this.y) as this & ThisReturn;
     }
 
     rotate(angle: number, origin?: Point | undefined) {
         if (!origin) {
-            return this as this & ThisMarker;
+            return this as this & ThisReturn;
         }
-        return origin.as_center(angle)(this) as this & ThisMarker;
+        return origin.as_center(angle)(this) as this & ThisReturn;
     }
 
     translate(p: Point) {
-        return new Point(this.x + p.x, this.y + p.y) as this & ThisMarker;
+        return new Point(this.x + p.x, this.y + p.y) as this & ThisReturn;
     }
 
     multiply(scale: number) {
-        return new Point(this.x * scale, this.y * scale) as this & ThisMarker;
+        return new Point(this.x * scale, this.y * scale) as this & ThisReturn;
     }
 
-    scale(scale: number, origin: Point) {
+    scale(scale: number | Point, origin: Point) {
+        const scalex = typeof scale === "number" ? scale : scale.x;
+        const scaley = typeof scale === "number" ? scale : scale.y;
+
         // Scale the point relative to the origin
         const translatedX = this.x - origin.x;
         const translatedY = this.y - origin.y;
 
-        const scaledX = translatedX * scale;
-        const scaledY = translatedY * scale;
+        const scaledX = translatedX * scalex;
+        const scaledY = translatedY * scaley;
 
         // Translate the point back to the original position
         const finalX = scaledX + origin.x;
         const finalY = scaledY + origin.y;
 
-        return new Point(finalX, finalY) as this & ThisMarker;
+        return new Point(finalX, finalY) as this & ThisReturn;
     }
 
     subtract(p: Point): Point {
@@ -135,11 +131,11 @@ export class Point
     flip(axis: Axis) {
         switch (axis) {
             case "x":
-                return new Point(-this.x, this.y) as this & ThisMarker;
+                return new Point(-this.x, this.y) as this & ThisReturn;
             case "y":
-                return new Point(this.x, -this.y) as this & ThisMarker;
+                return new Point(this.x, -this.y) as this & ThisReturn;
             case "both":
-                return new Point(-this.x, -this.y) as this & ThisMarker;
+                return new Point(-this.x, -this.y) as this & ThisReturn;
         }
     }
 
@@ -148,7 +144,7 @@ export class Point
     }
 
     map_points(f: (p: Point) => Point) {
-        return f(this) as this & ThisMarker;
+        return f(this) as this & ThisReturn;
     }
 
     distance(p: Point): number {
@@ -169,7 +165,7 @@ export class Point
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
-            this.to_circle_solid(2).render_fill(ctx);
+            this.to_circle_solid(2).render(ctx, 'fill');
         });
     }
 
@@ -181,19 +177,19 @@ export class Point
         return new Point(
             this.x + (to.x - this.x) * t,
             this.y + (to.y - this.y) * t
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     midpoint(p: Point): Point {
         return this.lerp(0.5, p);
     }
 
-    interpolate(t: number, to: Point) {
+    interpolate(t: number, to: this) {
         return this.lerp(t, to);
     }
 
     to_start() {
-        return this;
+        return this as this & ThisReturn;
     }
 
     key(): string {
@@ -204,3 +200,5 @@ export class Point
         return value instanceof Point;
     }
 }
+
+export const zerozero = new Point(0, 0);

@@ -10,7 +10,8 @@ import { v4 } from "uuid";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import type { SolidShape } from "./interfaces/solidshape";
 import type { Shape } from "./interfaces/shape";
-import { type ThisMarker } from "~/code/bundle";
+import { unmark_this, type ThisReturn } from "~/code/bundle";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 export class HollowShape<T extends SolidShape & Interpolate>
     implements Shape, Interpolate
@@ -25,7 +26,11 @@ export class HollowShape<T extends SolidShape & Interpolate>
         id?: string;
     } = {};
 
-    constructor(exterior: T, holes: T[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
+    constructor(
+        exterior: T,
+        holes: T[],
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.exterior = exterior;
         this.holes = holes;
     }
@@ -42,7 +47,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
     }
 
     can_interpolate(value: unknown): value is this {
-        return value instanceof HollowShape;
+        return value instanceof HollowShape && this.exterior.can_interpolate(value.exterior);
     }
 
     similarity(to: this): number {
@@ -56,12 +61,12 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return this.scale(0);
     }
 
-    interpolate(t: number, to: this): this & ThisMarker {
+    interpolate(t: number, to: this): this & ThisReturn {
         return new HollowShape(
-            this.exterior.interpolate(t, to.exterior),
+            unmark_this(this.exterior.interpolate(t, to.exterior)),
             this.holes.map((h) => h.interpolate(t, to.exterior)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     toString(): string {
@@ -74,28 +79,28 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return [this.exterior, ...this.holes];
     }
 
-    translate(p: Point): this & ThisMarker {
+    translate(p: Point): this & ThisReturn {
         return new HollowShape(
             this.exterior.translate(p) as T,
             this.holes.map((h) => h.translate(p)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, offset?: Point): this & ThisMarker {
+    scale(scale: number | Point, offset?: Point): this & ThisReturn {
         return new HollowShape(
             this.exterior.scale(scale, offset) as T,
             this.holes.map((h) => h.scale(scale, offset)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    flip(axis: Axis): this & ThisMarker {
+    flip(axis: Axis): this & ThisReturn {
         return new HollowShape(
             this.exterior.flip(axis) as T,
             this.holes.map((h) => h.flip(axis)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     bbox(): RectSolid {
@@ -178,18 +183,11 @@ export class HollowShape<T extends SolidShape & Interpolate>
         this.holes.forEach((h) => h.select_shape(ctx));
     }
 
-    render_outline(ctx: CanvasRenderingContext2D): void {
-        this.ctx_setter && this.ctx_setter(ctx);
-        this.exterior.render_outline(ctx);
-        this.holes.forEach((h) => h.render_outline(ctx));
-    }
-
-    render_fill(ctx: CanvasRenderingContext2D): void {
+    render(ctx: CanvasRenderingContext2D, action: 'fill' | 'stroke'): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        (ctx as unknown as { mozFillRule: string }).mozFillRule = "evenodd"; // For old Firefox versions, doesn't really matter as it's likely broken anyway
-        ctx.fill("evenodd");
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
@@ -200,15 +198,15 @@ export class HollowShape<T extends SolidShape & Interpolate>
     map_points(
         this: HollowShape<PolygonSolid>,
         f: (p: Point) => Point
-    ): HollowShape<PolygonSolid> {
+    ): this & ThisReturn {
         return new HollowShape(
             this.exterior.map_points(f),
             this.holes.map((h) => h.map_points(f)),
             this.ctx_setter
-        );
+        ) as unknown as this & ThisReturn;
     }
 
-    outline_intersects(other: HollowShape<T>): boolean {
+    outline_intersects(other: this): boolean {
         return (
             this.exterior.outline_intersects(other.exterior) ||
             this.holes.some((h) => other.exterior.outline_intersects(h))
@@ -246,17 +244,17 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return this.exterior.center();
     }
 
-    rotate(angle: number, origin?: Point | undefined): this & ThisMarker {
+    rotate(angle: number, origin?: Point | undefined): this & ThisReturn {
         const o = origin ?? this.center();
         return new HollowShape(
             this.exterior.rotate(angle, o) as T,
             this.holes.map((h) => h.rotate(angle, o)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 }

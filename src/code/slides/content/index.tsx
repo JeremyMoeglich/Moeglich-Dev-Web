@@ -17,15 +17,12 @@ import { motion } from "framer-motion";
 import type { languages } from "~/code/funcs/lex";
 import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
 import { type Renderable } from "~/code/shapelib/types/interfaces/renderable";
+import { InterFunc } from "~/code/shapelib/types/InterFunc";
+import { interpolate_between } from "~/utils/interpolate_between";
+import { intersect_visual } from "./intersect_visual";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
-
-function interpolate_between(t: number, a: number, b: number) {
-    const range = b - a;
-    const phase = (Math.sin(t * Math.PI) + 1) / 2;
-    return a + range * phase;
-}
 
 export const stages: Stage[] = [
     TitleSlide({
@@ -80,16 +77,16 @@ export const stages: Stage[] = [
                 bbox_opacity === 0
                     ? []
                     : new RectSolid(-300, -300, 600, 600)
-                        .translate(
-                            new Point(
-                                interpolate_between(time / 3000, -200, 1200),
-                                0
-                            )
-                        )
-                        .distribute_grid(2000)
-                        .map((point) => {
-                            return [point, text.contains(point, 0)] as const;
-                        });
+                          .translate(
+                              new Point(
+                                  interpolate_between(time / 3000, -200, 1200),
+                                  0
+                              )
+                          )
+                          .distribute_grid(2000)
+                          .map((point) => {
+                              return [point, text.contains(point, 0)] as const;
+                          });
             const bboxes = full_beziers.map((bezier) => bezier.bbox());
             return (
                 <div className="h-full">
@@ -99,7 +96,9 @@ export const stages: Stage[] = [
                             <ShapeRender
                                 instructions={[
                                     {
-                                        action: show_debug ? "outline" : "both",
+                                        action: show_debug
+                                            ? 'stroke'
+                                            : 'both',
                                         obj: text,
                                         ctx_setter: (ctx) => {
                                             ctx.fillStyle = "white";
@@ -108,7 +107,7 @@ export const stages: Stage[] = [
                                         z_index: 0,
                                     },
                                     {
-                                        action: "outline",
+                                        action: 'stroke',
                                         obj: createBundle(bboxes),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "blue";
@@ -119,7 +118,7 @@ export const stages: Stage[] = [
                                         z_index: 1,
                                     },
                                     {
-                                        action: "outline",
+                                        action: 'stroke',
                                         obj: createBundle(intersecting),
                                         ctx_setter: (ctx) => {
                                             ctx.strokeStyle = "red";
@@ -130,7 +129,7 @@ export const stages: Stage[] = [
                                         z_index: 2,
                                     },
                                     {
-                                        action: "fill",
+                                        action: 'fill',
                                         obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
@@ -149,7 +148,7 @@ export const stages: Stage[] = [
                                         z_index: 3,
                                     },
                                     {
-                                        action: "fill",
+                                        action: 'fill',
                                         obj: createBundle(
                                             samples
                                                 .filter(([, is_inside]) => {
@@ -226,10 +225,11 @@ export const stages: Stage[] = [
             xgap,
             static_props,
         }) => {
+            const t = useAnimationFrame();
             return (
                 <div className="h-full">
                     {defaults.title(title)}
-                    <div className="flex h-full items-center justify-center">
+                    <div className="relative flex h-full items-center justify-center bottom-12">
                         <motion.div
                             layoutId="shape_render"
                             className="relative"
@@ -238,10 +238,10 @@ export const stages: Stage[] = [
                                 render_id="abstraction"
                                 instructions={[
                                     {
-                                        action: "fill",
-                                        obj: visual.translate(
-                                            new Point(xgap / 2, 0)
-                                        ),
+                                        action: 'fill',
+                                        obj: visual
+                                            .calc({ t })
+                                            .translate(new Point(xgap / 2, 0)),
                                         ctx_setter: (ctx) => {
                                             ctx.fillStyle = "white";
                                         },
@@ -250,20 +250,22 @@ export const stages: Stage[] = [
                                 ]}
                             />
                         </motion.div>
-                        <motion.div
-                            layoutId="slide_codeblock"
-                            style={{
-                                transform: `translate(${-static_props.xgap / 2
+                        <motion.div layoutId="slide_codeblock">
+                            <div
+                                style={{
+                                    transform: `translate(${
+                                        -static_props.xgap / 2
                                     }px,${offsety}px)`,
-                                transition: "transform 700ms",
-                            }}
-                        >
-                            <CodeBlock
-                                animateId="codeblock1"
-                                code={code}
-                                language={language}
-                                scale={scale}
-                            />
+                                    transition: "transform 700ms",
+                                }}
+                            >
+                                <CodeBlock
+                                    animateId="codeblock1"
+                                    code={code}
+                                    language={language}
+                                    scale={scale}
+                                />
+                            </div>
                         </motion.div>
                     </div>
                 </div>
@@ -276,7 +278,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -291,7 +293,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -309,7 +311,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -326,7 +328,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -337,7 +339,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -354,7 +356,7 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -373,7 +375,7 @@ export const stages: Stage[] = [
                 scale: 2.5,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -392,7 +394,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -420,7 +422,7 @@ export const stages: Stage[] = [
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: empty_render,
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -435,14 +437,7 @@ export const stages: Stage[] = [
                 scale: 3,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual:
-                    createBundle([
-                        new CircleSolid(new Point(0, 0), 150).set_setter(
-                            (ctx) => {
-                                ctx.fillStyle = "red";
-                            }
-                        ),
-                    ]),
+                visual: intersect_visual(new Point(-100, 0), false, false, 'func'),
                 xgap: 800,
             },
             {
@@ -462,8 +457,8 @@ export const stages: Stage[] = [
                 scale: 2.6,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: empty_render,
-                xgap: 0,
+                visual: intersect_visual(new Point(-100, 0), true, false, 'func'),
+                xgap: 800,
             },
             {
                 code: dedent`
@@ -486,52 +481,11 @@ export const stages: Stage[] = [
                 }
                 `,
                 language: "ts",
-                scale: 2,
+                scale: 1.7,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: empty_render,
-                xgap: 0,
-            },
-            {
-                code: dedent`
-                console.log(is_inside_circle(
-                    { x: 10, y: 20, radius: 5 },
-                    { x: 15, y: 25 },
-                )); // false
-                `,
-                language: "ts",
-                scale: 2,
-                offsety: 0,
-                title: "Abstraktion - Types",
-                visual: empty_render,
-                xgap: 0,
-            },
-            {
-                code: dedent`
-                type Point = {
-                    x: number,
-                    y: number,
-                }
-                
-                type Circle = {
-                    x: number,
-                    y: number,
-                    radius: number,
-                }
-
-                function is_inside_circle(circle: Circle, point: Point): boolean {
-                    const dx = circle.x - point.x;
-                    const dy = circle.y - point.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    return distance < circle.radius;
-                }
-                `,
-                language: "ts",
-                scale: 2,
-                offsety: 0,
-                title: "Abstraktion - Types",
-                visual: empty_render,
-                xgap: 0,
+                visual: intersect_visual(new Point(0, -160), true, true, 'func'),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -561,41 +515,10 @@ export const stages: Stage[] = [
                 `,
                 language: "ts",
                 offsety: 0,
-                scale: 2,
+                scale: 1.6,
                 title: "Abstraktion - Klassen",
-                visual: empty_render,
-                xgap: 0,
-            },
-            {
-                code: dedent`
-                const circle = new Circle(10, 20, 5);
-                console.log(circle.is_inside({ x: 15, y: 25 })); // false
-                `,
-                language: "ts",
-                offsety: 0,
-                scale: 2.7,
-                title: "Abstraktion - Klassen",
-                visual: empty_render,
-                xgap: 0,
-            },
-            {
-                code: dedent`
-                    // Ohne Klassen
-                    console.log(is_inside_circle(
-                        { x: 10, y: 20, radius: 5 },
-                        { x: 15, y: 25 },
-                    ));
-
-                    // Mit Klassen
-                    const circle = new Circle(10, 20, 5);
-                    console.log(circle.is_inside({ x: 15, y: 25 }));
-                    `,
-                language: "ts",
-                offsety: 0,
-                scale: 2.5,
-                title: "Abstraktion - Klassen",
-                visual: empty_render,
-                xgap: 0,
+                visual: intersect_visual(new Point(-70, -50), true, true, 'class'),
+                xgap: 700,
             },
         ] as {
             code: string;
@@ -603,7 +526,10 @@ export const stages: Stage[] = [
             scale: number;
             offsety: number;
             title: string;
-            visual: Bundle<Interpolate & Renderable & Transformable>;
+            visual: InterFunc<
+                Bundle<Interpolate & Renderable & Transformable>,
+                { t: number }
+            >;
             xgap: number;
         }[],
         switch_duration: 1000,

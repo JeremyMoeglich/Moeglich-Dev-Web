@@ -21,7 +21,7 @@ import {
 import {
     type Bundler,
     createBundle,
-    type ThisMarker,
+    type ThisReturn,
     rebundle_functionality,
 } from "~/code/bundle";
 import { bounding_box_bundler } from "./boundingbox";
@@ -33,7 +33,7 @@ export interface Shape
         Renderable,
         Id {
     center(): Point;
-    recenter(axis: Axis): this & ThisMarker;
+    recenter(axis: Axis): this & ThisReturn;
 }
 
 export function is_Shape(value: unknown): value is Shape {

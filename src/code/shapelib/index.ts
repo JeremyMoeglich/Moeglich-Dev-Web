@@ -15,8 +15,6 @@ import { type HasLength } from "./types/interfaces/haslength";
 import { type HasVertices } from "./types/interfaces/hasvertices";
 import {
     type Renderable,
-    type RenderableDebug,
-    type RenderableOutline,
 } from "./types/interfaces/renderable";
 import { type SolidShape } from "./types/interfaces/solidshape";
 import { type Shape } from "./types/interfaces/shape";
@@ -45,8 +43,6 @@ export type {
     HasVertices,
     PointMap,
     Renderable,
-    RenderableDebug,
-    RenderableOutline,
     CanvasStyle,
     SolidShape,
     Shape,

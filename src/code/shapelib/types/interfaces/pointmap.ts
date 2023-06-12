@@ -1,8 +1,8 @@
-import { type Bundler, createBundle, type ThisMarker } from "../../../bundle";
+import { type Bundler, createBundle, type ThisReturn } from "../../../bundle";
 import type { Point } from "../point";
 
 export interface PointMap {
-    map_points(f: (p: Point) => Point): this & ThisMarker;
+    map_points(f: (p: Point) => Point): this & ThisReturn;
 }
 
 export function is_PointMap(value: unknown): value is PointMap {

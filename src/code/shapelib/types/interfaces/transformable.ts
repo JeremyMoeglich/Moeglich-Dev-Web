@@ -1,5 +1,5 @@
 import { zip } from "functional-utilities";
-import { type Bundler, createBundle, type ThisMarker } from "../../../bundle";
+import { type Bundler, createBundle, type ThisReturn } from "../../../bundle";
 import { type Axis } from "../types";
 import { Point } from "../point";
 import { RectSolid } from "../rect_solid";
@@ -10,10 +10,10 @@ import {
 } from "./boundingbox";
 
 export interface Transformable extends BoundingBox {
-    translate(offset: Point): this & ThisMarker;
-    flip(axis: Axis): this & ThisMarker;
-    rotate(angle: number, origin?: Point): this & ThisMarker; // origin is infered as center of bbox
-    scale(scale: number, origin?: Point): this & ThisMarker; // origin is infered as center of bbox
+    translate(offset: Point): this & ThisReturn;
+    flip(axis: Axis): this & ThisReturn;
+    rotate(angle: number, origin?: Point): this & ThisReturn; // origin is infered as center of bbox
+    scale(scale: number | Point, origin?: Point): this & ThisReturn; // origin is infered as center of bbox
 }
 
 export function is_Transformable(value: unknown): value is Transformable {

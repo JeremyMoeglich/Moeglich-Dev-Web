@@ -1,7 +1,7 @@
 import { cyclic_pairs, panic, zip } from "functional-utilities";
 import type { Axis } from "./types";
 import { LineSegment } from "./line_segment";
-import { Point } from "./point";
+import { Point, zerozero } from "./point";
 import { RectSolid } from "./rect_solid";
 import { TriangleSolid } from "./triangle_solid";
 import { chunk, sum, sumBy } from "lodash-es";
@@ -14,7 +14,10 @@ import { v4 } from "uuid";
 import { type SolidShape } from "./interfaces/solidshape";
 import { type PointMap } from "./interfaces/pointmap";
 import { type HasVertices } from "./interfaces/hasvertices";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
+import { BezierSolid } from "./bezier_solid";
+import { PartialBezier } from "./partial_bezier";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 const equalizePointCount = (
     shape1: PolygonSolid,
@@ -55,7 +58,8 @@ const equalizePointCount = (
 };
 
 export class PolygonSolid
-    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate {
+    implements SolidShape, PointMap, HasVertices, PointMap, Interpolate
+{
     points: Point[];
     private cache: {
         bbox?: RectSolid;
@@ -87,7 +91,10 @@ export class PolygonSolid
         return value instanceof PolygonSolid;
     }
 
-    constructor(points: Point[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
+    constructor(
+        points: Point[],
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.points = points;
     }
 
@@ -105,13 +112,14 @@ export class PolygonSolid
     clone() {
         const clone = new PolygonSolid([...this.points], this.ctx_setter);
         clone.cache = this.cache;
-        return clone as this & ThisMarker;
+        return clone as this & ThisReturn;
     }
 
     rotatePoints(index: number) {
         return new PolygonSolid(
-            this.points.concat([...this.points].splice(0, index)), this.ctx_setter
-        ) as this & ThisMarker;
+            this.points.concat([...this.points].splice(0, index)),
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
     interpolate(t: number, to: this) {
@@ -154,7 +162,7 @@ export class PolygonSolid
                 Point[]
             ]).map(([p1, p2]) => p1.interpolate(t, p2)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     invalidate() {
@@ -169,8 +177,9 @@ export class PolygonSolid
 
     translate(p: Point) {
         return new PolygonSolid(
-            this.points.map((p2) => p2.translate(p)), this.ctx_setter
-        ) as this & ThisMarker;
+            this.points.map((p2) => p2.translate(p)),
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
     static make_ngon(corners: number): PolygonSolid {
@@ -190,20 +199,23 @@ export class PolygonSolid
         return new PolygonSolid(points);
     }
 
-    scale(scale: number, origin: Point = new Point(0, 0)) {
+    scale(scale: number | Point, origin: Point = this.center()) {
         return new PolygonSolid(
             this.points.map((p) => p.scale(scale, origin)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
-        return new PolygonSolid(this.points.map((p) => p.flip(axis)), this.ctx_setter) as this &
-            ThisMarker;
+        return new PolygonSolid(
+            this.points.map((p) => p.flip(axis)),
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
     map_points(f: (p: Point) => Point) {
-        return new PolygonSolid(this.points.map(f), this.ctx_setter) as this & ThisMarker;
+        return new PolygonSolid(this.points.map(f), this.ctx_setter) as this &
+            ThisReturn;
     }
 
     bbox(): RectSolid {
@@ -302,7 +314,7 @@ export class PolygonSolid
         this.cache = {};
     }
 
-    outline_intersects(other: PolygonSolid): boolean {
+    outline_intersects(other: this): boolean {
         const lines = this.lines();
         if (this.cache.outline_collider)
             return lines.some((l) =>
@@ -316,7 +328,7 @@ export class PolygonSolid
         return other.lines().some((l) => collider(l));
     }
 
-    intersects(other: PolygonSolid): boolean {
+    intersects(other: this): boolean {
         if (other.points.length === 0) return false;
         return (
             this.outline_intersects(other) ||
@@ -330,7 +342,7 @@ export class PolygonSolid
     }
 
     relation_to(
-        other: this & ThisMarker
+        other: this & ThisReturn
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -368,6 +380,28 @@ export class PolygonSolid
         return counter(p);
     }
 
+    to_bezier(): BezierSolid {
+        const bezierArray: PartialBezier[] = [];
+        if (this.points.length === 0) return new BezierSolid(bezierArray);
+
+        // Loop through all the points in the polygon
+        for (const [prev, next] of cyclic_pairs(this.points)) {
+            const handle1 = new Point(
+                prev.x + (next.x - prev.x) / 3,
+                prev.y + (next.y - prev.y) / 3
+            );
+            const handle2 = new Point(
+                next.x - (next.x - prev.x) / 3,
+                next.y - (next.y - prev.y) / 3
+            );
+
+            // Add a new Bezier curve to the array
+            bezierArray.push(new PartialBezier(handle1, handle2, next));
+        }
+
+        return new BezierSolid(bezierArray);
+    }
+
     select_shape(ctx: CanvasRenderingContext2D): void {
         if (this.points.length === 0) return;
         const p0 = this.points[0] ?? panic("Invalid polygon (Internal)");
@@ -379,29 +413,28 @@ export class PolygonSolid
         }
     }
 
-    render_outline(ctx: CanvasRenderingContext2D): void {
+    render(
+        ctx: CanvasRenderingContext2D,
+        action: 'fill' | 'stroke'
+    ): void {
         if (this.points.length === 0) return;
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        ctx.stroke();
-    }
-
-    render_fill(ctx: CanvasRenderingContext2D): void {
-        if (this.points.length === 0) return;
-        this.ctx_setter && this.ctx_setter(ctx);
-        ctx.beginPath();
-        this.select_shape(ctx);
-        ctx.fill();
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         if (this.points.length === 0) return;
         debug_context(ctx, (ctx) => {
-            this.points.map((p) => p.to_circle_solid(2).render_fill(ctx));
+            this.points.map((p) =>
+                p.to_circle_solid(2).render(ctx, 'fill')
+            );
             // mark [0] as red
             ctx.fillStyle = "red";
-            (this.points[0] ?? panic()).to_circle_solid(4).render_fill(ctx);
+            (this.points[0] ?? panic())
+                .to_circle_solid(4)
+                .render(ctx, 'fill');
         });
     }
 
@@ -421,6 +454,43 @@ export class PolygonSolid
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
+    }
+
+    static cross(
+        offset: Point,
+        radius: number,
+        thickness: number,
+        angle: number
+    ): PolygonSolid {
+        const tl = new Point(-thickness / 2, thickness / 2);
+        const t_l = new Point(-thickness / 2, radius);
+        const t_r = new Point(thickness / 2, radius);
+        const tr = new Point(thickness / 2, thickness / 2);
+        const r_t = new Point(radius, thickness / 2);
+        const r_b = new Point(radius, -thickness / 2);
+        const br = new Point(thickness / 2, -thickness / 2);
+        const b_r = new Point(thickness / 2, -radius);
+        const b_l = new Point(-thickness / 2, -radius);
+        const bl = new Point(-thickness / 2, -thickness / 2);
+        const l_b = new Point(-radius, -thickness / 2);
+        const l_t = new Point(-radius, thickness / 2);
+
+        return new PolygonSolid([
+            tl,
+            t_l,
+            t_r,
+            tr,
+            r_t,
+            r_b,
+            br,
+            b_r,
+            b_l,
+            bl,
+            l_b,
+            l_t,
+        ])
+            .rotate(angle, zerozero)
+            .translate(offset);
     }
 }

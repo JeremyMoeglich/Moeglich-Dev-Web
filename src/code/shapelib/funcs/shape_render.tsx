@@ -5,12 +5,11 @@ import React, { useEffect, useRef, useContext, useMemo } from "react";
 import { Point } from "../types/point";
 import type { RectSolid } from "../types/rect_solid";
 import { panic } from "functional-utilities";
-import {
-    type Renderable,
-    type RenderableOutline,
-} from "../types/interfaces/renderable";
+import { type Renderable } from "../types/interfaces/renderable";
 import { type Transformable } from "../types/interfaces/transformable";
 import { type BoundingBox } from "../types/interfaces/boundingbox";
+import { useEvent } from "~/code/funcs/use_event";
+import { maybe_window } from "~/utils/maybe_window";
 
 export type DrawParams = {
     debug?: boolean;
@@ -18,16 +17,9 @@ export type DrawParams = {
     z_index: number;
     shape_id?: string;
     origin?: "local" | "global";
-} & (
-    | {
-          obj: Renderable & Transformable & BoundingBox;
-          action: "fill" | "both";
-      }
-    | {
-          obj: RenderableOutline & Transformable & BoundingBox;
-          action: "outline";
-      }
-);
+    obj: Renderable & Transformable & BoundingBox;
+    action: "fill" | "stroke" | "both";
+};
 
 interface RenderedShape {
     shape_id: string;
@@ -76,13 +68,10 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 if (ctx_setter) {
                     ctx_setter(ctx);
                 }
-                if (ctx.globalAlpha !== 0) {
-                    if (action === "outline" || action === "both") {
-                        obj.render_outline(ctx);
-                    }
-                    if (action === "fill" || action === "both") {
-                        obj.render_fill(ctx);
-                    }
+                if (action === "fill" || action === "both") {
+                    obj.render(ctx, "fill");
+                } else if (action === "stroke" || action === "both") {
+                    obj.render(ctx, "stroke");
                 }
                 if (debug) {
                     obj.render_debug(ctx);
@@ -115,7 +104,7 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 }
             }
         };
-    }, [canvasRef, obj, action, debug, ctx_setter, shape_id, z_index]);
+    }, [obj, action, debug, ctx_setter, shape_id, z_index, canvasRef]);
 
     return null;
 };
@@ -151,17 +140,10 @@ export const ShapeRender: React.FC<
             // Now you can use this offset in your drawing logic
             return instructions.map((instruction) => {
                 if (instruction.origin === "global") return instruction;
-                if (instruction.action === "outline") {
-                    return {
-                        ...instruction,
-                        obj: instruction.obj.translate(offset),
-                    };
-                } else {
-                    return {
-                        ...instruction,
-                        obj: instruction.obj.translate(offset),
-                    };
-                }
+                return {
+                    ...instruction,
+                    obj: instruction.obj.translate(offset),
+                };
             });
         }
         return [];
@@ -175,31 +157,17 @@ export const ShapeRender: React.FC<
             {updated_instructions.map((instruction, i) => {
                 const id =
                     instruction.shape_id ?? `${render_id ?? panic()}-${i}`;
-                if (instruction.action === "outline") {
-                    return (
-                        <SingleShapeRender
-                            key={id}
-                            action="outline"
-                            obj={instruction.obj}
-                            shape_id={id}
-                            z_index={instruction.z_index}
-                            ctx_setter={instruction.ctx_setter}
-                            debug={instruction.debug}
-                        />
-                    );
-                } else {
-                    return (
-                        <SingleShapeRender
-                            key={id}
-                            action={instruction.action}
-                            obj={instruction.obj}
-                            shape_id={id}
-                            z_index={instruction.z_index}
-                            ctx_setter={instruction.ctx_setter}
-                            debug={instruction.debug}
-                        />
-                    );
-                }
+                return (
+                    <SingleShapeRender
+                        key={id}
+                        action={instruction.action}
+                        obj={instruction.obj}
+                        shape_id={id}
+                        z_index={instruction.z_index}
+                        ctx_setter={instruction.ctx_setter}
+                        debug={instruction.debug}
+                    />
+                );
             })}
         </div>
     );
@@ -218,23 +186,19 @@ export const ShapeRenderProvider: React.FC<ShapeRenderProviderProps> = ({
 }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    // Resize canvas to fill screen on component mount and on window resize
-    useEffect(() => {
-        const resizeCanvas = () => {
-            if (canvasRef.current) {
-                canvasRef.current.width = window.innerWidth;
-                canvasRef.current.height = window.innerHeight;
-                rerender(
-                    canvasRef.current.getContext("2d") ?? panic("No context")
-                );
-            }
-        };
-        resizeCanvas();
-        window.addEventListener("resize", resizeCanvas);
-        return () => window.removeEventListener("resize", resizeCanvas);
-    }, []);
+    function resize() {
+        if (canvasRef.current) {
+            canvasRef.current.width = window.innerWidth;
+            canvasRef.current.height = window.innerHeight;
+            rerender(canvasRef.current.getContext("2d") ?? panic("No context"));
+        }
+    }
 
-    // Provide canvasRef as a context to children
+    useEvent(maybe_window(), "resize", resize, undefined);
+    useEffect(() => {
+        resize();
+    }, [canvasRef]);
+
     return (
         <CanvasContext.Provider value={canvasRef}>
             <canvas ref={canvasRef} className="pointer-events-none absolute" />

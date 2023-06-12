@@ -1,3 +1,4 @@
+import { type UnMarkThis } from "~/code/bundle";
 import type { PolygonSolid } from "../polygon_solid";
 import { type Shape, is_Shape } from "./shape";
 
@@ -13,13 +14,13 @@ export interface SolidShape extends Shape {
     // Note that not every function using quality will need it at all, so it might be ignored for some shapes
 
     relation_to(
-        other: this
+        other: UnMarkThis<this>
     ):
         | "this_inside_other"
         | "other_inside_this"
         | "outline_intersect"
         | "disjoint";
-    intersects(other: this): boolean;
+    intersects(other: UnMarkThis<this>): boolean;
 }
 
 export function is_SolidShape(value: unknown): value is SolidShape {

@@ -39,22 +39,15 @@ const colorPresets: Record<ColorPreset, string> = {
     warmGradient: "radial-gradient(circle, #FFFFE0, #FFA500, #FF0000, #8B0000)",
 };
 
-interface TextProps {
-    fontSize: string;
-    color: ColorPreset;
-    animationdelay: number;
-}
-
-const Text = styled.div<TextProps>`
+const Text = styled.div`
     position: relative;
-    font-size: ${(props) => props.fontSize};
     font-weight: 900;
     color: transparent;
-    background: ${(props) => colorPresets[props.color]};
+    background: var(--background-gradient);
     background-size: 300% 300%;
     background-attachment: fixed;
     animation: ${gradient} 15s ease-in-out infinite;
-    animation-delay: ${(props) => props.animationdelay}s;
+    animation-delay: var(--animation-delay);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 `;
@@ -76,19 +69,20 @@ export const FancyText = ({
         animationDuration - (currentTime % animationDuration);
 
     return (
-        <div className="text-center">
+        <div
+            className="text-center"
+            style={
+                {
+                    "--background-gradient": colorPresets[color],
+                    "--animation-delay": `${animationDelay}s`,
+                    fontSize,
+                } as React.CSSProperties
+            }
+        >
             <CrossText
                 tokens={typeof text === "string" ? splitString(text) : text}
                 animateId={animateId}
-                token_wrap={(token) => (
-                    <Text
-                        fontSize={fontSize}
-                        color={color}
-                        animationdelay={animationDelay} // <-- Pass it here
-                    >
-                        {token}
-                    </Text>
-                )}
+                token_wrap={(token) => <Text>{token}</Text>}
             />
         </div>
     );

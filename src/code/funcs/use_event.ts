@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { EventTypes } from "../types/event_types";
 import { Point } from "../shapelib";
 import { panic } from "functional-utilities";
+import { zerozero } from "../shapelib/types/point";
 
 export function useEvent<T extends keyof EventTypes, O>(
     element: EventTarget | undefined,
@@ -44,7 +45,7 @@ export function useMousePosition(
                 return new Point(e.clientX - rect.left, e.clientY - rect.top);
             }
         },
-        new Point(0, 0)
+        zerozero
     );
 }
 

@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import type { Interpolate } from "./interpolator";
 import { v4 } from "uuid";
-import { type ThisMarker } from "../bundle";
+import { type ThisReturn } from "../bundle";
 
 export class Color implements Interpolate {
     color: chroma.Color;
@@ -21,13 +21,13 @@ export class Color implements Interpolate {
         this.color = chroma(r, g, b);
     }
 
-    interpolate(t: number, to: Color) {
+    interpolate(t: number, to: this) {
         const newColor = chroma.mix(this.color, to.color, t, "lab");
         return new Color(
             newColor.get("rgb.r"),
             newColor.get("rgb.g"),
             newColor.get("rgb.b")
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     can_interpolate(value: unknown): value is this {
@@ -63,6 +63,6 @@ export class Color implements Interpolate {
     }
 
     to_start() {
-        return this;
+        return this as this & ThisReturn;
     }
 }

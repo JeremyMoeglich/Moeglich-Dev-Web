@@ -42,6 +42,8 @@
         "functional-utilities": "^3.2.1",
         "lodash-es": "^4.17.21",
         "lru-cache": "^9.1.2",
+        "million": "^2.4.4",
+        "munkres-algorithm": "^1.0.2",
         "munkres-js": "^1.2.2",
         "next": "^13.4.4",
         "next-auth": "^4.22.1",

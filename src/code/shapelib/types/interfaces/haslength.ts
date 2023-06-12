@@ -1,10 +1,10 @@
-import type { Bundler } from "~/code/bundle";
+import type { Bundler, UnMarkThis } from "~/code/bundle";
 import type { Point } from "../point";
 
 export interface HasLength {
     outline_length(): number;
     sample_on_length(min_per_unit: number, variant: "rng" | "evenly"): Point[];
-    outline_intersects(other: this): boolean;
+    outline_intersects(other: UnMarkThis<this>): boolean;
     right_point_intersections(p: Point): number;
 }
 

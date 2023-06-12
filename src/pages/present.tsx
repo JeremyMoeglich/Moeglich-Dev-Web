@@ -100,4 +100,4 @@ function App() {
     );
 }
 
-export default FullScreenApp;
+export default FullScreenApp

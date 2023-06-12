@@ -4,12 +4,12 @@
 import type { Simplify } from "type-fest";
 import { point_map_bundler } from "./shapelib/types/interfaces/pointmap";
 import {
-    renderable_debug_bundler,
-    renderable_outline_bundler,
     renderable_bundler,
 } from "./shapelib/types/interfaces/renderable";
 import { bounding_box_bundler } from "./shapelib/types/interfaces/boundingbox";
-import { transformable_bundler } from "./shapelib/types/interfaces/transformable";
+import {
+    transformable_bundler,
+} from "./shapelib/types/interfaces/transformable";
 import { stringifiable_bundler } from "./shapelib/types/interfaces/stringifiable";
 import { has_area_bundler } from "./shapelib/types/interfaces/hasarea";
 import { has_length_bundler } from "./shapelib/types/interfaces/haslength";
@@ -61,8 +61,6 @@ function bindFirstArgumentToThis<F extends (x: any, ...args: any) => any>(
 
 const bundlers = [
     stringifiable_bundler,
-    renderable_debug_bundler,
-    renderable_outline_bundler,
     renderable_bundler,
     point_map_bundler,
     bounding_box_bundler,
@@ -104,8 +102,8 @@ type GuardedType<T> = T extends (x: any) => x is infer G ? G : never;
 
 type ReplaceThisReturn<T, R> = {
     [K in keyof T]: T[K] extends (...args: infer V) => infer W
-        ? W extends ThisMarker
-            ? (...args: V) => Bundle<R> & ThisMarker
+        ? W extends ThisReturn
+            ? (...args: V) => Bundle<R> & ThisReturn
             : T[K]
         : T[K];
 };
@@ -135,11 +133,13 @@ type AccumulatedBundle<T, Bs extends Array<Bundler<any, any>>> = Bs extends [
     infer B,
     ...infer Rest
 ]
-    ? ApplicableFunctionality<B & Bundler<any, any>, T> &
-          AccumulatedBundle<
-              T,
-              Rest extends Array<Bundler<any, any>> ? Rest : []
-          >
+    ? B extends Bundler<any, any>
+        ? ApplicableFunctionality<B, T> &
+              AccumulatedBundle<
+                  T,
+                  Rest extends Array<Bundler<any, any>> ? Rest : []
+              >
+        : never
     : Record<string, never>;
 
 export type Bundle<T> = Simplify<
@@ -161,7 +161,7 @@ export function createBundle<T>(values: T[]) {
     }
 
     Object.setPrototypeOf(object, prototype);
-    return object as Bundle<T> & ThisMarker;
+    return object as Bundle<T> & ThisReturn;
 }
 
 export function emptyBundle<T>(template: T): Bundle<T> {
@@ -183,7 +183,11 @@ export function is_bundle<T>(
     );
 }
 
-export type ThisMarker = { _this: true };
-export function mark_this<T extends object>(obj: T): T & ThisMarker {
-    return obj as T & ThisMarker;
+export type ThisReturn = { _this: true };
+export type UnMarkThis<T extends object> = Omit<T, '_this'>;
+export function mark_this<T extends object>(obj: T): T & ThisReturn {
+    return obj as T & ThisReturn;
+}
+export function unmark_this<T extends object & ThisReturn>(obj: T): UnMarkThis<T> {
+    return obj as UnMarkThis<T>;
 }

@@ -1,10 +1,10 @@
 import type { Interpolate } from "~/code/funcs/interpolator";
 import type { Axis } from "./types";
-import { Point } from "./point";
+import { type Point, zerozero } from "./point";
 import { v4 } from "uuid";
 import type { Stringifiable } from "./interfaces/stringifiable";
 import type { PointMap } from "./interfaces/pointmap";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
 
 export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     handle1: Point;
@@ -23,9 +23,9 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
 
     static empty(): PartialBezier {
         return new PartialBezier(
-            new Point(0, 0),
-            new Point(0, 0),
-            new Point(0, 0)
+            zerozero,
+            zerozero,
+            zerozero
         );
     }
 
@@ -58,7 +58,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
             this.handle1.interpolate(t, to.handle1),
             this.handle2.interpolate(t, to.handle2),
             this.end_point.interpolate(t, to.end_point)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     id(): string {
@@ -69,10 +69,10 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     }
 
     to_start() {
-        return this;
+        return this as this & ThisReturn;
     }
 
-    scale(scale: number, origin = new Point(0, 0)): PartialBezier {
+    scale(scale: number | Point, origin = zerozero): PartialBezier {
         return new PartialBezier(
             this.handle1.scale(scale, origin),
             this.handle2.scale(scale, origin),
@@ -93,6 +93,6 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
             f(this.handle1),
             f(this.handle2),
             f(this.end_point)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 }

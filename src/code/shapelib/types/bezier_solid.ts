@@ -13,9 +13,10 @@ import type { TriangleSolid } from "./triangle_solid";
 import { debug_context } from "../funcs/render_debug";
 import type { Interpolate } from "~/code/funcs/interpolator";
 import { v4 } from "uuid";
-import { type Bundle, createBundle, type ThisMarker } from "../../bundle";
+import { type Bundle, createBundle, type ThisReturn } from "../../bundle";
 import type { Id } from "./interfaces/id";
 import type { SolidShape } from "./interfaces/solidshape";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 export type PointWithHandles = {
     start_handle: Point;
@@ -37,7 +38,10 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         id?: string;
     } = {};
 
-    constructor(bezier: PartialBezier[], public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
+    constructor(
+        bezier: PartialBezier[],
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.bezier = bezier;
     }
 
@@ -53,7 +57,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     to_start() {
-        return this.scale(0);
+        return this.scale(1);
     }
 
     can_interpolate(value: unknown): value is this {
@@ -61,25 +65,24 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     interpolate(t: number, to: this) {
-        if (this.bezier.length !== to.bezier.length) {
-            panic("Can't interpolate bezier solids with different lengths");
-        }
+
         return new BezierSolid(
             zip([this.bezier, to.bezier] as [
                 PartialBezier[],
                 PartialBezier[]
             ]).map(([a, b]) => a.interpolate(t, b)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     similarity(to: this): number {
-        if (this.bezier.length !== to.bezier.length) return 0;
-        return sum(
-            zip([this.bezier, to.bezier] as [
-                PartialBezier[],
-                PartialBezier[]
-            ]).map(([a, b]) => a.similarity(b))
+        return (
+            sum(
+                zip([this.bezier, to.bezier] as [
+                    PartialBezier[],
+                    PartialBezier[]
+                ]).map(([a, b]) => a.similarity(b))
+            ) * Math.abs(this.bezier.length - to.bezier.length + 1)
         );
     }
 
@@ -98,27 +101,32 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     translate(p: Point) {
-        return new BezierSolid(this.bezier.map((b) => b.translate(p)), this.ctx_setter) as this &
-            ThisMarker;
+        return new BezierSolid(
+            this.bezier.map((b) => b.translate(p)),
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, offset?: Point) {
+    scale(scale: number | Point, origin?: Point) {
+        const o = origin ?? this.bbox().center();
         return new BezierSolid(
-            this.bezier.map((b) => b.scale(scale, offset)),
+            this.bezier.map((b) => b.scale(scale, o)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
-        return new BezierSolid(this.bezier.map((b) => b.flip(axis)), this.ctx_setter) as this &
-            ThisMarker;
+        return new BezierSolid(
+            this.bezier.map((b) => b.flip(axis)),
+            this.ctx_setter
+        ) as this & ThisReturn;
     }
 
     map_points(f: (p: Point) => Point) {
         return new BezierSolid(
             this.bezier.map((b) => b.map_points(f)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     bbox(): RectSolid {
@@ -196,7 +204,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         return this.approximated(1).sample_on_area(min_per_unit, variant);
     }
 
-    outline_intersects(other: BezierSolid): boolean {
+    outline_intersects(other: this): boolean {
         if (this.cache.outline_collider)
             return other
                 .fullBeziers()
@@ -209,12 +217,12 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         return other.fullBeziers().objs.some((b) => collider(b));
     }
 
-    intersects(other: this & ThisMarker): boolean {
+    intersects(other: this & ThisReturn): boolean {
         return this.relation_to(other) !== "disjoint";
     }
 
     relation_to(
-        other: this & ThisMarker
+        other: this
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -294,18 +302,14 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         });
     }
 
-    render_fill(ctx: CanvasRenderingContext2D): void {
+    render(
+        ctx: CanvasRenderingContext2D,
+        action: 'stroke' | 'fill'
+    ): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        ctx.fill();
-    }
-
-    render_outline(ctx: CanvasRenderingContext2D): void {
-        this.ctx_setter && this.ctx_setter(ctx);
-        ctx.beginPath();
-        this.select_shape(ctx);
-        ctx.stroke();
+        shapeaction(ctx, action)
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
@@ -313,20 +317,18 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         debug_context(ctx, (ctx) => {
             const points_with_handles = this.to_points_with_handles();
             points_with_handles.forEach((p) => {
-                p.start_handle.to_circle_solid(2).render_fill(ctx);
-                p.end_handle.to_circle_solid(2).render_fill(ctx);
-                p.point.to_circle_solid(2).render_fill(ctx);
+                p.start_handle.to_circle_solid(2).render(ctx, 'fill');
+                p.end_handle.to_circle_solid(2).render(ctx, 'fill');
+                p.point.to_circle_solid(2).render(ctx, 'fill');
                 p.start_handle.to_line(p.point).render(ctx);
                 p.end_handle.to_line(p.point).render(ctx);
             });
-            // // render full bezier bounding boxes
-            //this.fullBeziers().forEach(b => b.bbox().render_outline(ctx));
 
             // mark [0] as red
             ctx.fillStyle = "red";
             (points_with_handles[0] ?? panic()).point
                 .to_circle_solid(3)
-                .render_fill(ctx);
+                .render(ctx, 'fill');
         });
     }
 
@@ -361,6 +363,6 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 }

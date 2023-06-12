@@ -10,10 +10,11 @@ import { v4 } from "uuid";
 import type { Transformable } from "./interfaces/transformable";
 import type { PointMap } from "./interfaces/pointmap";
 import type { BoundingBox } from "./interfaces/boundingbox";
-import type { RenderableOutline } from "./interfaces/renderable";
 import { type Stringifiable } from "./interfaces/stringifiable";
 import { type HasLength } from "./interfaces/haslength";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
+import { type Renderable } from "./interfaces/renderable";
+import { shapeaction } from "~/code/funcs/shapeact";
 
 export class FullBezier
     implements
@@ -22,7 +23,7 @@ export class FullBezier
         PointMap,
         BoundingBox,
         HasLength,
-        RenderableOutline,
+        Renderable,
         Interpolate
 {
     start_point: Point;
@@ -32,7 +33,11 @@ export class FullBezier
         id?: string;
     } = {};
 
-    constructor(start_point: Point, bezier: PartialBezier, public ctx_setter?: (ctx: CanvasRenderingContext2D) => void) {
+    constructor(
+        start_point: Point,
+        bezier: PartialBezier,
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+    ) {
         this.start_point = start_point;
         this.bezier = bezier;
     }
@@ -57,7 +62,7 @@ export class FullBezier
             this.start_point.interpolate(t, to.start_point),
             this.bezier.interpolate(t, to.bezier),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     similarity(to: this): number {
@@ -68,7 +73,7 @@ export class FullBezier
     }
 
     to_start() {
-        return this;
+        return this as this & ThisReturn;
     }
 
     can_interpolate(value: unknown): value is this {
@@ -80,15 +85,15 @@ export class FullBezier
             this.start_point.translate(p),
             this.bezier.translate(p),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, origin: Point) {
+    scale(scale: number | Point, origin: Point) {
         return new FullBezier(
             this.start_point.scale(scale, origin),
             this.bezier.scale(scale, origin),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
@@ -96,7 +101,7 @@ export class FullBezier
             this.start_point.flip(axis),
             this.bezier.flip(axis),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     map_points(f: (p: Point) => Point) {
@@ -104,10 +109,37 @@ export class FullBezier
             f(this.start_point),
             this.bezier.map_points(f),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    bbox(): RectSolid {
+    bbox(exact = false): RectSolid {
+        if (!exact) {
+            const mx = Math.min(
+                this.start_point.x,
+                this.bezier.handle1.x,
+                this.bezier.handle2.x,
+                this.bezier.end_point.x
+            );
+            const my = Math.min(
+                this.start_point.y,
+                this.bezier.handle1.y,
+                this.bezier.handle2.y,
+                this.bezier.end_point.y
+            );
+            const Mx = Math.max(
+                this.start_point.x,
+                this.bezier.handle1.x,
+                this.bezier.handle2.x,
+                this.bezier.end_point.x
+            );
+            const My = Math.max(
+                this.start_point.y,
+                this.bezier.handle1.y,
+                this.bezier.handle2.y,
+                this.bezier.end_point.y
+            );
+            return new RectSolid(mx, my, Mx - mx, My - my);
+        }
         const xv = [
             this.start_point.x,
             this.bezier.handle1.x,
@@ -252,7 +284,7 @@ export class FullBezier
         return points;
     }
 
-    outline_intersects(other: FullBezier): boolean {
+    outline_intersects(other: this): boolean {
         const intersections = bezierBezierIntersectionFast(
             [
                 this.start_point.tuple(),
@@ -358,7 +390,7 @@ export class FullBezier
             this.start_point.rotate(angle, o),
             this.bezier.map_points((p) => p.rotate(angle, o)),
             this.ctx_setter
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {
@@ -373,16 +405,16 @@ export class FullBezier
         );
     }
 
-    render_outline(ctx: CanvasRenderingContext2D): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        ctx.stroke();
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
-            this.render_outline(ctx);
+            this.render(ctx, "stroke");
             this.start_point.render_debug(ctx);
             this.bezier.handle1.render_debug(ctx);
             this.bezier.handle2.render_debug(ctx);
@@ -392,6 +424,6 @@ export class FullBezier
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;
-        return this as this & ThisMarker;
+        return this as this & ThisReturn;
     }
 }

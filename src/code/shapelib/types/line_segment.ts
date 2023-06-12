@@ -1,14 +1,14 @@
 import { range } from "functional-utilities";
 import { sample_amount_default } from "../funcs/sample_amount";
 import type { Axis } from "./types";
-import { Point } from "./point";
+import { Point, zerozero } from "./point";
 import { RectSolid } from "./rect_solid";
 import { type Stringifiable } from "./interfaces/stringifiable";
 import { type Transformable } from "./interfaces/transformable";
 import { type PointMap } from "./interfaces/pointmap";
 import { type HasLength } from "./interfaces/haslength";
 import { type BoundingBox } from "./interfaces/boundingbox";
-import { type ThisMarker } from "~/code/bundle";
+import { type ThisReturn } from "~/code/bundle";
 
 export class LineSegment
     implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox
@@ -22,7 +22,7 @@ export class LineSegment
     }
 
     static empty(): LineSegment {
-        return new LineSegment(new Point(0, 0), new Point(0, 0));
+        return new LineSegment(zerozero, zerozero);
     }
 
     toString(): string {
@@ -33,26 +33,26 @@ export class LineSegment
         return new LineSegment(
             this.start.translate(p),
             this.end.translate(p)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
-    scale(scale: number, origin?: Point) {
-        const norigin = origin ?? new Point(0, 0);
+    scale(scale: number | Point, origin?: Point) {
+        const norigin = origin ?? zerozero;
         return new LineSegment(
             this.start.scale(scale, norigin),
             this.end.scale(scale, norigin)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
         return new LineSegment(
             this.start.flip(axis),
             this.end.flip(axis)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 
     map_points(f: (p: Point) => Point) {
-        return new LineSegment(f(this.start), f(this.end)) as this & ThisMarker;
+        return new LineSegment(f(this.start), f(this.end)) as this & ThisReturn;
     }
 
     outline_length(): number {
@@ -188,6 +188,6 @@ export class LineSegment
         return new LineSegment(
             this.start.rotate(angle, o),
             this.end.rotate(angle, o)
-        ) as this & ThisMarker;
+        ) as this & ThisReturn;
     }
 }
