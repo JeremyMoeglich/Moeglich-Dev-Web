@@ -21,6 +21,20 @@ export class Color implements Interpolate {
         this.color = chroma(r, g, b);
     }
 
+    clone() {
+        return new Color(
+            this.color.get("rgb.r"),
+            this.color.get("rgb.g"),
+            this.color.get("rgb.b")
+        )
+    }
+
+    shift_hue(amount: number) {
+        const n = this.clone()
+        n.color = n.color.set('hsl.h', `*${amount}`);
+        return n;
+    }
+
     interpolate(t: number, to: this) {
         const newColor = chroma.mix(this.color, to.color, t, "lab");
         return new Color(

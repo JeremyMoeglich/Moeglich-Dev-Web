@@ -16,31 +16,34 @@ import { Text } from "~/code/shapelib/types/text";
 import { dedent } from "~/utils/dedent";
 import { interpolate_between } from "~/utils/interpolate_between";
 import { shape_interface } from "./commons";
+import { Color } from "~/code/funcs/color";
 
 
-export function multi_shape_visual(labels: boolean, show_interface: boolean) {
+export function multi_shape_visual(labels: boolean, show_common: boolean, colors: 'inherit' | 'local' | 'none') {
     return new InterFunc(({ t }: { t: number }) => {
         const size = interpolate_between(t / 3000, 40, 50);
-        const setter = (ctx: CanvasRenderingContext2D) =>
-            (ctx.fillStyle = default_shape_color);
         const gap = 270;
         const angle = t / 1000;
         const gap_offset = (n: number) => new Point(n, 0);
+        const color_gen = (n: number) => new Color(255, 180, 180).shift_hue(n + t / 1000)
         const shape_offset = labels ? new Point(0, -50) : zerozero;
         const label_offset = new Point(0, 20);
         const shapes: (Renderable & Interpolate & Transformable)[] = [
             PolygonSolid.make_ngon(3, size)
-                .set_setter(setter)
+                .set_setter((ctx) =>
+                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(0).getHex()))
                 .translate(gap_offset(-gap))
                 .translate(shape_offset)
                 .rotate(angle),
             new CircleSolid(new Point(0, 0), size)
-                .set_setter(setter)
+                .set_setter((ctx) =>
+                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(1).getHex()))
                 .translate(shape_offset),
             syncTextToShapes("Test")
                 .scale(0.03)
                 .recenter("both")
-                .set_setter(setter)
+                .set_setter((ctx) =>
+                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(2).getHex()))
                 .translate(gap_offset(gap).translate(shape_offset))
                 .rotate(interpolate_between(t / 3000, -0.2, 0.2)),
         ];
@@ -49,7 +52,7 @@ export function multi_shape_visual(labels: boolean, show_interface: boolean) {
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Triangle ${show_interface ? "implements Shape " : ""}{
+                    class Triangle ${show_common ? "implements Shape " : ""}{
                         p1: Point;
                         p2: Point;
                         p3: Point;
@@ -73,7 +76,7 @@ export function multi_shape_visual(labels: boolean, show_interface: boolean) {
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Circle ${show_interface ? "implements Shape " : ""}{
+                    class Circle ${show_common ? "implements Shape " : ""}{
                         x: number;
                         y: number;
                         radius: number;
@@ -96,7 +99,7 @@ export function multi_shape_visual(labels: boolean, show_interface: boolean) {
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Text ${show_interface ? "implements Shape " : ""}{
+                    class Text ${show_common ? "implements Shape " : ""}{
                         text: string;
                         x: number;
                         y: number;
@@ -116,14 +119,16 @@ export function multi_shape_visual(labels: boolean, show_interface: boolean) {
                     "Text"
                 )
             );
-        show_interface &&
+        show_common &&
             shapes.push(
-                shape_interface
+                new Text(shape_interface, zerozero, 15)
+                    .recenter("both")
+                    .highlight("ts")
                     .translate(label_offset)
                     .translate(new Point(0, -250))
             );
         return createBundle(shapes)
-            .scale(!show_interface ? 2 : 1.5, zerozero)
-            .translate(show_interface ? new Point(0, 100) : new Point(0, 0));
+            .scale(!show_common ? 2 : 1.5, zerozero)
+            .translate(show_common ? new Point(0, 100) : new Point(0, 0));
     });
 }

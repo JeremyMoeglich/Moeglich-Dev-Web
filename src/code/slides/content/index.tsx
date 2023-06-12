@@ -21,6 +21,7 @@ import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { interpolate_between } from "~/utils/interpolate_between";
 import { intersect_visual } from "./intersect_visual";
 import { multi_shape_visual } from "./multi_shape";
+import { basic_polymorphism } from "./basic_polymorphism";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -84,7 +85,7 @@ export const stages: Stage[] = [
                                   0
                               )
                           )
-                          .distribute_grid(2000)
+                          .distribute_grid(1000)
                           .map((point) => {
                               return [point, text.contains(point, 0)] as const;
                           });
@@ -545,7 +546,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(false, false),
+                visual: multi_shape_visual(false, false, 'local'),
                 xgap: 0,
             },
             {
@@ -554,7 +555,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(true, false),
+                visual: multi_shape_visual(true, false, 'local'),
                 xgap: 0,
             },
             {
@@ -563,7 +564,34 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(true, true),
+                visual: multi_shape_visual(true, true, 'local'),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Polymorphism",
+                visual: basic_polymorphism(2),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Polymorphism",
+                visual: basic_polymorphism(3),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Interfaces",
+                visual: multi_shape_visual(true, true, 'local'),
                 xgap: 0,
             },
         ] as {
