@@ -400,8 +400,8 @@ export class FullBezier
     recenter(axis: Axis): this & ThisReturn {
         const center = this.center();
         const offset = new Point(
-            axis !== 'y' ? -center.x : 0,
-            axis !== 'x' ? -center.y : 0
+            axis !== "y" ? -center.x : 0,
+            axis !== "x" ? -center.y : 0
         );
         return this.translate(offset);
     }

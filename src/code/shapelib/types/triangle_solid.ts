@@ -12,6 +12,7 @@ import { type SolidShape } from "./interfaces/solidshape";
 import { type PointMap } from "./interfaces/pointmap";
 import { type ThisReturn } from "~/code/bundle";
 import { shapeaction } from "~/code/funcs/shapeact";
+import { Renderable } from "./interfaces/renderable";
 
 export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     private cache: {
@@ -41,11 +42,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     }
 
     static empty(): TriangleSolid {
-        return new TriangleSolid(
-            zerozero,
-            zerozero,
-            zerozero
-        );
+        return new TriangleSolid(zerozero, zerozero, zerozero);
     }
 
     toString(): string {
@@ -297,10 +294,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         ctx.lineTo(this.a.x, this.a.y);
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'fill' | 'stroke'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);

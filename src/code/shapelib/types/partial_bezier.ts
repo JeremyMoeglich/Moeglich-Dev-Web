@@ -22,11 +22,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
     }
 
     static empty(): PartialBezier {
-        return new PartialBezier(
-            zerozero,
-            zerozero,
-            zerozero
-        );
+        return new PartialBezier(zerozero, zerozero, zerozero);
     }
 
     toString(): string {

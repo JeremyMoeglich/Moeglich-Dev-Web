@@ -18,49 +18,75 @@ import { interpolate_between } from "~/utils/interpolate_between";
 import { shape_interface } from "./commons";
 import { Color } from "~/code/funcs/color";
 
-
-export function multi_shape_visual(labels: boolean, show_common: boolean, colors: 'inherit' | 'local' | 'none') {
+export function multi_shape_visual(
+    labels: boolean,
+    show_common: boolean,
+    colors: "abstract_inherit" | "inherit" | "local" | "none"
+) {
     return new InterFunc(({ t }: { t: number }) => {
         const size = interpolate_between(t / 3000, 40, 50);
         const gap = 270;
         const angle = t / 1000;
         const gap_offset = (n: number) => new Point(n, 0);
-        const color_gen = (n: number) => new Color(255, 180, 180).shift_hue(n + t / 1000)
+        const color_gen = (n: number) =>
+            new Color(255, 140, 140).shift_hue(120 * n + t / 30);
         const shape_offset = labels ? new Point(0, -50) : zerozero;
         const label_offset = new Point(0, 20);
         const shapes: (Renderable & Interpolate & Transformable)[] = [
             PolygonSolid.make_ngon(3, size)
-                .set_setter((ctx) =>
-                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(0).getHex()))
+                .set_setter(
+                    (ctx) =>
+                        (ctx.fillStyle =
+                            colors === "none"
+                                ? default_shape_color
+                                : color_gen(0).getHex())
+                )
                 .translate(gap_offset(-gap))
                 .translate(shape_offset)
                 .rotate(angle),
             new CircleSolid(new Point(0, 0), size)
-                .set_setter((ctx) =>
-                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(1).getHex()))
+                .set_setter(
+                    (ctx) =>
+                        (ctx.fillStyle =
+                            colors === "none"
+                                ? default_shape_color
+                                : color_gen(1).getHex())
+                )
                 .translate(shape_offset),
             syncTextToShapes("Test")
                 .scale(0.03)
                 .recenter("both")
-                .set_setter((ctx) =>
-                    (ctx.fillStyle = colors === 'none' ? default_shape_color : color_gen(2).getHex()))
+                .set_setter(
+                    (ctx) =>
+                        (ctx.fillStyle =
+                            colors === "none"
+                                ? default_shape_color
+                                : color_gen(2).getHex())
+                )
                 .translate(gap_offset(gap).translate(shape_offset))
                 .rotate(interpolate_between(t / 3000, -0.2, 0.2)),
         ];
+        const color_def = colors === "local" ? "\n    color: Color" : "";
+        const keyword =
+            colors === "inherit"
+                ? "extends"
+                : colors === "abstract_inherit"
+                ? "extends"
+                : "implements";
         labels &&
             shapes.push(
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Triangle ${show_common ? "implements Shape " : ""}{
-                        p1: Point;
-                        p2: Point;
-                        p3: Point;
+class Triangle ${show_common ? `${keyword} Shape ` : ""}${color_def}
+    p1: Point;
+    p2: Point;
+    p3: Point;
 
-                        is_inside(p: Point): boolean {
-                            // ...
-                        }
-                    }
+    is_inside(p: Point): boolean {
+        // ...
+    }
+}
                 `,
                         label_offset,
                         10
@@ -76,15 +102,15 @@ export function multi_shape_visual(labels: boolean, show_common: boolean, colors
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Circle ${show_common ? "implements Shape " : ""}{
-                        x: number;
-                        y: number;
-                        radius: number;
+class Circle ${show_common ? `${keyword} Shape ` : ""}${color_def}
+    x: number;
+    y: number;
+    radius: number;
 
-                        is_inside(p: Point): boolean {
-                            // ...
-                        }
-                    }
+    is_inside(p: Point): boolean {
+        // ...
+    }
+}
                 `,
                         label_offset,
                         10
@@ -99,16 +125,16 @@ export function multi_shape_visual(labels: boolean, show_common: boolean, colors
                 new InterBlock(
                     new Text(
                         dedent`
-                    class Text ${show_common ? "implements Shape " : ""}{
-                        text: string;
-                        x: number;
-                        y: number;
-                        size: number;
+class Text ${show_common ? `${keyword} Shape ` : ""}{${color_def}
+    text: string;
+    x: number;
+    y: number;
+    size: number;
 
-                        is_inside(p: Point): boolean {
-                            // ...
-                        }
-                    }
+    is_inside(p: Point): boolean {
+        // ...
+    }
+}
                 `,
                         label_offset,
                         10
@@ -121,7 +147,20 @@ export function multi_shape_visual(labels: boolean, show_common: boolean, colors
             );
         show_common &&
             shapes.push(
-                new Text(shape_interface, zerozero, 15)
+                new Text(
+                    shape_interface({
+                        variant:
+                            colors === "inherit"
+                                ? "class"
+                                : colors === "abstract_inherit"
+                                ? "abstract_class"
+                                : "interface",
+                        color: true,
+                        is_inside: true,
+                    }),
+                    zerozero,
+                    15
+                )
                     .recenter("both")
                     .highlight("ts")
                     .translate(label_offset)

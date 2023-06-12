@@ -65,7 +65,6 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     interpolate(t: number, to: this) {
-
         return new BezierSolid(
             zip([this.bezier, to.bezier] as [
                 PartialBezier[],
@@ -302,14 +301,11 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         });
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'stroke' | 'fill'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "stroke" | "fill"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
-        shapeaction(ctx, action)
+        shapeaction(ctx, action);
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
@@ -317,9 +313,9 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         debug_context(ctx, (ctx) => {
             const points_with_handles = this.to_points_with_handles();
             points_with_handles.forEach((p) => {
-                p.start_handle.to_circle_solid(2).render(ctx, 'fill');
-                p.end_handle.to_circle_solid(2).render(ctx, 'fill');
-                p.point.to_circle_solid(2).render(ctx, 'fill');
+                p.start_handle.to_circle_solid(2).render(ctx, "fill");
+                p.end_handle.to_circle_solid(2).render(ctx, "fill");
+                p.point.to_circle_solid(2).render(ctx, "fill");
                 p.start_handle.to_line(p.point).render(ctx);
                 p.end_handle.to_line(p.point).render(ctx);
             });
@@ -328,7 +324,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
             ctx.fillStyle = "red";
             (points_with_handles[0] ?? panic()).point
                 .to_circle_solid(3)
-                .render(ctx, 'fill');
+                .render(ctx, "fill");
         });
     }
 

@@ -323,10 +323,7 @@ export class RectSolid
         ctx.rect(this.x, this.y, this.width, this.height);
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'fill' | 'stroke'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
@@ -336,7 +333,7 @@ export class RectSolid
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
             this.vertices().map((p) =>
-                p.to_circle_solid(2).render(ctx, 'fill')
+                p.to_circle_solid(2).render(ctx, "fill")
             );
         });
     }
@@ -344,12 +341,13 @@ export class RectSolid
     distribute_grid(min_n: number): Point[] {
         const n_x = Math.ceil(Math.sqrt((min_n * this.width) / this.height));
         const n_y = Math.ceil(min_n / n_x);
-        const dx = this.width / n_x;
-        const dy = this.height / n_y;
-        return range(n_x).flatMap((i) =>
-            range(n_y).map((j) => new Point(this.x + i * dx, this.y + j * dy))
+        const dx = this.width / (n_x + 1); // Adjusted to have n_x + 1 gaps
+        const dy = this.height / (n_y + 1); // Adjusted to have n_y + 1 gaps
+        return range(1, n_x + 1).flatMap((i) =>  // Starting from 1 to have a gap at the beginning
+            range(1, n_y + 1).map((j) => new Point(this.x + i * dx, this.y + j * dy)) // Starting from 1 to have a gap at the beginning
         );
     }
+    
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;

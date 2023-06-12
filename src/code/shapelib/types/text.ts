@@ -65,11 +65,15 @@ export const measureTextSize = (
         (() => {
             if (!context) return { width: 0, height: 0 };
             context.font = `1${unit} ${fontName}`;
-            const width = max(
-                text
-                    .split("\n")
-                    .map((line) => (context ?? panic()).measureText(line).width)
-            ) ?? 0;
+            const width =
+                max(
+                    text
+                        .split("\n")
+                        .map(
+                            (line) =>
+                                (context ?? panic()).measureText(line).width
+                        )
+                ) ?? 0;
 
             const metaData: MetaData = {
                 rootFontSize: parseFloat(
@@ -219,11 +223,10 @@ export class Text implements Interpolate, Renderable, Transformable {
     }
 
     similarity(to: UnMarkThis<this>): number {
-        const size_sim = (
+        const size_sim =
             this.position.similarity(to.position) +
             Math.abs(this.size - to.size) +
-            Math.abs(this.rotation - to.rotation)
-        );
+            Math.abs(this.rotation - to.rotation);
         return size_sim;
     }
 

@@ -237,10 +237,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
     }
 
-    render(
-        ctx: CanvasRenderingContext2D,
-        action: 'fill' | 'stroke'
-    ): void {
+    render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
@@ -262,7 +259,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         });
     }
 
-    as_bezier(): BezierSolid {
+    to_bezier(): BezierSolid {
         const kappa = 4 * ((Math.sqrt(2) - 1) / 3);
         const x = this.position.x;
         const y = this.position.y;

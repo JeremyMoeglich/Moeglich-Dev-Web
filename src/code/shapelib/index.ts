@@ -13,9 +13,7 @@ import { type BoundingBox } from "./types/interfaces/boundingbox";
 import { type HasArea } from "./types/interfaces/hasarea";
 import { type HasLength } from "./types/interfaces/haslength";
 import { type HasVertices } from "./types/interfaces/hasvertices";
-import {
-    type Renderable,
-} from "./types/interfaces/renderable";
+import { type Renderable } from "./types/interfaces/renderable";
 import { type SolidShape } from "./types/interfaces/solidshape";
 import { type Shape } from "./types/interfaces/shape";
 import { type Stringifiable } from "./types/interfaces/stringifiable";

@@ -4,6 +4,7 @@ import type { Stage } from "../stage";
 import { defaults } from "../defaults";
 import {
     CircleSolid,
+    HollowShape,
     Point,
     RectSolid,
     type Transformable,
@@ -22,6 +23,9 @@ import { interpolate_between } from "~/utils/interpolate_between";
 import { intersect_visual } from "./intersect_visual";
 import { multi_shape_visual } from "./multi_shape";
 import { basic_polymorphism } from "./basic_polymorphism";
+import { food_visual } from "./food_visual";
+import { generics_visual } from "./generics_visual";
+import { product_visual } from "./products";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -328,8 +332,8 @@ export const stages: Stage[] = [
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual(),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -546,7 +550,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(false, false, 'local'),
+                visual: multi_shape_visual(false, false, "none"),
                 xgap: 0,
             },
             {
@@ -555,7 +559,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(true, false, 'local'),
+                visual: multi_shape_visual(true, false, "none"),
                 xgap: 0,
             },
             {
@@ -564,7 +568,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(true, true, 'local'),
+                visual: multi_shape_visual(true, true, "none"),
                 xgap: 0,
             },
             {
@@ -591,7 +595,43 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Interfaces",
-                visual: multi_shape_visual(true, true, 'local'),
+                visual: multi_shape_visual(true, true, "local"),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Inheritance",
+                visual: multi_shape_visual(true, true, "inherit"),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Inheritance",
+                visual: multi_shape_visual(true, true, "abstract_inherit"),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: generics_visual(),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Ende",
+                visual: food_visual,
                 xgap: 0,
             },
         ] as {

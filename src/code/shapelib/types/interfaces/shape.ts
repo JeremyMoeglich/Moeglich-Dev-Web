@@ -1,27 +1,16 @@
 import { type HasArea, is_HasArea } from "./hasarea";
 import { type HasLength, is_HasLength } from "./haslength";
 import { type Id, is_Id } from "./id";
-import {
-    type Renderable,
-    is_Renderable,
-} from "./renderable";
-import {
-    type Stringifiable,
-    is_Stringifiable,
-} from "./stringifiable";
-import {
-    type Transformable,
-    is_Transformable,
-} from "./transformable";
+import { type Renderable, is_Renderable } from "./renderable";
+import { type Stringifiable, is_Stringifiable } from "./stringifiable";
+import { type Transformable, is_Transformable } from "./transformable";
 export interface Shape
     extends Transformable,
         Stringifiable,
         HasArea,
         HasLength,
         Renderable,
-        Id {
-
-}
+        Id {}
 
 export function is_Shape(value: unknown): value is Shape {
     return (

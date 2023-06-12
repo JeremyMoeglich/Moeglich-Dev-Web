@@ -8,18 +8,18 @@ const config = {
             extends: [
                 "plugin:@typescript-eslint/recommended-requiring-type-checking",
             ],
-            files: ["*.ts","*.tsx"],
+            files: ["*.ts", "*.tsx"],
             parserOptions: {
-                project: path.join(__dirname,"tsconfig.json"),
+                project: path.join(__dirname, "tsconfig.json"),
             },
         },
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
-        project: path.join(__dirname,"tsconfig.json"),
+        project: path.join(__dirname, "tsconfig.json"),
     },
     plugins: ["@typescript-eslint"],
-    extends: ["next/core-web-vitals","plugin:@typescript-eslint/recommended"],
+    extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
     rules: {
         "@typescript-eslint/consistent-type-imports": [
             "warn",
@@ -34,7 +34,7 @@ const config = {
         ],
         "no-empty-function": "off",
         "@typescript-eslint/no-empty-function": "off",
-        "@next/next/no-img-element": "off"
+        "@next/next/no-img-element": "off",
     },
 };
 

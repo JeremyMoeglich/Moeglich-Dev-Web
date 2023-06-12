@@ -8,7 +8,11 @@ import { dedent } from "~/utils/dedent";
 
 export function basic_polymorphism(i: number) {
     const segments = [
-        shape_interface,
+        shape_interface({
+            color: false,
+            variant: "interface",
+            is_inside: true,
+        }),
         dedent`
         const shapes: Shape[] = [
             new Circle(0, 0, 10),
@@ -19,20 +23,22 @@ export function basic_polymorphism(i: number) {
                 new Point(0, 10)
             )
         ];
-    `, dedent`
+    `,
+        dedent`
         for (const shape of shapes) {
             console.log(shape.is_inside(new Point(5, 5)));
         }
-    `]
+    `,
+    ];
 
-    const code = segments.slice(0, i).join('\n\n')
-    const text = new Text(code, zerozero, 15).highlight('ts');
+    const code = segments.slice(0, i).join("\n\n");
+    const text = new Text(code, zerozero, 15).highlight("ts");
     const final_height = 500;
     const text_bbox = text.bbox();
     const scaley = final_height / text_bbox.height;
     return new InterFunc(({ t }: { t: number }) => {
         return createBundle([
-            text.translate(new Point(-500, -100)).scale(scaley)
-        ])
-    })
+            text.translate(new Point(-500, -100)).scale(scaley),
+        ]);
+    });
 }

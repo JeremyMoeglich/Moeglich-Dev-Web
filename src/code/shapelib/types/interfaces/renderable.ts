@@ -1,18 +1,13 @@
-import {
-    type ThisReturn,
-    type Bundler,
-    createBundle,
-} from "../../../bundle";
+import { type ThisReturn, type Bundler, createBundle } from "../../../bundle";
 
 export interface Renderable {
     select_shape(ctx: CanvasRenderingContext2D): void;
-    render(ctx: CanvasRenderingContext2D, action: 'stroke' | 'fill'): void;
+    render(ctx: CanvasRenderingContext2D, action: "stroke" | "fill"): void;
     render_debug(ctx: CanvasRenderingContext2D): void;
     set_setter(
         ctx_setter: (ctx: CanvasRenderingContext2D) => void
     ): this & ThisReturn;
 }
-
 
 export function is_Renderable(value: unknown): value is Renderable {
     return (
@@ -21,7 +16,6 @@ export function is_Renderable(value: unknown): value is Renderable {
         (value as Renderable).set_setter !== undefined
     );
 }
-
 
 export const renderable_bundler: Bundler<Renderable, Renderable> = {
     isType: is_Renderable,
@@ -43,6 +37,6 @@ export const renderable_bundler: Bundler<Renderable, Renderable> = {
         },
         set_setter: (objs, ctx_setter) => {
             return createBundle(objs.map((obj) => obj.set_setter(ctx_setter)));
-        }
+        },
     },
 };

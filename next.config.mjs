@@ -1,4 +1,4 @@
-import million from 'million/compiler';
+import million from "million/compiler";
 
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
@@ -19,7 +19,7 @@ const config = {
     i18n: {
         locales: ["en"],
         defaultLocale: "en",
-    }
+    },
 };
 
 export default million.next(config);

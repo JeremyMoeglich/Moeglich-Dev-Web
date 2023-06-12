@@ -9,10 +9,10 @@ import { type PointMap } from "./interfaces/pointmap";
 import { type HasLength } from "./interfaces/haslength";
 import { type BoundingBox } from "./interfaces/boundingbox";
 import { type ThisReturn } from "~/code/bundle";
+import { PolygonSolid } from "./polygon_solid";
 
 export class LineSegment
-    implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox
-{
+    implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox {
     start: Point;
     end: Point;
 
@@ -24,6 +24,27 @@ export class LineSegment
     static empty(): LineSegment {
         return new LineSegment(zerozero, zerozero);
     }
+
+    to_polygon(width: number): PolygonSolid {
+        const dx = this.end.x - this.start.x;
+        const dy = this.end.y - this.start.y;
+        const norm = Math.sqrt(dx * dx + dy * dy);
+        if (norm === 0) {
+            return new RectSolid(-width / 2, -width / 2, width, width).to_polygon()
+        }
+
+        const halfWidth = width / 2;
+        const perpX = (dy / norm) * halfWidth;
+        const perpY = -(dx / norm) * halfWidth;
+
+        const p1 = new Point(this.start.x - perpX, this.start.y - perpY);
+        const p2 = new Point(this.start.x + perpX, this.start.y + perpY);
+        const p3 = new Point(this.end.x + perpX, this.end.y + perpY);
+        const p4 = new Point(this.end.x - perpX, this.end.y - perpY);
+
+        return new PolygonSolid([p1, p2, p3, p4]);
+    }
+
 
     toString(): string {
         return `Line(${this.start.toString()}, ${this.end.toString()})`;

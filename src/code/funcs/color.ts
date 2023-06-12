@@ -26,12 +26,12 @@ export class Color implements Interpolate {
             this.color.get("rgb.r"),
             this.color.get("rgb.g"),
             this.color.get("rgb.b")
-        )
+        );
     }
 
     shift_hue(amount: number) {
-        const n = this.clone()
-        n.color = n.color.set('hsl.h', `*${amount}`);
+        const n = this.clone();
+        n.color = n.color.set("hsl.h", amount % 360);
         return n;
     }
 
