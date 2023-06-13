@@ -14,6 +14,8 @@ import { type SolidShape } from "./interfaces/solidshape";
 import { type HasVertices } from "./interfaces/hasvertices";
 import { type ThisReturn } from "~/code/bundle";
 import { shapeaction } from "~/code/funcs/shapeact";
+import { PartialBezier } from "./partial_bezier";
+import { BezierSolid } from "./bezier_solid";
 
 export class RectSolid
     implements SolidShape, HasVertices, PointMap, Interpolate
@@ -343,11 +345,106 @@ export class RectSolid
         const n_y = Math.ceil(min_n / n_x);
         const dx = this.width / (n_x + 1); // Adjusted to have n_x + 1 gaps
         const dy = this.height / (n_y + 1); // Adjusted to have n_y + 1 gaps
-        return range(1, n_x + 1).flatMap((i) =>  // Starting from 1 to have a gap at the beginning
-            range(1, n_y + 1).map((j) => new Point(this.x + i * dx, this.y + j * dy)) // Starting from 1 to have a gap at the beginning
+        return range(1, n_x + 1).flatMap(
+            (
+                i // Starting from 1 to have a gap at the beginning
+            ) =>
+                range(1, n_y + 1).map(
+                    (j) => new Point(this.x + i * dx, this.y + j * dy)
+                ) // Starting from 1 to have a gap at the beginning
         );
     }
-    
+
+    round_corners(rounded_amount: number) {
+        // defines a square with rounded corners using 8 bezier curves 4 for each corner 4 for each side
+        const bezierArray: PartialBezier[] = [];
+
+        // top edge
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x + rounded_amount, this.y),
+                new Point(this.x + this.width - rounded_amount, this.y),
+                new Point(this.x + this.width - rounded_amount, this.y)
+            )
+        );
+
+        // top right corner
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x + this.width, this.y),
+                new Point(this.x + this.width, this.y),
+                new Point(this.x + this.width, this.y + rounded_amount)
+            )
+        );
+
+        // right edge
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x + this.width, this.y + rounded_amount),
+                new Point(
+                    this.x + this.width,
+                    this.y + this.height - rounded_amount
+                ),
+                new Point(
+                    this.x + this.width,
+                    this.y + this.height - rounded_amount
+                )
+            )
+        );
+
+        // bottom right corner
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x + this.width, this.y + this.height),
+                new Point(this.x + this.width, this.y + this.height),
+                new Point(
+                    this.x + this.width - rounded_amount,
+                    this.y + this.height
+                )
+            )
+        );
+
+        // bottom edge
+        bezierArray.push(
+            new PartialBezier(
+                new Point(
+                    this.x + this.width - rounded_amount,
+                    this.y + this.height
+                ),
+                new Point(this.x + rounded_amount, this.y + this.height),
+                new Point(this.x + rounded_amount, this.y + this.height)
+            )
+        );
+
+        // bottom left corner
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x, this.y + this.height),
+                new Point(this.x, this.y + this.height),
+                new Point(this.x, this.y + this.height - rounded_amount)
+            )
+        );
+
+        // left edge
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x, this.y + this.height - rounded_amount),
+                new Point(this.x, this.y + rounded_amount),
+                new Point(this.x, this.y + rounded_amount)
+            )
+        );
+
+        // top left corner
+        bezierArray.push(
+            new PartialBezier(
+                new Point(this.x, this.y),
+                new Point(this.x, this.y),
+                new Point(this.x + rounded_amount, this.y)
+            )
+        );
+
+        return new BezierSolid(bezierArray);
+    }
 
     set_setter(ctx_setter: (ctx: CanvasRenderingContext2D) => void) {
         this.ctx_setter = ctx_setter;

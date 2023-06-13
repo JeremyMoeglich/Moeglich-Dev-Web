@@ -26,6 +26,8 @@ import { food_visual } from "./food_visual";
 import { generics_visual } from "./generics_visual";
 import { product_visual } from "./products";
 import { extend_compare_visual } from "./extend_compare_visual";
+import { merge_code } from "~/code/merge_code";
+import { shape_interface } from "./commons";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -524,7 +526,7 @@ export const stages: Stage[] = [
                         this.radius = radius;
                     }
 
-                    is_inside(point: Point): boolean {
+                    contains_point(point: Point): boolean {
                         const dx = this.x - point.x;
                         const dy = this.y - point.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -626,7 +628,18 @@ export const stages: Stage[] = [
                 xgap: 0,
             },
             {
-                code: dedent``,
+                code: merge_code([
+                    shape_interface({
+                        is_inside: true,
+                        color: false,
+                        variant: "interface",
+                    }),
+                    dedent`
+                    function is_inside_shape(shape: Shape, point: Point): boolean {
+                        return shape.is_inside(point);
+                    }
+                    `,
+                ]),
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,

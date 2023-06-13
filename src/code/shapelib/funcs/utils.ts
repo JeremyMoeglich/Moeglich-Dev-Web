@@ -4,36 +4,57 @@ import { Renderable } from "../types/interfaces/renderable";
 import { Transformable } from "../types/interfaces/transformable";
 import { Point } from "../types/point";
 import { cyclic_pairs } from "functional-utilities";
+import { BezierSolid } from "../types/bezier_solid";
 
 export function box<T extends Renderable & Transformable>(
-    element: T
-): Bundle<RectSolid | T> {
-    const bbox = element.bbox().set_setter((ctx) => {
+    element: T,
+    options: {
+        rounded?: number;
+        min_width?: number;
+        min_height?: number;
+    }
+): Bundle<BezierSolid | RectSolid | T> {
+    let bbox: RectSolid | BezierSolid = element.bbox();
+    const center = bbox.center();
+    if (options.min_width) {
+        bbox = new RectSolid(
+            bbox.x,
+            bbox.y,
+            Math.max(options?.min_width ?? bbox.width, bbox.width),
+            Math.max(options?.min_height ?? bbox.height, bbox.height)
+        )
+            .recenter("both")
+            .translate(center);
+    }
+
+    let shape = options.rounded ? bbox.round_corners(options.rounded) : bbox;
+    shape = shape.set_setter((ctx) => {
         ctx.lineWidth = 1;
         ctx.fillStyle = "gray";
     });
-    return createBundle([bbox, element.scale(0.8, bbox.center())]);
+    return createBundle([shape, element.scale(0.8, bbox.center())]);
 }
 
 type AlignOptions = {
     direction: "horizontal" | "vertical";
 } & (
     | {
-        gap: number;
-        size: number;
-        method: "resize"
-        // Resize elements such that they fit in the given size and gap.
-    } | {
-        size: number;
-        method: "evenly"
-        // Distribute elements in equally spaced intervals of the given size. Even if the elements vary in size, might result in overlap
-    } | {
-        gap: number;
-        method: "equal_gap"
-        // Don't restrict total space, but make sure the gap between elements is equal.
-    }
+          gap: number;
+          size: number;
+          method: "resize";
+          // Resize elements such that they fit in the given size and gap.
+      }
+    | {
+          size: number;
+          method: "evenly";
+          // Distribute elements in equally spaced intervals of the given size. Even if the elements vary in size, might result in overlap
+      }
+    | {
+          gap: number;
+          method: "equal_gap";
+          // Don't restrict total space, but make sure the gap between elements is equal.
+      }
 );
-
 
 export function align<T extends Renderable & Transformable>(
     elements: T[],
@@ -47,11 +68,18 @@ export function align<T extends Renderable & Transformable>(
     let position = new Point(0, 0);
     let scaleFactor = 1;
 
-    if(options.method === "resize") {
+    if (options.method === "resize") {
         const totalGap = options.gap * (elements.length - 1);
-        const totalElementSize = options.direction === "horizontal"
-            ? elements.reduce((total, element) => total + element.bbox().width, 0)
-            : elements.reduce((total, element) => total + element.bbox().height, 0);
+        const totalElementSize =
+            options.direction === "horizontal"
+                ? elements.reduce(
+                      (total, element) => total + element.bbox().width,
+                      0
+                  )
+                : elements.reduce(
+                      (total, element) => total + element.bbox().height,
+                      0
+                  );
 
         scaleFactor = (options.size - totalGap) / totalElementSize;
     }
@@ -60,7 +88,7 @@ export function align<T extends Renderable & Transformable>(
         let elementCentered = element.recenter("both");
         let nextElementCentered = nextElement.recenter("both");
 
-        if(options.method === "resize") {
+        if (options.method === "resize") {
             elementCentered = elementCentered.scale(scaleFactor);
             nextElementCentered = nextElementCentered.scale(scaleFactor);
         }
@@ -72,30 +100,58 @@ export function align<T extends Renderable & Transformable>(
         switch (options.method) {
             case "resize":
             case "equal_gap":
-                translation = options.direction === "horizontal" 
-                    ? new Point(position.x - bbox.center().x, 0) 
-                    : new Point(0, position.y - bbox.center().y);
+                translation =
+                    options.direction === "horizontal"
+                        ? new Point(position.x - bbox.center().x, 0)
+                        : new Point(0, position.y - bbox.center().y);
                 break;
             case "evenly":
-                translation = options.direction === "horizontal" 
-                    ? new Point(options.size/elements.length - bbox.width/2, 0) 
-                    : new Point(0, options.size/elements.length - bbox.height/2);
+                translation =
+                    options.direction === "horizontal"
+                        ? new Point(
+                              options.size / elements.length - bbox.width / 2,
+                              0
+                          )
+                        : new Point(
+                              0,
+                              options.size / elements.length - bbox.height / 2
+                          );
                 break;
         }
-        
+
         new_elements.push(elementCentered.translate(translation));
 
         switch (options.method) {
             case "resize":
             case "equal_gap":
-                position = options.direction === "horizontal" 
-                    ? new Point(position.x + bbox.width/2 + nextBbox.width/2 + options.gap, 0)
-                    : new Point(0, position.y + bbox.height/2 + nextBbox.height/2 + options.gap);
+                position =
+                    options.direction === "horizontal"
+                        ? new Point(
+                              position.x +
+                                  bbox.width / 2 +
+                                  nextBbox.width / 2 +
+                                  options.gap,
+                              0
+                          )
+                        : new Point(
+                              0,
+                              position.y +
+                                  bbox.height / 2 +
+                                  nextBbox.height / 2 +
+                                  options.gap
+                          );
                 break;
             case "evenly":
-                position = options.direction === "horizontal" 
-                    ? new Point(position.x + options.size/elements.length, 0)
-                    : new Point(0, position.y + options.size/elements.length);
+                position =
+                    options.direction === "horizontal"
+                        ? new Point(
+                              position.x + options.size / elements.length,
+                              0
+                          )
+                        : new Point(
+                              0,
+                              position.y + options.size / elements.length
+                          );
                 break;
         }
     }
@@ -103,14 +159,12 @@ export function align<T extends Renderable & Transformable>(
     return createBundle(new_elements).recenter("both") as unknown as Bundle<T>;
 }
 
-
-
 type TableOptions = {
     orientation: "rows" | "columns";
-    gap: number,
-    x_size: number,
-    y_size: number
-}
+    gap: number;
+    x_size: number;
+    y_size: number;
+};
 
 export function table<T extends Renderable & Transformable>(
     elements: T[][],
@@ -118,21 +172,26 @@ export function table<T extends Renderable & Transformable>(
 ): Bundle<T> {
     return align(
         elements.map((row) =>
-            align(
-                row,
-                {
-                    direction: options.orientation === "rows" ? "horizontal" : "vertical",
-                    gap: options.gap,
-                    size: options.orientation === "rows" ? options.x_size : options.y_size,
-                    method: "resize"
-                }
-            )
+            align(row, {
+                direction:
+                    options.orientation === "rows" ? "horizontal" : "vertical",
+                gap: options.gap,
+                size:
+                    options.orientation === "rows"
+                        ? options.x_size
+                        : options.y_size,
+                method: "resize",
+            })
         ),
         {
-            direction: options.orientation === "rows" ? "vertical" : "horizontal",
+            direction:
+                options.orientation === "rows" ? "vertical" : "horizontal",
             gap: options.gap,
-            size: options.orientation === "rows" ? options.y_size : options.x_size,
-            method: "resize"
+            size:
+                options.orientation === "rows"
+                    ? options.y_size
+                    : options.x_size,
+            method: "resize",
         }
     ) as unknown as Bundle<T>;
 }

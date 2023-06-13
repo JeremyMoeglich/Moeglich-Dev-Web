@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { EventTypes } from "../types/event_types";
+import type { EventTypes } from "../event_types";
 import { Point } from "../shapelib";
 import { panic } from "functional-utilities";
 import { zerozero } from "../shapelib/types/point";

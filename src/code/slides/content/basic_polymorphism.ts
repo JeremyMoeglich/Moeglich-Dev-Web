@@ -26,7 +26,7 @@ export function basic_polymorphism(i: number) {
     `,
         dedent`
         for (const shape of shapes) {
-            console.log(shape.is_inside(new Point(5, 5)));
+            console.log(shape.contains_point(new Point(5, 5)));
         }
     `,
     ];

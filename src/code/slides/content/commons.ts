@@ -20,14 +20,14 @@ export function shape_interface(active: {
 
     if (active.is_inside) {
         if (active.variant === "interface") {
-            build += "    is_inside(): boolean;\n";
+            build += "    contains_point(): boolean;\n";
         } else if (active.variant === "class") {
-            build += "    is_inside(): boolean {\n";
+            build += "    contains_point(): boolean {\n";
             build += "        // implement the method here\n";
             build += "        throw new Error('Method not implemented.');\n"; // Throw error if method is not implemented
             build += "    }\n";
         } else {
-            build += "    abstract is_inside(): boolean;\n";
+            build += "    abstract contains_point(): boolean;\n";
         }
     }
 

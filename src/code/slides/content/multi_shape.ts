@@ -83,7 +83,7 @@ class Triangle ${show_common ? `${keyword} Shape ` : ""}${color_def}
     p2: Point;
     p3: Point;
 
-    is_inside(p: Point): boolean {
+    contains_point(p: Point): boolean {
         // ...
     }
 }
@@ -107,7 +107,7 @@ class Circle ${show_common ? `${keyword} Shape ` : ""}${color_def}
     y: number;
     radius: number;
 
-    is_inside(p: Point): boolean {
+    contains_point(p: Point): boolean {
         // ...
     }
 }
@@ -131,7 +131,7 @@ class Text ${show_common ? `${keyword} Shape ` : ""}{${color_def}
     y: number;
     size: number;
 
-    is_inside(p: Point): boolean {
+    contains_point(p: Point): boolean {
         // ...
     }
 }

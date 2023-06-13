@@ -13,7 +13,7 @@ const cross = new Text("✗", zerozero, 50);
 export function extend_compare_visual() {
     return new InterFunc(({ t }: { t: number }) => {
         return table(
-            [
+            zip([
                 [
                     RectSolid.empty(),
                     new Text("Code", zerozero, 35).highlight("ts"),
@@ -66,10 +66,10 @@ export function extend_compare_visual() {
                     checkmark,
                     checkmark,
                 ],
-            ],
+            ]),
             {
                 gap: 50,
-                orientation: "columns",
+                orientation: "rows",
                 x_size: 1700,
                 y_size: 500,
             }

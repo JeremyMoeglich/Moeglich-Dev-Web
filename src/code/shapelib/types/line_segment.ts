@@ -12,7 +12,8 @@ import { type ThisReturn } from "~/code/bundle";
 import { PolygonSolid } from "./polygon_solid";
 
 export class LineSegment
-    implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox {
+    implements Stringifiable, Transformable, PointMap, HasLength, BoundingBox
+{
     start: Point;
     end: Point;
 
@@ -30,7 +31,12 @@ export class LineSegment
         const dy = this.end.y - this.start.y;
         const norm = Math.sqrt(dx * dx + dy * dy);
         if (norm === 0) {
-            return new RectSolid(-width / 2, -width / 2, width, width).to_polygon()
+            return new RectSolid(
+                -width / 2,
+                -width / 2,
+                width,
+                width
+            ).to_polygon();
         }
 
         const halfWidth = width / 2;
@@ -44,7 +50,6 @@ export class LineSegment
 
         return new PolygonSolid([p1, p2, p3, p4]);
     }
-
 
     toString(): string {
         return `Line(${this.start.toString()}, ${this.end.toString()})`;
