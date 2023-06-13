@@ -35,6 +35,7 @@ const config = {
         "no-empty-function": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@next/next/no-img-element": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
     },
 };
 

@@ -20,6 +20,9 @@ export function intersect_visual(
     intersect: boolean,
     impl: "class" | "func"
 ) {
+    const cross_center_around = intersect
+            ? new Point(60, -60)
+            : new Point(120, -90);
     return new InterFunc(({ t }: { t: number }) => {
         const radius = interpolate_between(t / 4000, 90, 100);
         const circle = new CircleSolid(zerozero, radius).set_setter((ctx) => {
@@ -41,9 +44,7 @@ export function intersect_visual(
             new Point(radius - 10, radius - 10),
             label_size
         ).highlight("ts");
-        const cross_center_around = intersect
-            ? new Point(60, -60)
-            : new Point(120, -90);
+        
         const cross_center = new Point(
             interpolate_between(t / 1400, -60, 60),
             interpolate_between(t / 2600, -60, 60)

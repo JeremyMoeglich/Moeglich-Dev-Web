@@ -4,7 +4,6 @@ import type { Stage } from "../stage";
 import { defaults } from "../defaults";
 import {
     CircleSolid,
-    HollowShape,
     Point,
     RectSolid,
     type Transformable,
@@ -26,6 +25,7 @@ import { basic_polymorphism } from "./basic_polymorphism";
 import { food_visual } from "./food_visual";
 import { generics_visual } from "./generics_visual";
 import { product_visual } from "./products";
+import { extend_compare_visual } from "./extend_compare_visual";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -614,6 +614,15 @@ export const stages: Stage[] = [
                 scale: 1.6,
                 title: "Abstraktion - Inheritance",
                 visual: multi_shape_visual(true, true, "abstract_inherit"),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Inheritance",
+                visual: extend_compare_visual(),
                 xgap: 0,
             },
             {

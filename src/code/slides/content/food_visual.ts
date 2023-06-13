@@ -6,11 +6,12 @@ import { zerozero } from "~/code/shapelib/types/point";
 import gen from 'random-seed';
 
 const rand = gen.create("Seed51");
+const random = () => rand.random();
 
-const noise1 = makeNoise3D(rand.random);
-const noise2 = makeNoise3D(rand.random);
-const noise3 = makeNoise3D(rand.random);
-const noise4 = makeNoise3D(rand.random);
+const noise1 = makeNoise3D(random);
+const noise2 = makeNoise3D(random);
+const noise3 = makeNoise3D(random);
+const noise4 = makeNoise3D(random);
 
 const triangle = new TriangleSolid(new Point(0, 50), new Point(100, 0), new Point(100, 100)).set_setter((ctx) => {
     ctx.fillStyle = 'yellow'
