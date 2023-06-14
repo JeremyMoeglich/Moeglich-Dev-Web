@@ -13,7 +13,6 @@ import { maybe_window } from "~/utils/maybe_window";
 
 export type DrawParams = {
     debug?: boolean;
-    ctx_setter?: (ctx: CanvasRenderingContext2D) => void;
     z_index: number;
     shape_id?: string;
     origin?: "local" | "global";
@@ -43,7 +42,6 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
     obj,
     action,
     debug = false,
-    ctx_setter,
     shape_id,
     z_index,
 }) => {
@@ -65,9 +63,6 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 ctx.strokeStyle = "green";
                 ctx.globalAlpha = 1;
 
-                if (ctx_setter) {
-                    ctx_setter(ctx);
-                }
                 if (action === "fill" || action === "both") {
                     obj.render(ctx, "fill");
                 } else if (action === "stroke" || action === "both") {
@@ -104,7 +99,7 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 }
             }
         };
-    }, [obj, action, debug, ctx_setter, shape_id, z_index, canvasRef]);
+    }, [obj, action, debug, shape_id, z_index, canvasRef]);
 
     return null;
 };
@@ -164,7 +159,6 @@ export const ShapeRender: React.FC<
                         obj={instruction.obj}
                         shape_id={id}
                         z_index={instruction.z_index}
-                        ctx_setter={instruction.ctx_setter}
                         debug={instruction.debug}
                     />
                 );

@@ -1,4 +1,4 @@
-import { makeNoise3D } from "fast-simplex-noise";
+import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
 import { createBundle } from "~/code/bundle";
 import {
     CircleSolid,
@@ -12,6 +12,12 @@ import {
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { zerozero } from "~/code/shapelib/types/point";
 import gen from "random-seed";
+import { syncTextToShapes } from "~/code/shapelib/funcs/text_to_shape";
+import { interpolate_between } from "~/utils/interpolate_between";
+import { Text } from "~/code/shapelib/types/text";
+import { box } from "~/code/shapelib/funcs/utils";
+import { Color } from "~/code/funcs/color";
+import { create } from "domain";
 
 const rand = gen.create("Seed51");
 const random = () => rand.random();
@@ -120,7 +126,7 @@ export const cheese = new HollowShape(rect.to_polygon().to_bezier(), [
     ctx.fillStyle = "yellow";
 });
 
-export const food_visual = new InterFunc(({ t }: { t: number }) => {
+function rotate_food(t: number) {
     return createBundle([
         cheese.rotate(t / 1000).translate(new Point(200, 0)),
         cookie.rotate(t / 1000).translate(new Point(-200, 0)),
@@ -128,5 +134,46 @@ export const food_visual = new InterFunc(({ t }: { t: number }) => {
     ])
         .rotate(t / 2000, zerozero)
         .scale(1, zerozero)
-        .translate(new Point(500, 0));
+        .translate(new Point(1000, 0));
+}
+
+const noise5 = makeNoise3D();
+
+export const end_visual = new InterFunc(({ t }: { t: number }) => {
+    const shape = syncTextToShapes("Ende")
+        .recenter("both")
+        .scale(0.4)
+        .map_points((p) => p.translate(new Point(0, p.x * interpolate_between(t / 6000, -0.07, 0.07))));
+    const bbox = shape.bbox();
+    return createBundle([
+        rotate_food(t).translate(new Point(700, 0)),
+        createBundle(
+            bbox
+                .distribute_grid(700, t / 1000)
+                .filter((p) => shape.contains(p, 0))
+                .map((p) => {
+                    const noise_value = noise5(p.x, p.y, t / 3000);
+                    const text = new Text(
+                        noise_value < 0
+                            ? noise_value < -0.99
+                                ? "f"
+                                : "1"
+                            : "0",
+                        p,
+                        30
+                    ).set_setter((ctx) => {
+                        ctx.fillStyle = "#bdff30";
+                    });
+                    return createBundle([
+                        text
+                            .bbox()
+                            .set_setter((ctx) => {
+                                ctx.fillStyle = "#374867";
+                            })
+                            .scale(1.5),
+                        text,
+                    ]);
+                })
+        ),
+    ]);
 });

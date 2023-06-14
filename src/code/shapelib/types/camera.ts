@@ -1,5 +1,5 @@
 import { vec3, mat4, vec4 } from "gl-matrix";
-import { Point3d, vec3ToPoint3d } from "./point3d";
+import { type Point3d, vec3ToPoint3d } from "./point3d";
 import { Point } from "./point";
 import { panic } from "functional-utilities";
 

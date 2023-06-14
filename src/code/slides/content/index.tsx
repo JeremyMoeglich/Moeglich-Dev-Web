@@ -22,13 +22,17 @@ import { interpolate_between } from "~/utils/interpolate_between";
 import { intersect_visual } from "./intersect_visual";
 import { multi_shape_visual } from "./multi_shape";
 import { basic_polymorphism } from "./basic_polymorphism";
-import { food_visual } from "./food_visual";
+import { end_visual } from "./food_visual";
 import { generics_visual } from "./generics_visual";
 import { product_visual } from "./products";
 import { extend_compare_visual } from "./extend_compare_visual";
 import { merge_code } from "~/code/merge_code";
 import { shape_interface } from "./commons";
 import { transforms_visual } from "./transforms_visual";
+import { deg_to_rad } from "~/code/funcs/angle";
+import { Text } from "~/code/shapelib/types/text";
+import { zerozero } from "~/code/shapelib/types/point";
+import { rand_points } from "./graph_visual";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -105,33 +109,32 @@ export const stages: Stage[] = [
                             <ShapeRender
                                 instructions={[
                                     {
-                                        action: show_debug ? "stroke" : "both",
+                                        action: show_debug ? "stroke" : "fill",
                                         obj: text,
-                                        ctx_setter: (ctx) => {
-                                            ctx.fillStyle = "white";
-                                        },
                                         debug: show_debug,
                                         z_index: 0,
                                     },
                                     {
                                         action: "stroke",
-                                        obj: createBundle(bboxes),
-                                        ctx_setter: (ctx) => {
-                                            ctx.strokeStyle = "blue";
-                                            ctx.lineWidth = 1;
-                                            ctx.globalAlpha = bbox_opacity;
-                                        },
+                                        obj: createBundle(bboxes).set_setter(
+                                            (ctx) => {
+                                                ctx.strokeStyle = "blue";
+                                                ctx.lineWidth = 1;
+                                                ctx.globalAlpha = bbox_opacity;
+                                            }
+                                        ),
                                         debug: show_debug,
                                         z_index: 1,
                                     },
                                     {
                                         action: "stroke",
-                                        obj: createBundle(intersecting),
-                                        ctx_setter: (ctx) => {
+                                        obj: createBundle(
+                                            intersecting
+                                        ).set_setter((ctx) => {
                                             ctx.strokeStyle = "red";
                                             ctx.lineWidth = 1;
                                             ctx.globalAlpha = bbox_opacity;
-                                        },
+                                        }),
                                         debug: show_debug,
                                         z_index: 2,
                                     },
@@ -147,11 +150,10 @@ export const stages: Stage[] = [
                                                         10
                                                     );
                                                 })
-                                        ),
-                                        ctx_setter: (ctx) => {
+                                        ).set_setter((ctx) => {
                                             ctx.fillStyle = "red";
                                             ctx.globalAlpha = bbox_opacity;
-                                        },
+                                        }),
                                         z_index: 3,
                                     },
                                     {
@@ -166,11 +168,10 @@ export const stages: Stage[] = [
                                                         10
                                                     );
                                                 })
-                                        ),
-                                        ctx_setter: (ctx) => {
+                                        ).set_setter((ctx) => {
                                             ctx.fillStyle = "blue";
                                             ctx.globalAlpha = bbox_opacity;
-                                        },
+                                        }),
                                         z_index: 3,
                                     },
                                 ]}
@@ -249,9 +250,6 @@ export const stages: Stage[] = [
                                         obj: visual
                                             .calc({ t })
                                             .translate(new Point(xgap / 2, 0)),
-                                        ctx_setter: (ctx) => {
-                                            ctx.fillStyle = "white";
-                                        },
                                         z_index: 0,
                                     },
                                 ]}
@@ -633,8 +631,13 @@ export const stages: Stage[] = [
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,
-                title: "Abstraktion - Generics",
-                visual: transforms_visual(() => 0, () => 0, false),
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    false,
+                    {}
+                ),
                 xgap: 0,
             },
             {
@@ -642,8 +645,13 @@ export const stages: Stage[] = [
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,
-                title: "Abstraktion - Generics",
-                visual: transforms_visual((t) => t / 1000, () => 0, false),
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    (t) => t / 1000,
+                    () => 1,
+                    false,
+                    {}
+                ),
                 xgap: 0,
             },
             {
@@ -651,8 +659,233 @@ export const stages: Stage[] = [
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,
-                title: "Abstraktion - Generics",
-                visual: transforms_visual(() => 0, (t) => interpolate_between(t, 0.6, 1.2), false),
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => 0,
+                    (t) => interpolate_between(t / 1000, 0.6, 1.2),
+                    false,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: shape_interface({
+                    color: false,
+                    is_inside: true,
+                    variant: "interface",
+                    rotate: "mutable",
+                }),
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: merge_code([
+                    shape_interface({
+                        color: false,
+                        is_inside: true,
+                        variant: "interface",
+                        rotate: "mutable",
+                    }),
+                    dedent`
+                    class Triangle implements Shape {
+                        // ...
+                    }
+                    `,
+                ]),
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: merge_code([
+                    shape_interface({
+                        color: false,
+                        is_inside: true,
+                        variant: "interface",
+                        rotate: "mutable",
+                    }),
+                    dedent`
+                    class Triangle implements Shape {
+                        // ...
+                    }
+
+                    const triangle = new Triangle();
+                    triangle1.rotate(90);
+
+                    console.log(triangle); // Triangle { angle: 90 }
+                    `,
+                ]),
+                language: "ts",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: merge_code([
+                    shape_interface({
+                        color: false,
+                        is_inside: true,
+                        variant: "interface",
+                        rotate: "mutable",
+                    }),
+                    dedent`
+                    class Triangle implements Shape {
+                        // ...
+                    }
+
+                    const triangle1 = new Triangle();
+                    const triangle2 = triangle1; 
+
+                    triangle2.rotate(90);
+
+                    console.log(triangle1); // Triangle { angle: 90 }
+                    console.log(triangle2); // Triangle { angle: 90 }
+
+                    triangle1.rotate(90);
+
+                    console.log(triangle1); // Triangle { angle: 180 }
+                    console.log(triangle2); // Triangle { angle: 180 }
+                    `,
+                ]),
+                language: "ts",
+                offsety: -60,
+                scale: 1.6,
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => deg_to_rad(180),
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: ``,
+                language: "ts",
+                offsety: -60,
+                scale: 1.6,
+                title: "Abstraktion - Mutability",
+                visual: new InterFunc(({ t }) =>
+                    createBundle([
+                        transforms_visual(
+                            () => deg_to_rad(180),
+                            () => 1,
+                            true,
+                            { only_triangle: true }
+                        ).calc({ t }),
+                        new Text("Shared Mutable State", zerozero, 90)
+                            .recenter("both")
+                            .translate(new Point(80, 0)),
+                    ])
+                ),
+                xgap: 0,
+            },
+            {
+                code: shape_interface({
+                    color: false,
+                    is_inside: true,
+                    variant: "interface",
+                    rotate: "mutable",
+                }),
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Mutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: shape_interface({
+                    color: false,
+                    is_inside: true,
+                    variant: "interface",
+                    rotate: "immutable",
+                }),
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Immutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: merge_code([
+                    shape_interface({
+                        color: false,
+                        is_inside: true,
+                        variant: "interface",
+                        rotate: "immutable",
+                    }),
+                    dedent`
+                    class Triangle implements Shape {
+                        // ...
+                    }
+
+                    const triangle = new Triangle();
+                    const rotated_triangle = triangle.rotate(90);
+
+                    console.log(triangle); // Triangle { angle: 0 }
+                    console.log(rotated_triangle); // Triangle { angle: 90 }
+                    `,
+                ]),
+                language: "ts",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Immutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Immutability",
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    { only_triangle: true }
+                ),
                 xgap: 0,
             },
             {
@@ -669,7 +902,12 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 3,
                 title: "Abstraktion - Generics",
-                visual: transforms_visual(true, true, true),
+                visual: transforms_visual(
+                    () => 0,
+                    () => 1,
+                    true,
+                    {}
+                ),
                 xgap: 0,
             },
             {
@@ -690,7 +928,81 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 3,
                 title: "Abstraktion - Generics",
-                visual: transforms_visual(true, true, true),
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Generics",
+                visual: new InterFunc(({ t }) =>
+                    createBundle(
+                        rand_points(t).map((p) => p.to_circle_solid(20))
+                    )
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number) {
+                    for (const shape of shapes) {
+                        shape.rotate(angle);
+                    }
+                }
+                `,
+                language: "ts",
+                offsety: -40,
+                scale: 1.7,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number) {
+                    for (const shape of shapes) {
+                        shape.rotate(angle);
+                    }
+                }
+                `,
+                language: "ts",
+                offsety: -40,
+                scale: 1.7,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
                 xgap: 0,
             },
             {
@@ -699,7 +1011,7 @@ export const stages: Stage[] = [
                 offsety: 0,
                 scale: 1.6,
                 title: "Ende",
-                visual: food_visual,
+                visual: end_visual,
                 xgap: 0,
             },
         ] as {

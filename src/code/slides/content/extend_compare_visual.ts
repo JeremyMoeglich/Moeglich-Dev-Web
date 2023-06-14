@@ -28,6 +28,8 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "interface",
+                            rotate: "none"
+
                         }),
                         zerozero,
                         20
@@ -43,6 +45,7 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "abstract_class",
+                            rotate: "none"
                         }),
                         zerozero,
                         20
@@ -58,6 +61,7 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "class",
+                            rotate: "none"
                         }),
                         zerozero,
                         20

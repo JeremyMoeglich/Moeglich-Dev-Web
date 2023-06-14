@@ -1,6 +1,6 @@
-import { ThisReturn, UnMarkThis } from "~/code/bundle";
-import { Interpolate } from "~/code/funcs/interpolator";
-import { Point } from "./point";
+import { type ThisReturn, type UnMarkThis } from "~/code/bundle";
+import { type Interpolate } from "~/code/funcs/interpolator";
+import { type Point } from "./point";
 
 export interface Transformable3d {
     translate3d(point: Point3d): this;
@@ -9,7 +9,7 @@ export interface Transformable3d {
 }
 
 import { vec3, mat4 } from "gl-matrix";
-import { Camera } from "./camera";
+import { type Camera } from "./camera";
 import { panic } from "functional-utilities";
 import { PolygonSolid } from "./polygon_solid";
 import { TriangleSolid } from "./triangle_solid";
@@ -188,10 +188,7 @@ export function get_cube_quads(size: number): NTuple<Face, 6> {
     ];
 }
 
-export function face_to_poly(
-    face: Face,
-    camera: Camera
-): PolygonSolid {
+export function face_to_poly(face: Face, camera: Camera): PolygonSolid {
     return new PolygonSolid([
         face[0].cast2d(camera),
         face[1].cast2d(camera),
@@ -200,10 +197,7 @@ export function face_to_poly(
     ]);
 }
 
-export function z_sort_faces(
-    faces: Face[],
-    camera: Camera
-) {
+export function z_sort_faces(faces: Face[], camera: Camera) {
     return faces
         .map((face) => {
             const z =

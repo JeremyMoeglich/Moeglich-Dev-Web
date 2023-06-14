@@ -1,5 +1,6 @@
 export function shape_interface(active: {
     is_inside: boolean;
+    rotate: "none" | "mutable" | "immutable";
     variant: "interface" | "class" | "abstract_class";
     color: boolean;
 }) {
@@ -29,6 +30,21 @@ export function shape_interface(active: {
         } else {
             build += "    abstract contains_point(): boolean;\n";
         }
+    }
+
+    if (active.rotate === "mutable") {
+        if (active.variant === "interface") {
+            build += "    rotate(degrees: number): void;\n";
+        } else if (active.variant === "class") {
+            build += "    rotate(degrees: number): void {\n";
+            build += "        // implement the method here\n";
+            build += "        throw new Error('Method not implemented.');\n";
+            build += "    }\n";
+        } else {
+            build += "    abstract rotate(degrees: number): void;\n";
+        }
+    } else if (active.rotate === "immutable") {
+        build += "    rotate(degrees: number): this;\n";
     }
 
     build += "}";

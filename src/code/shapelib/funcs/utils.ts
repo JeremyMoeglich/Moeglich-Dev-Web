@@ -1,11 +1,11 @@
-import { Bundle, createBundle, emptyBundle } from "~/code/bundle";
+import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
 import { RectSolid } from "../types/rect_solid";
-import { Renderable } from "../types/interfaces/renderable";
-import { Transformable } from "../types/interfaces/transformable";
+import { type Renderable } from "../types/interfaces/renderable";
+import { type Transformable } from "../types/interfaces/transformable";
 import { Point } from "../types/point";
 import { cyclic_pairs, panic } from "functional-utilities";
-import { BezierSolid } from "../types/bezier_solid";
-import { Color } from "~/code/funcs/color";
+import { type BezierSolid } from "../types/bezier_solid";
+import { type Color } from "~/code/funcs/color";
 import { dedent } from "~/utils/dedent";
 
 export function box<T extends Renderable & Transformable>(

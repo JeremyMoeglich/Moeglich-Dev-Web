@@ -13,7 +13,10 @@ import { interpolate_between } from "~/utils/interpolate_between";
 export function transforms_visual(
     rotate: (t: number) => number,
     scale: (t: number) => number,
-    show_code: boolean
+    show_code: boolean,
+    opt: {
+        only_triangle?: boolean;
+    }
 ) {
     return new InterFunc(({ t }: { t: number }) => {
         const shapes = [
@@ -46,44 +49,53 @@ export function transforms_visual(
             `,
             zerozero,
             30
-        ).highlight("ts").recenter('both').scale(1.3);
+        )
+            .highlight("ts")
+            .recenter("both")
+            .scale(1.3);
 
         return createBundle([
             align(
-                shapes.map((s) => {
-                    return align(
-                        [
-                            box(
-                                s[0]
-                                    .rotate(rotate(t))
-                                    .scale(scale(t))
-                                    .set_setter((ctx) => {
-                                        ctx.fillStyle = "#c0ee84";
-                                    }),
-                                {
-                                    min_height: 150,
-                                    min_width: 150,
-                                    rounded: 20,
-                                    color: new Color(60, 60, 120),
-                                }
-                            ),
-                            new Text(s[1], zerozero, 28).set_setter((ctx) => {
-                                ctx.fillStyle = "white";
-                            }),
-                        ],
-                        show_code
-                            ? {
-                                  direction: "horizontal",
-                                  size: 350,
-                                  method: "evenly",
-                              }
-                            : {
-                                  direction: "vertical",
-                                  gap: 10,
-                                  method: "equal_gap",
-                              }
-                    );
-                }),
+                shapes
+                    .filter((s) =>
+                        opt.only_triangle ? s[1] === "Triangle" : true
+                    )
+                    .map((s) => {
+                        return align(
+                            [
+                                box(
+                                    s[0]
+                                        .rotate(rotate(t))
+                                        .scale(scale(t))
+                                        .set_setter((ctx) => {
+                                            ctx.fillStyle = "#c0ee84";
+                                        }),
+                                    {
+                                        min_height: 150,
+                                        min_width: 150,
+                                        rounded: 20,
+                                        color: new Color(60, 60, 120),
+                                    }
+                                ),
+                                new Text(s[1], zerozero, 28).set_setter(
+                                    (ctx) => {
+                                        ctx.fillStyle = "white";
+                                    }
+                                ),
+                            ],
+                            show_code
+                                ? {
+                                      direction: "horizontal",
+                                      size: 350,
+                                      method: "evenly",
+                                  }
+                                : {
+                                      direction: "vertical",
+                                      gap: 10,
+                                      method: "equal_gap",
+                                  }
+                        );
+                    }),
                 {
                     direction: show_code ? "vertical" : "horizontal",
                     gap: 50,

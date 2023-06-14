@@ -1,12 +1,12 @@
 import { panic } from "functional-utilities";
 import { createBundle } from "~/code/bundle";
 import { deg_to_rad } from "~/code/funcs/angle";
-import { Interpolate } from "~/code/funcs/interpolator";
+import { type Interpolate } from "~/code/funcs/interpolator";
 import {
     PolygonSolid,
     RectSolid,
-    Renderable,
-    Transformable,
+    type Renderable,
+    type Transformable,
 } from "~/code/shapelib";
 import { InterBlock } from "~/code/shapelib/types/InterBlock";
 import {
@@ -90,7 +90,10 @@ export function package_visual<
             ),
             `element-${key}`
         ),
-        new InterBlock(createBundle([bottom_left, bottom_right]), `bottom-${key}`),
+        new InterBlock(
+            createBundle([bottom_left, bottom_right]),
+            `bottom-${key}`
+        ),
         new InterBlock(
             createBundle([
                 show_top ? top : RectSolid.empty(),
