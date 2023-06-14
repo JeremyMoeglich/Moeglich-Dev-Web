@@ -35,17 +35,26 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
         interpolate: (from, t, to) => {
             if (!is_bundle(to, is_Interpolate))
                 return to.to_start().interpolate(t, to);
+
+            const matchedItems = new Set();
             const interpolated = to.objs.map((s1) => {
                 const matched = minBy(
-                    from.filter((s2) => s1.can_interpolate(s2)),
+                    from.filter(
+                        (s2) => !matchedItems.has(s2) && s1.can_interpolate(s2)
+                    ),
                     (s2) => s1.similarity(s2)
                 );
+                if (matched) {
+                    matchedItems.add(matched);
+                }
                 if (!matched) return s1.to_start().interpolate(t, s1);
                 return matched.interpolate(t, s1);
             });
 
             const absentInTo = from.filter(
-                (s1) => !to.objs.some((s2) => s1.can_interpolate(s2))
+                (s1) =>
+                    !matchedItems.has(s1) &&
+                    !to.objs.some((s2) => s1.can_interpolate(s2))
             );
             const animatingOutShapes = absentInTo.map((s1) =>
                 s1.interpolate(t, s1.to_start())
@@ -69,14 +78,17 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
         },
         similarity: (from, to) => {
             if (!is_bundle(to, is_Interpolate)) return Infinity;
-            return sum(
-                zip([from, to.objs] as [Interpolate[], Interpolate[]]).map(
-                    ([s1, s2]) => {
-                        if (!s1.can_interpolate(s2)) return Infinity;
-                        return s1.similarity(s2);
-                    }
-                )
-            );
+            const s =
+                sum(
+                    zip([from, to.objs] as [Interpolate[], Interpolate[]]).map(
+                        ([s1, s2]) => {
+                            if (!s1.can_interpolate(s2)) return Infinity;
+                            return s1.similarity(s2);
+                        }
+                    )
+                ) *
+                (1 + Math.abs(from.length - to.objs.length));
+            return s;
         },
     },
 };

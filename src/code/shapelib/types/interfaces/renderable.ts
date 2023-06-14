@@ -17,16 +17,25 @@ export function is_Renderable(value: unknown): value is Renderable {
     );
 }
 
+function default_ctx(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 1;
+}
+
 export const renderable_bundler: Bundler<Renderable, Renderable> = {
     isType: is_Renderable,
     functionality: {
         render: (objs, ctx, action) => {
             for (const obj of objs) {
+                default_ctx(ctx);
                 obj.render(ctx, action);
             }
         },
         render_debug: (objs, ctx) => {
             for (const obj of objs) {
+                default_ctx(ctx);
                 obj.render_debug(ctx);
             }
         },

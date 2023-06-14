@@ -28,6 +28,7 @@ import { product_visual } from "./products";
 import { extend_compare_visual } from "./extend_compare_visual";
 import { merge_code } from "~/code/merge_code";
 import { shape_interface } from "./commons";
+import { transforms_visual } from "./transforms_visual";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -628,23 +629,68 @@ export const stages: Stage[] = [
                 xgap: 0,
             },
             {
-                code: merge_code([
-                    shape_interface({
-                        is_inside: true,
-                        color: false,
-                        variant: "interface",
-                    }),
-                    dedent`
-                    function is_inside_shape(shape: Shape, point: Point): boolean {
-                        return shape.is_inside(point);
-                    }
-                    `,
-                ]),
+                code: dedent``,
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,
                 title: "Abstraktion - Generics",
-                visual: generics_visual(),
+                visual: transforms_visual(() => 0, () => 0, false),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual((t) => t / 1000, () => 0, false),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(() => 0, (t) => interpolate_between(t, 0.6, 1.2), false),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(true, true, true),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+
+                for (const shape of shapes) {
+                    shape.rotate(90);
+                }
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(true, true, true),
                 xgap: 0,
             },
             {

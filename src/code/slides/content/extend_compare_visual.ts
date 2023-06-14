@@ -67,12 +67,8 @@ export function extend_compare_visual() {
                     checkmark,
                 ],
             ]),
-            {
-                gap: 50,
-                orientation: "rows",
-                x_size: 1700,
-                y_size: 500,
-            }
-        );
+            [350, 450, 600, 500],
+            [160, 170, 130, 130, 130]
+        ).scale(0.8);
     });
 }
