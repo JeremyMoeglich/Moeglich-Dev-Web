@@ -66,10 +66,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
 
     interpolate(t: number, to: this) {
         return new BezierSolid(
-            zip([this.bezier, to.bezier] as [
-                PartialBezier[],
-                PartialBezier[]
-            ]).map(([a, b]) => a.interpolate(t, b)),
+            zip([this.bezier, to.bezier]).map(([a, b]) => a.interpolate(t, b)),
             this.ctx_setter
         ) as this & ThisReturn;
     }
@@ -77,10 +74,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     similarity(to: this): number {
         return (
             sum(
-                zip([this.bezier, to.bezier] as [
-                    PartialBezier[],
-                    PartialBezier[]
-                ]).map(([a, b]) => a.similarity(b))
+                zip([this.bezier, to.bezier]).map(([a, b]) => a.similarity(b))
             ) * Math.abs(this.bezier.length - to.bezier.length + 1)
         );
     }
@@ -191,10 +185,9 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         const lengths = fullbeziers.objs.map((b) => b.outline_length());
         const total_length = lengths.reduce((acc, l) => acc + l, 0);
         const amount_per_unit = amount / total_length;
-        const points = zip([fullbeziers.objs, lengths] as [
-            FullBezier[],
-            number[]
-        ]).flatMap(([b, l]) => b.sample_on_length(amount_per_unit * l));
+        const points = zip([fullbeziers.objs, lengths]).flatMap(([b, l]) =>
+            b.sample_on_length(amount_per_unit * l)
+        );
         return points;
     }
 

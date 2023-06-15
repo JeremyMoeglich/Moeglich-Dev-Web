@@ -1,9 +1,14 @@
-import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
+import {
+    type Bundle,
+    createBundle,
+    emptyBundle,
+    unmark_this,
+} from "~/code/bundle";
 import { RectSolid } from "../types/rect_solid";
 import { type Renderable } from "../types/interfaces/renderable";
 import { type Transformable } from "../types/interfaces/transformable";
 import { Point } from "../types/point";
-import { cyclic_pairs, panic } from "functional-utilities";
+import { cyclic_pairs, panic, zip } from "functional-utilities";
 import { type BezierSolid } from "../types/bezier_solid";
 import { type Color } from "~/code/funcs/color";
 import { dedent } from "~/utils/dedent";
@@ -91,15 +96,20 @@ export function align<T extends Renderable & Transformable>(
               totalElementSize
             : 1;
 
-    for (let i = 0; i < elements.length; i++) {
-        const element = elements[i].recenter("both").scale(scaleFactor);
+    for (const element of elements) {
+        const transformed_element = element.recenter("both").scale(scaleFactor);
 
         const translation =
             options.direction === "horizontal"
-                ? new Point(position - element.bbox().center().x, 0)
-                : new Point(0, position - element.bbox().center().y);
+                ? new Point(position - transformed_element.bbox().center().x, 0)
+                : new Point(
+                      0,
+                      position - transformed_element.bbox().center().y
+                  );
 
-        new_elements.push(element.translate(translation));
+        new_elements.push(
+            transformed_element.translate(translation) as unknown as T
+        );
 
         switch (options.method) {
             case "resize":
@@ -107,8 +117,8 @@ export function align<T extends Renderable & Transformable>(
                 position +=
                     scaleFactor *
                         (options.direction === "horizontal"
-                            ? elements[i].bbox().width
-                            : elements[i].bbox().height) +
+                            ? element.bbox().width
+                            : element.bbox().height) +
                     options.gap;
                 break;
             case "evenly":
@@ -127,18 +137,15 @@ export function table<T extends Renderable & Transformable>(
     x_widths: number[],
     y_widths: number[]
 ): Bundle<Bundle<T>> {
-    if (
-        elements.length === 0 ||
-        x_widths.length === 0 ||
-        y_widths.length === 0
-    ) {
+    const first_row = elements[0];
+    if (!first_row || x_widths.length === 0 || y_widths.length === 0) {
         return emptyBundle(RectSolid.empty()) as unknown as Bundle<Bundle<T>>;
     }
 
     // Make sure that the widths and heights arrays have the right lengths.
     if (
         elements.length !== y_widths.length ||
-        elements[0].length !== x_widths.length
+        first_row.length !== x_widths.length
     ) {
         throw new Error(dedent`
             The lengths of the widths and heights arrays must match the number of rows and columns in the table.
@@ -148,8 +155,8 @@ export function table<T extends Renderable & Transformable>(
                     : ""
             }
             ${
-                elements[0].length !== x_widths.length
-                    ? `Expected ${elements[0].length} but got ${x_widths.length} Columns`
+                first_row.length !== x_widths.length
+                    ? `Expected ${first_row.length} but got ${x_widths.length} Columns`
                     : ""
             }
         `);
@@ -158,25 +165,23 @@ export function table<T extends Renderable & Transformable>(
     const rows: Bundle<T>[] = [];
 
     let y_position = 0;
-    for (let i = 0; i < elements.length; i++) {
+    for (const [elementRow, y_width] of zip([elements, y_widths])) {
         const row: T[] = [];
-
         let x_position = 0;
-        for (let j = 0; j < elements[i].length; j++) {
-            const element = elements[i][j];
 
+        for (const [element, x_width] of zip([elementRow, x_widths])) {
             const translation = new Point(
                 x_position - element.bbox().center().x,
                 y_position - element.bbox().center().y
             );
-            row.push(element.translate(translation));
+            row.push(element.translate(translation) as unknown as T);
 
-            x_position += x_widths[j];
+            x_position += x_width;
         }
 
         rows.push(createBundle(row) as unknown as Bundle<T>);
 
-        y_position += y_widths[i];
+        y_position += y_width;
     }
 
     return createBundle(rows).recenter("both") as unknown as Bundle<Bundle<T>>;

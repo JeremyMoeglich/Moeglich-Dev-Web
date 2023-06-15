@@ -67,7 +67,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
     interpolate(t: number, to: this): this & ThisReturn {
         return new HollowShape(
             unmark_this(this.exterior.interpolate(t, to.exterior)),
-            zip([this.holes, to.holes] as [T[], T[]]).map(([a, b]) =>
+            zip([this.holes, to.holes]).map(([a, b]) =>
                 unmark_this(a.interpolate(t, b))
             ),
             to.ctx_setter

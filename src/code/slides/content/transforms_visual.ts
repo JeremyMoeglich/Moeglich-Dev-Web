@@ -8,7 +8,6 @@ import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { Point, zerozero } from "~/code/shapelib/types/point";
 import { Text } from "~/code/shapelib/types/text";
 import { dedent } from "~/utils/dedent";
-import { interpolate_between } from "~/utils/interpolate_between";
 
 export function transforms_visual(
     rotate: (t: number) => number,

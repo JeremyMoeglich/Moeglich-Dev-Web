@@ -40,18 +40,17 @@ export const transformable_bundler: Bundler<Transformable, Transformable> = {
             const flippedShapes = objs.map((s) => s.flip(axis));
 
             // Translate each shape to its new position.
-            const translatedShapes = zip([flippedShapes, bboxes] as [
-                Transformable[],
-                RectSolid[]
-            ]).map(([s, b]) => {
-                // calculate the translation vector for both axis
-                const vec = b.center().translate(center.factor(-1));
-                const axis_vec = new Point(
-                    axis !== "y" ? vec.x : 0,
-                    axis !== "x" ? vec.y : 0
-                );
-                return s.translate(axis_vec);
-            });
+            const translatedShapes = zip([flippedShapes, bboxes]).map(
+                ([s, b]) => {
+                    // calculate the translation vector for both axis
+                    const vec = b.center().translate(center.factor(-1));
+                    const axis_vec = new Point(
+                        axis !== "y" ? vec.x : 0,
+                        axis !== "x" ? vec.y : 0
+                    );
+                    return s.translate(axis_vec);
+                }
+            );
 
             return createBundle(translatedShapes);
         },

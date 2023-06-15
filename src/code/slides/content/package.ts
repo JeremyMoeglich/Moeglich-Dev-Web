@@ -181,7 +181,7 @@ export function package_visual3d(t: number) {
             cube_quads[1][0].lerp(0.6, cube_quads[1][1]),
             cube_quads[1][2].lerp(0.4, cube_quads[1][3]),
             cube_quads[1][2].lerp(0.6, cube_quads[1][3]),
-        ],
+        ] as [Point3d, Point3d, Point3d, Point3d],
     ];
 
     const faces = z_sort_faces(quads, camera).map((face) =>

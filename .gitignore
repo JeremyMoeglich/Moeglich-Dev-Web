@@ -23,6 +23,8 @@ next-env.d.ts
 # misc
 .DS_Store
 *.pem
+/public/source
+/src/code/sources.ts
 
 # debug
 npm-debug.log*
@@ -42,3 +44,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+
+# Added by cargo
+
+/target

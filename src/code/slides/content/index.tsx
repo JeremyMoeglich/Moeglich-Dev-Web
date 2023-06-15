@@ -22,7 +22,7 @@ import { interpolate_between } from "~/utils/interpolate_between";
 import { intersect_visual } from "./intersect_visual";
 import { multi_shape_visual } from "./multi_shape";
 import { basic_polymorphism } from "./basic_polymorphism";
-import { end_visual } from "./food_visual";
+import { end_visual } from "./end_visual";
 import { generics_visual } from "./generics_visual";
 import { product_visual } from "./products";
 import { extend_compare_visual } from "./extend_compare_visual";
@@ -327,25 +327,25 @@ export const stages: Stage[] = [
                         total += price
                     return total
 
-                print(get_price([1, 2, 3, 4, 5]))
+                print(get_price([3, 2, 1]))
                 `,
                 language: "python",
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: product_visual(),
+                visual: product_visual({ name: false, price: true }),
                 xgap: 500,
             },
             {
                 code: dedent`
-                print(get_price([1, 2, 3, 4, 5]))
+                print(get_price([3, 2, 1]))
                 `,
                 language: "python",
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual({ name: false, price: true }),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -355,14 +355,14 @@ export const stages: Stage[] = [
                         total += price
                     return total
 
-                print(get_price([1, 2, 3, 4, 5]))
+                print(get_price([3, 2, 1]))
                 `,
                 language: "python",
                 scale: 2.7,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual({ name: false, price: true }),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -374,14 +374,14 @@ export const stages: Stage[] = [
                     return total;
                 }
 
-                console.log(get_price([1, 2, 3, 4, 5]));
+                console.log(get_price([3, 2, 1]));
                 `,
                 language: "js",
                 scale: 2.5,
                 offsety: 0,
                 title: "Abstraktion - Funktionen",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual({ name: false, price: true }),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -393,14 +393,14 @@ export const stages: Stage[] = [
                     return total;
                 }
 
-                console.log(get_price([1, 2, 3, 4, 5]));
+                console.log(get_price([3, 2, 1]));
                 `,
                 language: "ts",
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual({ name: false, price: true }),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -418,17 +418,17 @@ export const stages: Stage[] = [
                 }
 
                 console.log(get_price([
-                    { name: "Apple", price: 1 },
-                    { name: "Banana", price: 2 },
-                    { name: "Orange", price: 3 },
+                    { name: "Käse", price: 3 },
+                    { name: "Pizza", price: 2 },
+                    { name: "Keks", price: 1 },
                 ]));
                 `,
                 language: "ts",
                 scale: 2,
                 offsety: 0,
                 title: "Abstraktion - Types",
-                visual: new InterFunc(() => empty_render),
-                xgap: 0,
+                visual: product_visual({ name: true, price: true }),
+                xgap: 500,
             },
             {
                 code: dedent`
@@ -875,20 +875,6 @@ export const stages: Stage[] = [
                 xgap: 0,
             },
             {
-                code: dedent``,
-                language: "ts",
-                offsety: 0,
-                scale: 2,
-                title: "Abstraktion - Immutability",
-                visual: transforms_visual(
-                    () => 0,
-                    () => 1,
-                    true,
-                    { only_triangle: true }
-                ),
-                xgap: 0,
-            },
-            {
                 code: dedent`
                 const shapes = [
                     new Triangle(),
@@ -937,72 +923,210 @@ export const stages: Stage[] = [
                 xgap: 0,
             },
             {
-                code: dedent``,
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number): T[] {
+                    const rotated_shapes: T[] = [];
+                    for (const shape of shapes) {
+                        rotated_shapes.push(shape.rotate(angle));
+                    }
+                    return rotated_shapes;
+                }
+
+                const rotated_shapes = rotate_shapes(shapes, 90);
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Triangle(),
+                    new Triangle(),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number): T[] {
+                    const rotated_shapes: T[] = [];
+                    for (const shape of shapes) {
+                        rotated_shapes.push(shape.rotate(angle));
+                    }
+                    return rotated_shapes;
+                }
+
+                const rotated_shapes = rotate_shapes(shapes, 90); // Triangle[]
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Rectangle(),
+                    new Rectangle(),
+                    new Rectangle(),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number): T[] {
+                    const rotated_shapes: T[] = [];
+                    for (const shape of shapes) {
+                        rotated_shapes.push(shape.rotate(angle));
+                    }
+                    return rotated_shapes;
+                }
+
+                const rotated_shapes = rotate_shapes(shapes, 90); // Triangle[]
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                const shapes = [
+                    new Triangle(),
+                    new Square(),
+                    new Hexagon(),
+                    new Circle(),
+                    new Text("Test"),
+                ];
+
+                function rotate_shapes<T extends Shape>(shapes: T[], angle: number) {
+                    for (const shape of shapes) {
+                        shape.rotate(angle);
+                    }
+                }
+                `,
+                language: "ts",
+                offsety: -40,
+                scale: 1.7,
+                title: "Abstraktion - Generics",
+                visual: transforms_visual(
+                    () => deg_to_rad(90),
+                    () => 1,
+                    true,
+                    {}
+                ),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                function square(a: number) {
+                    return a * a;
+                }
+                `,
                 language: "ts",
                 offsety: 0,
                 scale: 3,
-                title: "Abstraktion - Generics",
-                visual: new InterFunc(({ t }) =>
-                    createBundle(
-                        rand_points(t).map((p) => p.to_circle_solid(20))
-                    )
-                ),
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
                 code: dedent`
-                const shapes = [
-                    new Triangle(),
-                    new Square(),
-                    new Hexagon(),
-                    new Circle(),
-                    new Text("Test"),
-                ];
-
-                function rotate_shapes<T extends Shape>(shapes: T[], angle: number) {
-                    for (const shape of shapes) {
-                        shape.rotate(angle);
-                    }
+                function square(a: number) {
+                    return a * a;
                 }
+
+                const numbers = [1, 2, 3, 4, 5];
+
+                const result = [];
+                for (const number of numbers) {
+                    result.push(square(number));
+                }
+
+                console.log(result); // [1, 4, 9, 16, 25]
                 `,
                 language: "ts",
-                offsety: -40,
-                scale: 1.7,
-                title: "Abstraktion - Generics",
-                visual: transforms_visual(
-                    () => deg_to_rad(90),
-                    () => 1,
-                    true,
-                    {}
-                ),
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
                 code: dedent`
-                const shapes = [
-                    new Triangle(),
-                    new Square(),
-                    new Hexagon(),
-                    new Circle(),
-                    new Text("Test"),
-                ];
+                function square(a: number) {
+                    return a * a;
+                }
 
-                function rotate_shapes<T extends Shape>(shapes: T[], angle: number) {
-                    for (const shape of shapes) {
-                        shape.rotate(angle);
+                const numbers = [1, 2, 3, 4, 5];
+
+                const result = numbers.map(square);
+
+                console.log(result); // [1, 4, 9, 16, 25]
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                function factorial(n: number) {
+                    let result = 1;
+                    for (let i = 1; i <= n; i++) {
+                        result *= i;
                     }
+                    return result;
                 }
                 `,
                 language: "ts",
-                offsety: -40,
-                scale: 1.7,
-                title: "Abstraktion - Generics",
-                visual: transforms_visual(
-                    () => deg_to_rad(90),
-                    () => 1,
-                    true,
-                    {}
-                ),
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                function factorial(n: number) {
+                    if (n <= 0) {
+                        return 1;
+                    }
+                    return n * factorial(n - 1);
+                }
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
                 xgap: 0,
             },
             {
@@ -1010,7 +1134,7 @@ export const stages: Stage[] = [
                 language: "ts",
                 offsety: 0,
                 scale: 1.6,
-                title: "Ende",
+                title: "",
                 visual: end_visual,
                 xgap: 0,
             },

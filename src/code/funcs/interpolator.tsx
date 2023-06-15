@@ -80,12 +80,10 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
             if (!is_bundle(to, is_Interpolate)) return Infinity;
             const s =
                 sum(
-                    zip([from, to.objs] as [Interpolate[], Interpolate[]]).map(
-                        ([s1, s2]) => {
-                            if (!s1.can_interpolate(s2)) return Infinity;
-                            return s1.similarity(s2);
-                        }
-                    )
+                    zip([from, to.objs]).map(([s1, s2]) => {
+                        if (!s1.can_interpolate(s2)) return Infinity;
+                        return s1.similarity(s2);
+                    })
                 ) *
                 (1 + Math.abs(from.length - to.objs.length));
             return s;

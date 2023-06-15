@@ -79,9 +79,8 @@ export class PolygonSolid
 
     similarity(to: this): number {
         // Simple temporary solution
-        const dist = sumBy(
-            zip([this.points, to.points] as [Point[], Point[]]),
-            ([p1, p2]) => p1.distance(p2)
+        const dist = sumBy(zip([this.points, to.points]), ([p1, p2]) =>
+            p1.distance(p2)
         );
         const len_diff = Math.abs(this.points.length - to.points.length);
         return dist + len_diff * 2;
@@ -140,10 +139,7 @@ export class PolygonSolid
             for (let i = 0; i < pto.points.length; i++) {
                 const rotatedPoints = pto.rotatePoints(i);
                 const totalDistance = sumBy(
-                    zip([pthis.points, rotatedPoints.points] as [
-                        Point[],
-                        Point[]
-                    ]),
+                    zip([pthis.points, rotatedPoints.points]),
                     ([p1, p2]) => p1.distance(p2)
                 );
 
@@ -161,10 +157,9 @@ export class PolygonSolid
         }
 
         return new PolygonSolid(
-            zip([this.points, this.cache.optimalRotation.solid.points] as [
-                Point[],
-                Point[]
-            ]).map(([p1, p2]) => p1.interpolate(t, p2)),
+            zip([this.points, this.cache.optimalRotation.solid.points]).map(
+                ([p1, p2]) => p1.interpolate(t, p2)
+            ),
             to.ctx_setter
         ) as this & ThisReturn;
     }

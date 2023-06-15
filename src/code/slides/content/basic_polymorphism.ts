@@ -12,6 +12,7 @@ export function basic_polymorphism(i: number) {
             color: false,
             variant: "interface",
             is_inside: true,
+            rotate: "none",
         }),
         dedent`
         const shapes: Shape[] = [

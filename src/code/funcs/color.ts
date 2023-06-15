@@ -64,6 +64,15 @@ export class Color implements Interpolate {
         return this.color.hex();
     }
 
+    static fromHex(hex: string) {
+        const color = chroma(hex);
+        return new Color(
+            color.get("rgb.r"),
+            color.get("rgb.g"),
+            color.get("rgb.b")
+        );
+    }
+
     getRGB(): string {
         return this.color.css();
     }

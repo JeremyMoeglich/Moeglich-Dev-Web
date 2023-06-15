@@ -1,9 +1,8 @@
-import { createBundle } from "~/code/bundle";
 import { shape_interface } from "./commons";
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { Text } from "~/code/shapelib/types/text";
 import { zerozero } from "~/code/shapelib/types/point";
-import { align, table } from "~/code/shapelib/funcs/utils";
+import { table } from "~/code/shapelib/funcs/utils";
 import { zip } from "functional-utilities";
 import { RectSolid } from "~/code/shapelib";
 
@@ -28,8 +27,7 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "interface",
-                            rotate: "none"
-
+                            rotate: "none",
                         }),
                         zerozero,
                         20
@@ -45,7 +43,7 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "abstract_class",
-                            rotate: "none"
+                            rotate: "none",
                         }),
                         zerozero,
                         20
@@ -61,7 +59,7 @@ export function extend_compare_visual() {
                             color: true,
                             is_inside: true,
                             variant: "class",
-                            rotate: "none"
+                            rotate: "none",
                         }),
                         zerozero,
                         20

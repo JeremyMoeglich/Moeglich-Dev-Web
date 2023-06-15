@@ -340,30 +340,33 @@ export class RectSolid
         });
     }
 
-    distribute_grid(min_n: number, x_align: number = 0.5, y_align: number = 0.5): Point[] {
+    distribute_grid(min_n: number, x_align = 0.5, y_align = 0.5): Point[] {
         const n_x = Math.ceil(Math.sqrt((min_n * this.width) / this.height));
         const n_y = Math.ceil(min_n / n_x);
         const dx = this.width / (n_x + 1); // Adjusted to have n_x + 1 gaps
         const dy = this.height / (n_y + 1); // Adjusted to have n_y + 1 gaps
-    
+
         // Wrap alignment values using modulo operation
         x_align = x_align % 1;
         y_align = y_align % 1;
-    
+
         // Calculate x and y offsets based on alignment parameters
         const x_offset = (this.width - dx * (n_x - 1)) * x_align;
         const y_offset = (this.height - dy * (n_y - 1)) * y_align;
-    
+
         return range(1, n_x + 1).flatMap(
             (
                 i // Starting from 1 to have a gap at the beginning
             ) =>
                 range(1, n_y + 1).map(
-                    (j) => new Point(this.x + x_offset + (i - 1) * dx, this.y + y_offset + (j - 1) * dy)
+                    (j) =>
+                        new Point(
+                            this.x + x_offset + (i - 1) * dx,
+                            this.y + y_offset + (j - 1) * dy
+                        )
                 ) // Starting from 1 to have a gap at the beginning
         );
     }
-    
 
     round_corners(rounded_amount: number) {
         // defines a square with rounded corners using 8 bezier curves 4 for each corner 4 for each side

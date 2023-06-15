@@ -157,6 +157,7 @@ class Text ${show_common ? `${keyword} Shape ` : ""}{${color_def}
                                 : "interface",
                         color: true,
                         is_inside: true,
+                        rotate: "none",
                     }),
                     zerozero,
                     15

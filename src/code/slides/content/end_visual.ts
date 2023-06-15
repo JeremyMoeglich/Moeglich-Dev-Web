@@ -1,4 +1,4 @@
-import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
+import { makeNoise3D } from "fast-simplex-noise";
 import { createBundle } from "~/code/bundle";
 import {
     CircleSolid,
@@ -15,9 +15,7 @@ import gen from "random-seed";
 import { syncTextToShapes } from "~/code/shapelib/funcs/text_to_shape";
 import { interpolate_between } from "~/utils/interpolate_between";
 import { Text } from "~/code/shapelib/types/text";
-import { box } from "~/code/shapelib/funcs/utils";
-import { Color } from "~/code/funcs/color";
-import { create } from "domain";
+import { code_scroll_visual } from "./code_scroll";
 
 const rand = gen.create("Seed51");
 const random = () => rand.random();
@@ -32,7 +30,7 @@ const triangle = new TriangleSolid(
     new Point(100, 0),
     new Point(100, 100)
 ).set_setter((ctx) => {
-    ctx.fillStyle = "yellow";
+    ctx.fillStyle = "#fcce4f";
 });
 const triangle_bezier = new PolygonSolid(triangle.vertices()).to_bezier();
 export const pizza = createBundle([
@@ -123,7 +121,7 @@ export const cheese = new HollowShape(rect.to_polygon().to_bezier(), [
         )
         .filter((c) => rect.relation_to(c.bbox()) === "other_inside_this"),
 ]).set_setter((ctx) => {
-    ctx.fillStyle = "yellow";
+    ctx.fillStyle = "#ffe46e";
 });
 
 function rotate_food(t: number) {
@@ -133,8 +131,8 @@ function rotate_food(t: number) {
         pizza.rotate(t / 1000).translate(new Point(0, 200)),
     ])
         .rotate(t / 2000, zerozero)
-        .scale(1, zerozero)
-        .translate(new Point(1000, 0));
+        .scale(0.1, zerozero)
+        .translate(new Point(900, 550));
 }
 
 const noise5 = makeNoise3D();
@@ -143,14 +141,26 @@ export const end_visual = new InterFunc(({ t }: { t: number }) => {
     const shape = syncTextToShapes("Ende")
         .recenter("both")
         .scale(0.4)
-        .map_points((p) => p.translate(new Point(0, p.x * interpolate_between(t / 6000, -0.07, 0.07))));
+        .map_points((p) =>
+            p.translate(
+                new Point(0, p.x * interpolate_between(t / 6000, -0.07, 0.07))
+            )
+        );
     const bbox = shape.bbox();
     return createBundle([
-        rotate_food(t).translate(new Point(700, 0)),
+        code_scroll_visual(t),
+        rotate_food(t),
         createBundle(
             bbox
                 .distribute_grid(700, t / 1000)
                 .filter((p) => shape.contains(p, 0))
+                .map((p) => {
+                    const offset_x =
+                        noise5(p.x / 1000, p.y / 1000, t / 10000) * 50;
+                    const offset_y =
+                        noise5(p.x / 1000, p.y / 1000, t / 10000 + 1000) * 50;
+                    return p.translate(new Point(offset_x, offset_y));
+                })
                 .map((p) => {
                     const noise_value = noise5(p.x, p.y, t / 3000);
                     const text = new Text(

@@ -12,6 +12,7 @@ const colors = {
     Punctuation: new Color(243, 255, 48),
     Operator: new Color(216, 255, 211),
     Comment: new Color(87, 166, 74),
+    MultilineComment: new Color(87, 166, 74),
     Boolean: new Color(152, 118, 170),
     Null: new Color(129, 162, 190),
     Undefined: new Color(179, 101, 57),
