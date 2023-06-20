@@ -33,6 +33,7 @@ import { deg_to_rad } from "~/code/funcs/angle";
 import { Text } from "~/code/shapelib/types/text";
 import { zerozero } from "~/code/shapelib/types/point";
 import { rand_points } from "./graph_visual";
+import { align } from "~/code/shapelib/funcs/utils";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
     emptyBundle(CircleSolid.empty());
@@ -911,7 +912,7 @@ export const stages: Stage[] = [
                 }
                 `,
                 language: "ts",
-                offsety: 0,
+                offsety: -70,
                 scale: 3,
                 title: "Abstraktion - Generics",
                 visual: transforms_visual(
@@ -943,7 +944,7 @@ export const stages: Stage[] = [
                 const rotated_shapes = rotate_shapes(shapes, 90);
                 `,
                 language: "ts",
-                offsety: 0,
+                offsety: -70,
                 scale: 1.6,
                 title: "Abstraktion - Generics",
                 visual: transforms_visual(
@@ -973,7 +974,7 @@ export const stages: Stage[] = [
                 const rotated_shapes = rotate_shapes(shapes, 90); // Triangle[]
                 `,
                 language: "ts",
-                offsety: 0,
+                offsety: -70,
                 scale: 1.6,
                 title: "Abstraktion - Generics",
                 visual: transforms_visual(
@@ -1003,7 +1004,7 @@ export const stages: Stage[] = [
                 const rotated_shapes = rotate_shapes(shapes, 90); // Triangle[]
                 `,
                 language: "ts",
-                offsety: 0,
+                offsety: -70,
                 scale: 1.6,
                 title: "Abstraktion - Generics",
                 visual: transforms_visual(
@@ -1031,7 +1032,7 @@ export const stages: Stage[] = [
                 }
                 `,
                 language: "ts",
-                offsety: -40,
+                offsety: -70,
                 scale: 1.7,
                 title: "Abstraktion - Generics",
                 visual: transforms_visual(
@@ -1127,6 +1128,274 @@ export const stages: Stage[] = [
                 scale: 3,
                 title: "Abstraktion - Funktionale Programmierung",
                 visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    const array = ["Test", "a", "Hello"];
+
+                    array.sort((a,b) => a.length - b.length)
+
+                    console.log(array); // ["a", "Test", "Hello"]
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    let x = 0;
+                    
+                    function do_something(a: number ) {
+                        x = x + 2;
+                        return a + x;
+                    }
+
+                    console.log(do_something(5)); // 7
+                    console.log(do_something(5)); // 9
+                    console.log(do_something(5)); // 11
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    console.log("Hello World!");
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    console.log("Hello World!");
+                `,
+                language: "ts",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Funktionale Programmierung",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    fn main() {
+                        println!("Hello World!");
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&mut self, angle: f32);
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&mut self, angle: f32);
+                    }
+
+                    struct Circle {
+                        radius: f32,
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&mut self, angle: f32);
+                    }
+
+                    struct Circle {
+                        radius: f32,
+                    }
+
+                    impl Shape for Circle {
+                        fn rotate(&mut self, angle: f32) {
+                            return;
+                        }
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 3,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&mut self, angle: f32);
+                    }
+
+                    impl<T: Shape> Shape for <T> {
+                        fn rotate(&mut self, angle: f32) {
+                            for shape in self {
+                                shape.rotate(angle);
+                            }
+                        }
+                    }
+
+                    fn main() {
+                        let mut some_shapes = vec![
+                            Circle { radius: 1.0 },
+                            Circle { radius: 2.0 }
+                        ];
+                        some_shapes.rotate(90.0);
+
+                        println!("{:?}", some_shapes);
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&mut self, angle: f32);
+                    }
+
+                    impl<T: Shape> Shape for <T> {
+                        fn rotate(&mut self, angle: f32) {
+                            for shape in self {
+                                shape.rotate(angle);
+                            }
+                        }
+                    }
+
+                    fn main() {
+                        let mut some_shapes = vec![
+                            Circle { radius: 1.0 },
+                            Circle { radius: 2.0 }
+                        ];
+                        let some_shapes2 = some_shapes;
+                        some_shapes.rotate(90.0); // error: use of moved value: \`some_shapes\`
+
+                        println!("{:?}", some_shapes);
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    trait Shape {
+                        fn rotate(&self, angle: f32) -> Self;
+                    }
+
+                    impl<T: Shape> Shape for <T> {
+                        fn rotate(&self, angle: f32) -> Self {
+                            self.map(|shape| shape.rotate(angle))
+                        }
+                    }
+
+                    fn main() {
+                        let mut some_shapes = vec![
+                            Circle { radius: 1.0 },
+                            Circle { radius: 2.0 }
+                        ];
+                        let rotated_shapes = some_shapes.rotate(90.0);
+
+                        println!("{:?}", rotated_shapes);
+                    }
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Traits",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent`
+                    fn main() {
+                        let code = html! {
+                            <div>
+                                <h1>Hello World!</h1>   
+                            </div>
+                        };
+
+                        println!("{}", code);
+                    }  
+                `,
+                language: "rust",
+                offsety: 0,
+                scale: 2,
+                title: "Abstraktion - Metaprogramming",
+                visual: new InterFunc(() => empty_render),
+                xgap: 0,
+            },
+            {
+                code: dedent``,
+                language: "ts",
+                offsety: 0,
+                scale: 1.6,
+                title: "Welche Abstraktionen sollte man Verwenden / Auf was soll man achten?",
+                visual: new InterFunc(() =>
+                    align(
+                        [
+                            new Text(
+                                "1. Funktionen nutzen wenn State vermieden werden kann / global ist",
+                                zerozero,
+                                40
+                            ),
+                            new Text(
+                                "2. Klassen nutzen wenn State klar mit Methoden verbunden ist",
+                                zerozero,
+                                40
+                            ),
+                            new Text(
+                                "3. Mutability vermeiden wenn möglich",
+                                zerozero,
+                                40
+                            ),
+                        ],
+                        {
+                            direction: "vertical",
+                            gap: 50,
+                            method: "equal_gap",
+                        }
+                    )
+                ),
                 xgap: 0,
             },
             {

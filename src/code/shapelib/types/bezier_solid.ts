@@ -186,7 +186,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         const total_length = lengths.reduce((acc, l) => acc + l, 0);
         const amount_per_unit = amount / total_length;
         const points = zip([fullbeziers.objs, lengths]).flatMap(([b, l]) =>
-            b.sample_on_length(amount_per_unit * l)
+            (b).sample_on_length(amount_per_unit * (l))
         );
         return points;
     }

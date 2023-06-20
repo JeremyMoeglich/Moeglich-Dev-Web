@@ -39,7 +39,7 @@ export function basic_polymorphism(i: number) {
     const scaley = final_height / text_bbox.height;
     return new InterFunc(({ t }: { t: number }) => {
         return createBundle([
-            text.translate(new Point(-500, -100)).scale(scaley),
+            text.recenter('both').scale(scaley),
         ]);
     });
 }
