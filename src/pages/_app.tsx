@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { CrossTextProvider } from "~/utils/cross_text";
+import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 
 const MyApp: AppType<{ session: Session | null }> = ({
     Component,
@@ -14,7 +15,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
     return (
         <CrossTextProvider>
             <SessionProvider session={session}>
-                <Component {...pageProps} />
+                <ShapeRenderProvider>
+                    <Component {...pageProps} />
+                </ShapeRenderProvider>
             </SessionProvider>
         </CrossTextProvider>
     );

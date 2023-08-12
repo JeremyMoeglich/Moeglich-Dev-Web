@@ -34,9 +34,7 @@ function FullScreenApp() {
     );
     return (
         <FullScreen handle={handle}>
-            <ShapeRenderProvider>
-                <App />
-            </ShapeRenderProvider>
+            <App />
         </FullScreen>
     );
 }

@@ -139,11 +139,15 @@ export type Bundle<T> = (T extends any // This maps each union type in T seperat
     ? AccumulatedBundle<T, typeof this_bundlers>
     : never) & {
     objs: T[];
+    map_objs: <R>(fn: (obj: T) => R) => Bundle<R>;
 };
 
 export function createBundle<T>(values: T[]) {
     const object: any = {
         objs: values,
+        map_objs: function (this: Bundle<T>, fn: (obj: T) => any) {
+            return createBundle(this.objs.map(fn));
+        }
     };
     const prototype: any = {};
 
