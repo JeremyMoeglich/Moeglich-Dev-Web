@@ -24,15 +24,33 @@ const Home: NextPage = () => {
     const noise1 = useConstant(makeNoise3D());
     const noise2 = useConstant(makeNoise3D());
     const t = (time - start_time) / 1000;
-    const k = interpolate([
-        {
-            duration: 1,
-            value: {
-                x: 0,
-                y: 0
-            }
-        }
-    ], t);
+    const k = interpolate(
+        [
+            {
+                duration: 1,
+                value: {
+                    x: 0,
+                    y: 0,
+                },
+            },
+            {
+                duration: 1,
+                value: {
+                    x: 0,
+                    y: 100,
+                },
+            },
+            // Optionally, add a third point to actually see Bezier-like interpolation in action
+            {
+                duration: 1,
+                value: {
+                    x: 100,
+                    y: 100,
+                },
+            },
+        ],
+        t,
+    );    
     return (
         <>
             <Head>
@@ -54,7 +72,9 @@ const Home: NextPage = () => {
                                       obj: createBundle(
                                           shape
                                               .scale(0.13)
-                                              .translate(new Point(-6300, 500))
+                                              .translate(
+                                                  new Point(-6300 + k.x, 500 + k.y)
+                                              )
                                               .triangulate(Math.min(3, t))
                                       )
                                           .map_points((p) =>
