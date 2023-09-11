@@ -103,17 +103,6 @@ type ReplaceThisReturn<T, R> = {
 
 type BundlerType<B extends Bundler<any, any>> = GuardedType<B["isType"]>;
 
-export function rebundle_functionality<
-    B extends Bundler<any, any>,
-    O extends BundlerType<B>
->(
-    bundler: B
-): ReplaceFirstArgument<ReplaceThisReturn<B["functionality"], O>, O[]> {
-    return bundler.functionality as ReplaceFirstArgument<
-        ReplaceThisReturn<B["functionality"], O>,
-        O[]
-    >;
-}
 
 type ApplicableFunctionality<
     B extends Bundler<any, any>,
@@ -142,6 +131,12 @@ export type Bundle<T> = (T extends any // This maps each union type in T seperat
     map_objs: <R>(fn: (obj: T) => R) => Bundle<R>;
 };
 
+// Initialize the shared prototype just once
+const sharedPrototype: any = {};
+for (const bundler of this_bundlers) {
+  Object.assign(sharedPrototype, bundler.functionality);
+}
+
 export function createBundle<T>(values: T[]) {
     const object: any = {
         objs: values,
@@ -149,15 +144,8 @@ export function createBundle<T>(values: T[]) {
             return createBundle(this.objs.map(fn));
         }
     };
-    const prototype: any = {};
 
-    for (const bundler of this_bundlers) {
-        if (values.every((value) => bundler.isType(value))) {
-            Object.assign(prototype, bundler.functionality);
-        }
-    }
-
-    Object.setPrototypeOf(object, prototype);
+    Object.setPrototypeOf(object, sharedPrototype);
     return object as Bundle<T> & ThisReturn;
 }
 
@@ -189,4 +177,16 @@ export function unmark_this<T extends object & ThisReturn>(
     obj: T
 ): UnMarkThis<T> {
     return obj as UnMarkThis<T>;
+}
+
+export function rebundle_functionality<
+    B extends Bundler<any, any>,
+    O extends BundlerType<B>
+>(
+    bundler: B
+): ReplaceFirstArgument<ReplaceThisReturn<B["functionality"], O>, O[]> {
+    return bundler.functionality as ReplaceFirstArgument<
+        ReplaceThisReturn<B["functionality"], O>,
+        O[]
+    >;
 }
