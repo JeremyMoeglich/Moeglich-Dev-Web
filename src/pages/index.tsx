@@ -40,12 +40,18 @@ const Home: NextPage = () => {
                     y: 100,
                 },
             },
-            // Optionally, add a third point to actually see Bezier-like interpolation in action
             {
                 duration: 1,
                 value: {
                     x: 100,
                     y: 100,
+                },
+            },
+            {
+                duration: 1,
+                value: {
+                    x: 100,
+                    y: 0,
                 },
             },
         ],

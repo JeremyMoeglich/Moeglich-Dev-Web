@@ -69,13 +69,15 @@ export function interpolate<T extends Interpolate | NestedNumbers | number>(
     const i3 = values[current + 2] ?? i2;
     const i4 = values[current + 3] ?? i3;
 
-    const inter1_d1 = interpolate_two(i1.value, i2.value, remaining_duration / i1.duration);
-    const inter2_d1 = interpolate_two(i2.value, i3.value, remaining_duration / i1.duration);
-    const inter1_d2 = interpolate_two(i2.value, i3.value, remaining_duration / i1.duration);
-    const inter2_d2 = interpolate_two(i3.value, i4.value, remaining_duration / i1.duration);
+    const fraction = remaining_duration / i1.duration / 2;
 
-    const inter1 = interpolate_two(inter1_d1, inter2_d1, remaining_duration / i1.duration);
-    const inter2 = interpolate_two(inter1_d2, inter2_d2, remaining_duration / i1.duration);
+    const inter1_d1 = interpolate_two(i1.value, i2.value, fraction);
+    const inter2_d1 = interpolate_two(i2.value, i3.value, fraction);
+    const inter1_d2 = interpolate_two(i2.value, i3.value, fraction);
+    const inter2_d2 = interpolate_two(i3.value, i4.value, fraction);
 
-    return interpolate_two(inter1, inter2, remaining_duration / i1.duration);
+    const inter1 = interpolate_two(inter1_d1, inter2_d1, fraction);
+    const inter2 = interpolate_two(inter1_d2, inter2_d2, fraction);
+
+    return interpolate_two(inter1, inter2, fraction);
 }
