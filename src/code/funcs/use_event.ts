@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EventTypes } from "../event_types";
 import { Point } from "../shapelib";
-import { panic } from "functional-utilities";
+import { maybe_global, panic } from "functional-utilities";
 import { zerozero } from "../shapelib/types/point";
+import { maybe_window } from "~/utils/maybe_window";
 
 export function useEvent<T extends keyof EventTypes, O>(
     element: EventTarget | undefined,
     event: T,
     getter: (e: EventTypes[T]) => O,
-    initial: O
+    initial: O,
 ): O {
     const [state, setState] = useState(initial);
 
@@ -32,7 +33,7 @@ export function useEvent<T extends keyof EventTypes, O>(
 
 export function useMousePosition(
     element: Element | undefined,
-    anchor: "global" | "element"
+    anchor: "global" | "element",
 ): Point {
     return useEvent(
         element,
@@ -45,14 +46,14 @@ export function useMousePosition(
                 return new Point(e.clientX - rect.left, e.clientY - rect.top);
             }
         },
-        zerozero
+        zerozero,
     );
 }
 
 export function useKeydown(
     element: EventTarget | undefined,
     key: string,
-    callback: () => void
+    callback: () => void,
 ): void {
     useEvent(
         element,
@@ -62,7 +63,7 @@ export function useKeydown(
                 callback();
             }
         },
-        undefined
+        undefined,
     );
 }
 
@@ -85,6 +86,32 @@ export function useContainerSize(element: React.RefObject<HTMLElement>): Point {
             observer.disconnect();
         };
     }, [element]);
+
+    return size;
+}
+
+export function useWindowSize(): Point {
+    const [size, setSize] = useState<Point>(new Point(1, 1));
+
+    useEffect(() => {
+        const win = maybe_window();
+        const handleResize = () => {
+            if (win) {
+                setSize(new Point(win.innerWidth, win.innerHeight));
+            }
+        };
+
+        if (win) {
+            win.addEventListener("resize", handleResize);
+            handleResize(); // Initial call to set size
+        }
+
+        return () => {
+            if (win) {
+                win.removeEventListener("resize", handleResize);
+            }
+        };
+    }, []); // Empty dependency array makes sure the effect only runs on mount and unmount
 
     return size;
 }

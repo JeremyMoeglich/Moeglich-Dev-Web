@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@next-auth/prisma-adapter':
     specifier: ^1.0.7
@@ -78,8 +74,8 @@ dependencies:
     specifier: ^10.16.4
     version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
   functional-utilities:
-    specifier: ^3.5.0
-    version: 3.5.0
+    specifier: ^3.6.0
+    version: 3.6.0
   gl-matrix:
     specifier: ^3.4.3
     version: 3.4.3
@@ -3761,8 +3757,8 @@ packages:
       functions-have-names: 1.2.3
     dev: true
 
-  /functional-utilities@3.5.0:
-    resolution: {integrity: sha512-cmuKtxvUPx5aDG5umfrXnMwVSUNd4fpRr5MnqTE2qGGttmC0GEGjnXJcev86W4174JvLtrclaCSlaiVQ/bfJGw==}
+  /functional-utilities@3.6.0:
+    resolution: {integrity: sha512-BN/fUVv/tk5aTFl1SR9dPrUwZIQpI2hsk2xOPGAnEeBTgTYgIHx4QrcAVZKVgt/1J7nzATzCgV2g6zMIT+YiPg==}
     dev: false
 
   /functions-have-names@1.2.3:
@@ -6116,3 +6112,7 @@ packages:
   /zod@3.22.2:
     resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

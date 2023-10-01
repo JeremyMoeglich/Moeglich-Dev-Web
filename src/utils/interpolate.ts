@@ -6,11 +6,15 @@ import {
     typed_entries,
     zip,
 } from "functional-utilities";
-import { isArray } from "lodash-es";
+import { isArray, sumBy } from "lodash-es";
 import { Interpolate, interpolate_bundler } from "~/code/funcs/interpolator";
 
 interface NestedNumbers {
     [key: string]: number | NestedNumbers | (number | NestedNumbers)[];
+}
+
+function lerp(a: number, b: number, t: number, d: number): number {
+    return a + (b - a) * (t / d);
 }
 
 function interpolate_two<
@@ -42,42 +46,61 @@ function interpolate_two<
 }
 
 
-export function interpolate<T extends Interpolate | NestedNumbers | number>(
+// Cubic Bezier function for easing
+function cubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
+    const u = 1 - t;
+    const tt = t * t;
+    const uu = u * u;
+    return (uu * u * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (tt * t * p3);
+}
+// Helper function to calculate control points
+function calcControlPoints(a: number, b: number, c: number, d: number): [number, number] {
+    const control1 = b + (c - a) / 3;
+    const control2 = c - (d - b) / 3;
+    return [control1, control2];
+  }
+  
+  // Helper function to interpolate NestedNumbers with automatically calculated cubic Bezier control points
+  function interpolateNestedAuto(a: NestedNumbers, b: NestedNumbers, c: NestedNumbers, d: NestedNumbers, t: number): NestedNumbers {
+    const result: NestedNumbers = {};
+    for (const key in b) {
+      if (typeof a[key] === 'number' && typeof b[key] === 'number' && typeof c[key] === 'number' && typeof d[key] === 'number') {
+        const [control1, control2] = calcControlPoints(a[key] as number, b[key] as number, c[key] as number, d[key] as number);
+        result[key] = cubicBezier(t, b[key] as number, control1, control2, c[key] as number);
+      } else if (typeof a[key] === 'object' && typeof b[key] === 'object' && typeof c[key] === 'object' && typeof d[key] === 'object') {
+        result[key] = interpolateNestedAuto(a[key] as NestedNumbers, b[key] as NestedNumbers, c[key] as NestedNumbers, d[key] as NestedNumbers, t);
+      }
+    }
+    return result;
+  }
+  
+  export function interpolate<T extends NestedNumbers | number>(
     values: NonEmptyArray<{
-        value: T;
-        duration: number;
+      value: T;
+      duration: number;
     }>,
     t: number
-): T {
-    let current = 0;
-    let remaining_duration = t;
-    for (let i = 0; i < values.length; i++) {
-        const value = values[i] ?? panic();
-        if (value.duration <= remaining_duration) {
-            remaining_duration -= value.duration;
-            current++;
-        } else {
-            break;
+  ): T {
+    let currentTime = 0;
+    for (let i = 1; i < values.length - 1; i++) {  // Starting from 1 and ending before last to have neighbors for all
+      const a = values[i - 1].value;
+      const b = values[i].value;
+      const c = values[i + 1].value;
+      const d = values[i + 2]?.value || c;  // If 'd' doesn't exist, use 'c' as a fallback
+      const duration = values[i].duration;
+  
+      if (t >= currentTime && t <= currentTime + duration) {
+        const normalizedT = (t - currentTime) / duration;
+        if (typeof a === 'number' && typeof b === 'number' && typeof c === 'number' && typeof d === 'number') {
+          const [control1, control2] = calcControlPoints(a, b, c, d);
+          return cubicBezier(normalizedT, b, control1, control2, c) as T;
+        } else if (typeof a === 'object' && typeof b === 'object' && typeof c === 'object' && typeof d === 'object') {
+          return interpolateNestedAuto(a as NestedNumbers, b as NestedNumbers, c as NestedNumbers, d as NestedNumbers, normalizedT) as T;
         }
+      }
+  
+      currentTime += duration;
     }
-    if (current == values.length) {
-        return values.at(-1)?.value ?? panic();
-    }
-
-    const i1 = values[current] ?? panic();
-    const i2 = values[current + 1] ?? i1;
-    const i3 = values[current + 2] ?? i2;
-    const i4 = values[current + 3] ?? i3;
-
-    const fraction = remaining_duration / i1.duration / 2;
-
-    const inter1_d1 = interpolate_two(i1.value, i2.value, fraction);
-    const inter2_d1 = interpolate_two(i2.value, i3.value, fraction);
-    const inter1_d2 = interpolate_two(i2.value, i3.value, fraction);
-    const inter2_d2 = interpolate_two(i3.value, i4.value, fraction);
-
-    const inter1 = interpolate_two(inter1_d1, inter2_d1, fraction);
-    const inter2 = interpolate_two(inter1_d2, inter2_d2, fraction);
-
-    return interpolate_two(inter1, inter2, fraction);
-}
+    // Fallback
+    return values[values.length - 1].value;
+  }

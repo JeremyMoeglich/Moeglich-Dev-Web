@@ -40,7 +40,7 @@
         "flo-bezier3": "^5.0.0",
         "flo-poly": "^6.0.8",
         "framer-motion": "^10.16.4",
-        "functional-utilities": "^3.5.0",
+        "functional-utilities": "^3.6.0",
         "gl-matrix": "^3.4.3",
         "levenshtein-edit-distance": "^3.0.1",
         "lodash-es": "^4.17.21",

@@ -1,0 +1,100 @@
+import { makeNoise3D } from "fast-simplex-noise";
+import { type NextPage } from "next";
+import Head from "next/head";
+import { useMemo } from "react";
+import { moeglichdev_text, moeglichdev_triangles } from "~/code/animate/text";
+import { createBundle } from "~/code/bundle";
+import { useWindowSize } from "~/code/funcs/use_event";
+import { Point } from "~/code/shapelib";
+import { ShapeRender } from "~/code/shapelib/funcs/shape_render";
+import { textToShapes } from "~/code/shapelib/funcs/text_to_shape";
+import { interpolate } from "~/utils/interpolate";
+import { interpolate_between } from "~/utils/interpolate_between";
+import { useAsyncValue } from "~/utils/use_async_value";
+import { useConstant } from "~/utils/use_persist";
+import { useAnimationFrame } from "~/utils/use_update";
+
+function simpleHashRandom(n: number): number {
+    // Use bitwise operations to scramble the bits (note: in JS bitwise operations are 32-bit)
+    n ^= n >> 21;
+    n ^= n << 35;
+    n ^= n >> 4;
+
+    // Take the absolute value and modulo by a large prime number
+    n = Math.abs(n) % 999983;
+
+    // Normalize to a float between 0 and 1
+    return n / 999983.0;
+}
+
+const Home: NextPage = () => {
+    const triangles = useAsyncValue(moeglichdev_triangles, undefined);
+    const time = useAnimationFrame();
+    const dimensions = useWindowSize();
+    const start_time = useMemo(() => time, [triangles]);
+    const noise1 = useConstant(makeNoise3D());
+    const noise2 = useConstant(makeNoise3D());
+    const t = (time - start_time) / 1000;
+
+    return (
+        <>
+            <Head>
+                <title>Moeglich.Dev</title>
+                <meta
+                    name="description"
+                    content="Moeglichdev - Website / Portfolio of Jeremy Moeglich"
+                />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#4e3e64] to-[#15162c] p-4">
+                <ShapeRender
+                    render_id="MoeglichDev"
+                    instructions={
+                        !triangles
+                            ? []
+                            : [
+                                  {
+                                      obj: createBundle(triangles)
+                                          .recenter("both")
+                                          .scale(0.1, new Point(0, 0))
+                                          .map_objs((o) =>
+                                              o.scale(
+                                                  interpolate_between(
+                                                      t / 4,
+                                                      1,
+                                                      0.8,
+                                                  ),
+                                                  o.center(),
+                                              ),
+                                          )
+                                          .map_points((p) =>
+                                              p.translate(
+                                                  new Point(
+                                                      noise1(
+                                                          p.x / 100,
+                                                          p.y / 100,
+                                                          t / 2,
+                                                      ) * 5,
+                                                      noise2(
+                                                          p.x / 100,
+                                                          p.y / 100,
+                                                          t / 2,
+                                                      ) * 0,
+                                                  ),
+                                              ),
+                                          )
+                                          .set_setter((ctx) => {
+                                              ctx.fillStyle = "#fff";
+                                          }),
+                                      action: "fill",
+                                      z_index: 0,
+                                  },
+                              ]
+                    }
+                />
+            </main>
+        </>
+    );
+};
+
+export default Home;

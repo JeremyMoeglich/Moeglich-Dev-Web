@@ -43,7 +43,7 @@ function get_config(config?: TextToShapeConfig): Required<TextToShapeConfig> {
 
 export async function textToShapes(
     text: string,
-    config?: TextToShapeConfig
+    config?: TextToShapeConfig,
 ): Promise<Bundle<HollowShape<BezierSolid>>> {
     const rconfig = get_config(config);
     await load_font(rconfig.fontFilePath);
@@ -54,7 +54,8 @@ const glyphCache: Map<number, HollowShape<BezierSolid>[]> = new Map();
 
 function shapes_from_glyph(
     glyph: Glyph,
-    offset: Point
+    offset: Point,
+    h: number,
 ): HollowShape<BezierSolid>[] {
     const cached = !glyph.unicode ? undefined : glyphCache.get(glyph.unicode);
     const parsedCommands =
@@ -66,19 +67,20 @@ function shapes_from_glyph(
         })();
 
     return parsedCommands.map((shape) =>
-        convert_coords(shape.translate(offset))
+        convert_coords(shape.translate(offset), h),
     );
 }
 
-function convert_coords<T extends SolidShape & Interpolate>(
-    shape: HollowShape<T>
-): HollowShape<T> {
-    return shape.flip("y");
+function convert_coords(
+    shape: HollowShape<BezierSolid>,
+    h: number,
+): HollowShape<BezierSolid> {
+    return shape.map_points((point) => new Point(point.x, -point.y + h));
 }
 
 export function syncTextToShapes(
     text: string,
-    config?: TextToShapeConfig
+    config?: TextToShapeConfig,
 ): Bundle<HollowShape<BezierSolid>> {
     const rconfig = get_config(config);
     const font = font_cache.get(rconfig.fontFilePath);
@@ -114,8 +116,9 @@ export function syncTextToShapes(
         shapes.push(
             ...shapes_from_glyph(
                 first_glyph,
-                new Point(current_offset, line_offset)
-            ).map((shape) => ({ shape, source: glyphs[0]?.source ?? 0 }))
+                new Point(current_offset, line_offset),
+                font.ascender,
+            ).map((shape) => ({ shape, source: glyphs[0]?.source ?? 0 })),
         );
         pairs(glyphs).forEach(([{ glyph: prev_glyph }, { glyph, source }]) => {
             const kerning = font.getKerningValue(prev_glyph, glyph);
@@ -123,7 +126,8 @@ export function syncTextToShapes(
             current_offset += kerning + prev_width;
             const new_shapes = shapes_from_glyph(
                 glyph,
-                new Point(current_offset, line_offset)
+                new Point(current_offset, line_offset),
+                font.ascender,
             ).map((shape) => ({ shape, source }));
             shapes.push(...new_shapes);
         });
@@ -140,7 +144,7 @@ export function syncTextToShapes(
         const token = highlight.find(
             (token) =>
                 source >= token.start_offset &&
-                source < token.start_offset + token.content.length
+                source < token.start_offset + token.content.length,
         );
         if (token) {
             return shape.set_setter((ctx) => {
@@ -174,7 +178,7 @@ function pathCommandsToBeziers(pathCommands: PathCommand[]): BezierSolid[] {
             const curve: PartialBezier = new PartialBezier(
                 new Point(command.x1, command.y1),
                 new Point(command.x2, command.y2),
-                new Point(command.x, command.y)
+                new Point(command.x, command.y),
             );
             currentPath.push_segment(curve);
         } else if (command.type === "L") {
@@ -182,7 +186,7 @@ function pathCommandsToBeziers(pathCommands: PathCommand[]): BezierSolid[] {
             const line: PartialBezier = new PartialBezier(
                 new Point(command.x, command.y),
                 new Point(command.x, command.y),
-                new Point(command.x, command.y)
+                new Point(command.x, command.y),
             );
             currentPath.push_segment(line);
         } else if (command.type === "Q") {
@@ -190,7 +194,7 @@ function pathCommandsToBeziers(pathCommands: PathCommand[]): BezierSolid[] {
             const curve: PartialBezier = new PartialBezier(
                 new Point(command.x1, command.y1),
                 new Point(command.x, command.y),
-                new Point(command.x, command.y)
+                new Point(command.x, command.y),
             );
             currentPath.push_segment(curve);
         }
