@@ -18,7 +18,11 @@ export class Color implements Interpolate {
     }
 
     constructor(r: number, g: number, b: number) {
-        this.color = chroma(r, g, b);
+        this.color = chroma(r, g, b, "rgb");
+    }
+
+    rgb(): [number, number, number] {
+        return this.color.rgb();
     }
 
     clone() {

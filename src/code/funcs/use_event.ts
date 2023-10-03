@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { EventTypes } from "../event_types";
 import { Point } from "../shapelib";
-import { maybe_global, panic } from "functional-utilities";
+import { panic } from "functional-utilities";
 import { zerozero } from "../shapelib/types/point";
 import { maybe_window } from "~/utils/maybe_window";
+import { useUpdate } from "~/utils/use_update";
+
 
 export function useEvent<T extends keyof EventTypes, O>(
     element: EventTarget | undefined,
@@ -11,14 +13,12 @@ export function useEvent<T extends keyof EventTypes, O>(
     getter: (e: EventTypes[T]) => O,
     initial: O,
 ): O {
-    const [state, setState] = useState(initial);
-
-    useEffect(() => {
+    const state = useUpdate((callback) => {
         if (!element) {
             return;
         }
         const handler = ((e: EventTypes[T]) => {
-            setState(getter(e));
+            callback(getter(e));
         }) as (e: Event) => void;
 
         element.addEventListener(event, handler);
@@ -26,10 +26,10 @@ export function useEvent<T extends keyof EventTypes, O>(
         return () => {
             element.removeEventListener(event, handler);
         };
-    }, [element, event, getter]);
-
+    }, initial)
     return state;
 }
+
 
 export function useMousePosition(
     element: Element | undefined,

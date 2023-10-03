@@ -41,17 +41,17 @@ export class InterBlock<T extends Renderable & Transformable>
             unmark_this(
                 this.element
                     .scale(new Point(scalex, scaley), center)
-                    .translate(new Point(offsetx, offsety))
+                    .translate(new Point(offsetx, offsety)),
             ),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     to_start(): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.scale(0.001)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     can_interpolate(value: unknown): boolean {
@@ -71,15 +71,15 @@ export class InterBlock<T extends Renderable & Transformable>
     flip(axis: Axis): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.flip(axis)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     rotate(angle: number, center?: Point): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.rotate(angle, center)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
@@ -92,12 +92,12 @@ export class InterBlock<T extends Renderable & Transformable>
 
     scale(
         scale: number | Point,
-        origin?: Point | undefined
+        origin?: Point | undefined,
     ): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.scale(scale, origin)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {
@@ -105,19 +105,19 @@ export class InterBlock<T extends Renderable & Transformable>
     }
 
     set_setter(
-        ctx_setter: (ctx: CanvasRenderingContext2D) => void
+        ctx_setter: (ctx: CanvasRenderingContext2D) => void,
     ): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.set_setter(ctx_setter)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     translate(offset: Point): this & ThisReturn {
         return new InterBlock(
             unmark_this(this.element.translate(offset)),
-            this.key
-        ) as this & ThisReturn;
+            this.key,
+        ) as unknown as this & ThisReturn;
     }
 
     center(): Point {
@@ -128,7 +128,7 @@ export class InterBlock<T extends Renderable & Transformable>
         const center = this.center();
         const offset = new Point(
             axis !== "y" ? -center.x : 0,
-            axis !== "x" ? -center.y : 0
+            axis !== "x" ? -center.y : 0,
         );
         return this.translate(offset);
     }

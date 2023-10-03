@@ -51,8 +51,8 @@ export class LineSegment
         return new PolygonSolid([p1, p2, p3, p4]);
     }
 
-    toString(): string {
-        return `Line(${this.start.toString()}, ${this.end.toString()})`;
+    to_string(): string {
+        return `Line(${this.start.to_string()}, ${this.end.to_string()})`;
     }
 
     translate(p: Point) {

@@ -2,13 +2,12 @@ import {
     type Bundle,
     createBundle,
     emptyBundle,
-    unmark_this,
 } from "~/code/bundle";
 import { RectSolid } from "../types/rect_solid";
 import { type Renderable } from "../types/interfaces/renderable";
 import { type Transformable } from "../types/interfaces/transformable";
 import { Point } from "../types/point";
-import { cyclic_pairs, panic, zip } from "functional-utilities";
+import { zip } from "functional-utilities";
 import { type BezierSolid } from "../types/bezier_solid";
 import { type Color } from "~/code/funcs/color";
 import { dedent } from "~/utils/dedent";

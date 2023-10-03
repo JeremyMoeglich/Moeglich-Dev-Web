@@ -79,9 +79,9 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         );
     }
 
-    toString(): string {
+    to_string(): string {
         return `BezierSolid(${this.bezier
-            .map((b) => b.toString())
+            .map((b) => b.to_string())
             .join(", ")})`;
     }
 
@@ -295,14 +295,17 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     render(ctx: CanvasRenderingContext2D, action: "stroke" | "fill"): void {
+        ctx.save();
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         shapeaction(ctx, action);
+        ctx.restore();
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         if (this.bezier.length === 0) return;
+        ctx.save();
         debug_context(ctx, (ctx) => {
             const points_with_handles = this.to_points_with_handles();
             points_with_handles.forEach((p) => {
@@ -319,6 +322,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                 .to_circle_solid(3)
                 .render(ctx, "fill");
         });
+        ctx.restore();
     }
 
     sample_t(t: number): Point | undefined {

@@ -12,6 +12,7 @@ import type { SolidShape } from "./interfaces/solidshape";
 import type { Shape } from "./interfaces/shape";
 import { unmark_this, type ThisReturn } from "~/code/bundle";
 import { shapeaction } from "~/code/funcs/shapeact";
+import type { BezierSolid } from "./bezier_solid";
 
 export class HollowShape<T extends SolidShape & Interpolate>
     implements Shape, Interpolate
@@ -29,7 +30,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
     constructor(
         exterior: T,
         holes: T[],
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.exterior = exterior;
         this.holes = holes;
@@ -68,15 +69,15 @@ export class HollowShape<T extends SolidShape & Interpolate>
         return new HollowShape(
             unmark_this(this.exterior.interpolate(t, to.exterior)),
             zip([this.holes, to.holes]).map(([a, b]) =>
-                unmark_this(a.interpolate(t, b))
+                unmark_this(a.interpolate(t, b)),
             ),
-            to.ctx_setter
+            to.ctx_setter,
         ) as this & ThisReturn;
     }
 
-    toString(): string {
-        return `HollowShape(${this.exterior.toString()}, ${this.holes
-            .map((h) => h.toString())
+    to_string(): string {
+        return `HollowShape(${this.exterior.to_string()}, ${this.holes
+            .map((h) => h.to_string())
             .join(", ")})`;
     }
 
@@ -86,25 +87,25 @@ export class HollowShape<T extends SolidShape & Interpolate>
 
     translate(p: Point): this & ThisReturn {
         return new HollowShape(
-            this.exterior.translate(p) as T,
-            this.holes.map((h) => h.translate(p)),
-            this.ctx_setter
+            this.exterior.translate(p) as unknown as T,
+            this.holes.map((h) => h.translate(p)) as unknown as T[],
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     scale(scale: number | Point, offset?: Point): this & ThisReturn {
         return new HollowShape(
-            this.exterior.scale(scale, offset) as T,
-            this.holes.map((h) => h.scale(scale, offset)),
-            this.ctx_setter
+            this.exterior.scale(scale, offset) as unknown as T,
+            this.holes.map((h) => h.scale(scale, offset)) as unknown as T[],
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     flip(axis: Axis): this & ThisReturn {
         return new HollowShape(
-            this.exterior.flip(axis) as T,
-            this.holes.map((h) => h.flip(axis)),
-            this.ctx_setter
+            this.exterior.flip(axis) as unknown as T,
+            this.holes.map((h) => h.flip(axis)) as unknown as T[],
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -143,16 +144,16 @@ export class HollowShape<T extends SolidShape & Interpolate>
 
         const triangles = chunk(
             earcut(earcut_input, hole_indices).map(
-                (i) => points[i] ?? panic("Invalid earcut index")
+                (i) => points[i] ?? panic("Invalid earcut index"),
             ),
-            3
+            3,
         ).map(
             ([a, b, c]) =>
                 new TriangleSolid(
                     a ?? panic("Invalid earcut output length"),
                     b ?? panic("Invalid earcut output length"),
-                    c ?? panic("Invalid earcut output length")
-                )
+                    c ?? panic("Invalid earcut output length"),
+                ),
         );
         this.cache.triangulation = triangles;
         return triangles;
@@ -167,7 +168,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
         const approximation = new HollowShape<PolygonSolid>(
             this.exterior.approximated(quality),
             this.holes.map((h) => h.approximated(quality)),
-            this.ctx_setter
+            this.ctx_setter,
         );
         this.cache.approximation = approximation;
         return approximation;
@@ -201,13 +202,13 @@ export class HollowShape<T extends SolidShape & Interpolate>
     }
 
     map_points(
-        this: HollowShape<PolygonSolid>,
-        f: (p: Point) => Point
+        this: HollowShape<PolygonSolid> | HollowShape<BezierSolid>,
+        f: (p: Point) => Point,
     ): this & ThisReturn {
         return new HollowShape(
             this.exterior.map_points(f),
             this.holes.map((h) => h.map_points(f)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as unknown as this & ThisReturn;
     }
 
@@ -230,7 +231,7 @@ export class HollowShape<T extends SolidShape & Interpolate>
             this.exterior.right_point_intersections(p) +
             this.holes.reduce(
                 (acc, h) => acc + h.right_point_intersections(p),
-                0
+                0,
             )
         );
     }
@@ -240,8 +241,8 @@ export class HollowShape<T extends SolidShape & Interpolate>
             .sample_on_length(min_per_unit, variant)
             .concat(
                 ...this.holes.map((h) =>
-                    h.sample_on_length(min_per_unit, variant)
-                )
+                    h.sample_on_length(min_per_unit, variant),
+                ),
             );
     }
 
@@ -252,9 +253,9 @@ export class HollowShape<T extends SolidShape & Interpolate>
     rotate(angle: number, origin?: Point | undefined): this & ThisReturn {
         const o = origin ?? this.center();
         return new HollowShape(
-            this.exterior.rotate(angle, o) as T,
-            this.holes.map((h) => h.rotate(angle, o)),
-            this.ctx_setter
+            this.exterior.rotate(angle, o) as unknown as T,
+            this.holes.map((h) => h.rotate(angle, o)) as unknown as T[],
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 

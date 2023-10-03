@@ -2,7 +2,7 @@ import { useConstant } from "~/utils/use_persist";
 import { Point } from "../shapelib";
 import { makeNoise3D } from "fast-simplex-noise";
 import { useMemo } from "react";
-import { useAnimationFrame } from "~/utils/use_update";
+import { useAnimationTime } from "~/utils/use_update";
 
 export function useMorph<
     T extends { map_points: (f: (p: Point) => Point) => T }
@@ -14,7 +14,7 @@ export function useMorph<
         size: number;
     }
 ): T {
-    const time = useAnimationFrame();
+    const time = useAnimationTime();
     const xnoise = useConstant(makeNoise3D());
     const ynoise = useConstant(makeNoise3D());
 

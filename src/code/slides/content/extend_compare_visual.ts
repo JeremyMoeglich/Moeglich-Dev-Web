@@ -10,7 +10,7 @@ const checkmark = new Text("✓", zerozero, 50);
 const cross = new Text("✗", zerozero, 50);
 
 export function extend_compare_visual() {
-    return new InterFunc(({ t }: { t: number }) => {
+    return new InterFunc(() => {
         return table(
             zip([
                 [

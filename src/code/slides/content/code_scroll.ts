@@ -1,12 +1,6 @@
-import { createBundle, emptyBundle } from "~/code/bundle";
-import { type Interpolate } from "~/code/funcs/interpolator";
-import { type Renderable, type Transformable } from "~/code/shapelib";
-import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { Point } from "~/code/shapelib/types/point";
 import { Text } from "~/code/shapelib/types/text";
 import { sources, type SourceFile } from "~/code/sources";
-import { RectSolid } from "~/code/shapelib";
-import { panic } from "functional-utilities";
 
 const fileContentCache: Record<string, string> = {};
 const fetching: Set<string> = new Set();
@@ -24,7 +18,7 @@ function fetchFileContent(sourceFile: SourceFile): void {
         .catch((error) => {
             console.error(
                 `Failed to fetch file at path: ${sourceFile.web_path}`,
-                error
+                error,
             );
             fetching.delete(sourceFile.web_path);
         });
@@ -70,7 +64,7 @@ export function code_scroll_visual(t: number) {
         displayedText,
         new Point(0, -line_height * wrappedY * text_height),
         14,
-        line_height
+        line_height,
     )
         .highlight("ts")
         .translate(new Point(-600, -500));

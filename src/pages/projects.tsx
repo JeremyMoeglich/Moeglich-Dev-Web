@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { TopAnimation } from "~/code/components/top_animation";
 
-const Home: NextPage = () => {
+const Projects: NextPage = () => {
     return (
         <>
             <TopAnimation></TopAnimation>
@@ -9,4 +9,4 @@ const Home: NextPage = () => {
     );
 };
 
-export default Home;
+export default Projects;

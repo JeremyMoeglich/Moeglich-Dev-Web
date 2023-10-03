@@ -17,7 +17,6 @@ import { type Axis } from "./types";
 import { split_include } from "~/utils/split_include";
 import { languages } from "~/code/funcs/lex";
 import { max } from "lodash-es";
-import { levenshteinEditDistance } from "levenshtein-edit-distance";
 
 const IS_BROWSER = typeof window !== "undefined";
 

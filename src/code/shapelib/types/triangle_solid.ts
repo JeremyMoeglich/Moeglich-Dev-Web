@@ -12,7 +12,6 @@ import { type SolidShape } from "./interfaces/solidshape";
 import { type PointMap } from "./interfaces/pointmap";
 import { type ThisReturn } from "~/code/bundle";
 import { shapeaction } from "~/code/funcs/shapeact";
-import { Renderable } from "./interfaces/renderable";
 
 export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     private cache: {
@@ -45,8 +44,8 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         return new TriangleSolid(zerozero, zerozero, zerozero);
     }
 
-    toString(): string {
-        return `TriangleSolid(${this.a.toString()}, ${this.b.toString()}, ${this.c.toString()})`;
+    to_string(): string {
+        return `TriangleSolid(${this.a.to_string()}, ${this.b.to_string()}, ${this.c.to_string()})`;
     }
 
     interpolate(t: number, to: this) {

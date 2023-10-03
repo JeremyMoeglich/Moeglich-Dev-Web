@@ -115,8 +115,8 @@ export class CircleSolid implements SolidShape, Interpolate {
         ) as this & ThisReturn;
     }
 
-    toString(): string {
-        return `CircleSolid(${this.position.toString()}, ${this.radius})`;
+    to_string(): string {
+        return `CircleSolid(${this.position.to_string()}, ${this.radius})`;
     }
 
     intersects(other: this): boolean {
@@ -238,13 +238,16 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
+        ctx.save();
         this.ctx_setter && this.ctx_setter(ctx);
         ctx.beginPath();
         this.select_shape(ctx);
         shapeaction(ctx, action);
+        ctx.restore();
     }
 
     render_debug(ctx: CanvasRenderingContext2D): void {
+        ctx.save();
         debug_context(ctx, (ctx) => {
             // mark center
             ctx.beginPath();
@@ -257,6 +260,7 @@ export class CircleSolid implements SolidShape, Interpolate {
             ctx.lineTo(this.position.x + this.radius, this.position.y);
             ctx.stroke();
         });
+        ctx.restore();
     }
 
     to_bezier(): BezierSolid {

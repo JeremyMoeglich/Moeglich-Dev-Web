@@ -1,6 +1,6 @@
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { cheese, cookie, pizza } from "./end_visual";
-import { align, box, table } from "~/code/shapelib/funcs/utils";
+import { box, table } from "~/code/shapelib/funcs/utils";
 import { Point, zerozero } from "~/code/shapelib/types/point";
 import { Color } from "~/code/funcs/color";
 import { Text } from "~/code/shapelib/types/text";
@@ -28,7 +28,7 @@ export function product_visual(opt: { name: boolean; price: boolean }) {
                     : RectSolid.empty(),
             ]),
             [300, 100, 50],
-            [450, 450, 450]
+            [450, 450, 450],
         )
             .translate(new Point(300, 0))
             .scale(0.7);

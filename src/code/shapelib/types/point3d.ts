@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ThisReturn, type UnMarkThis } from "~/code/bundle";
 import { type Interpolate } from "~/code/funcs/interpolator";
 import { type Point } from "./point";
@@ -10,9 +11,7 @@ export interface Transformable3d {
 
 import { vec3, mat4 } from "gl-matrix";
 import { type Camera } from "./camera";
-import { panic } from "functional-utilities";
 import { PolygonSolid } from "./polygon_solid";
-import { TriangleSolid } from "./triangle_solid";
 
 export function vec3ToPoint3d(vec: vec3): Point3d {
     return new Point3d(vec[0], vec[1], vec[2]);

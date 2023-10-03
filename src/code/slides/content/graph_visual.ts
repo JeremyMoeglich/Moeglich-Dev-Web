@@ -73,7 +73,3 @@ export function rand_points(t: number) {
         return p;
     });
 }
-
-function generate_graph(t: number) {
-    const points = rand_points(t);
-}

@@ -53,8 +53,8 @@ export class FullBezier
         return id;
     }
 
-    toString(): string {
-        return `FullBezier(sp=${this.start_point.toString()}, b=${this.bezier.toString()})`;
+    to_string(): string {
+        return `FullBezier(sp=${this.start_point.to_string()}, b=${this.bezier.to_string()})`;
     }
 
     interpolate(t: number, to: this) {

@@ -17,14 +17,14 @@ export function useUpdate<T>(
     return value;
 }
 
-export function useAnimationFrame(): number {
+export function useAnimationTime(): number {
     const time = useUpdate((callback) => {
-        const new_request_id = requestAnimationFrame(() => {
-            callback(Date.now());
+        const new_request_id = requestAnimationFrame((t) => {
+            callback(t);
         });
         return () => {
             cancelAnimationFrame(new_request_id);
         };
-    }, Date.now());
+    }, performance.now());
     return time;
 }

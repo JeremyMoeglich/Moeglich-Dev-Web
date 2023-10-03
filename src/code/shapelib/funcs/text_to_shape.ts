@@ -4,9 +4,7 @@ import { HollowShape } from "../types/hollow_shape";
 import { BezierSolid } from "../types/bezier_solid";
 import { Point } from "../types/point";
 import { PartialBezier } from "../types/partial_bezier";
-import type { Interpolate } from "~/code/funcs/interpolator";
 import { type Bundle, emptyBundle, createBundle } from "~/code/bundle";
-import { type SolidShape } from "../types/interfaces/solidshape";
 import { languages } from "~/code/funcs/lex";
 
 const font_cache: Map<string, Awaited<ReturnType<typeof load>>> = new Map();

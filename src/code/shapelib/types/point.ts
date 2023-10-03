@@ -39,7 +39,7 @@ export class Point
         return id;
     }
 
-    toString(): string {
+    to_string(): string {
         return `Point(${this.x}, ${this.y})`;
     }
 
@@ -87,10 +87,14 @@ export class Point
         return this;
     }
 
+    magnitude(): number {
+        return Math.hypot(this.x, this.y);
+    }
+
     recenter(axis: Axis) {
         return new Point(
             axis !== "y" ? this.x : 0,
-            axis !== "x" ? this.y : 0
+            axis !== "x" ? this.y : 0,
         ) as this & ThisReturn;
     }
 
@@ -133,6 +137,14 @@ export class Point
 
     subtract(p: Point): Point {
         return new Point(this.x - p.x, this.y - p.y);
+    }
+
+    add(p: Point): Point {
+        return new Point(this.x + p.x, this.y + p.y);
+    }
+
+    offset(p: Point): Point {
+        return this.add(p);
     }
 
     factor(f: number): Point {
@@ -187,7 +199,7 @@ export class Point
     lerp(t: number, to: Point) {
         return new Point(
             this.x + (to.x - this.x) * t,
-            this.y + (to.y - this.y) * t
+            this.y + (to.y - this.y) * t,
         ) as this & ThisReturn;
     }
 

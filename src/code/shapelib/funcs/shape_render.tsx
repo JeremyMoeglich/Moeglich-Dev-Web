@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useContext, useMemo } from "react";
 
 import { Point } from "../types/point";
-import type { RectSolid } from "../types/rect_solid";
+import { RectSolid } from "../types/rect_solid";
 import { panic } from "functional-utilities";
 import { type Renderable } from "../types/interfaces/renderable";
 import { type Transformable } from "../types/interfaces/transformable";
@@ -18,6 +18,7 @@ export type DrawParams = {
     origin?: "local" | "global";
     obj: Renderable & Transformable & BoundingBox;
     action: "fill" | "stroke" | "both";
+    clip?: RectSolid | "none" | undefined;
 };
 
 interface RenderedShape {
@@ -44,6 +45,7 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
     debug = false,
     shape_id,
     z_index,
+    clip,
 }) => {
     const canvasRef = useContext(CanvasContext);
 
@@ -63,6 +65,14 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 ctx.strokeStyle = "green";
                 ctx.globalAlpha = 1;
 
+                ctx.save();
+                ctx.beginPath();
+                if (clip !== "none") {
+                    if (!clip) { panic("No clip"); }
+                    clip.select_shape(ctx);
+                    ctx.clip();
+                }
+
                 if (action === "fill" || action === "both") {
                     obj.render(ctx, "fill");
                 } else if (action === "stroke" || action === "both") {
@@ -71,6 +81,8 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 if (debug) {
                     obj.render_debug(ctx);
                 }
+
+                ctx.restore();
             },
         });
         if (!rerenderScheduled) {
@@ -99,7 +111,7 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 }
             }
         };
-    }, [obj, action, debug, shape_id, z_index, canvasRef]);
+    }, [obj, action, debug, shape_id, z_index, canvasRef, clip]);
 
     return null;
 };
@@ -123,23 +135,32 @@ export const ShapeRender: React.FC<
             const rect = shapeRef.current.getBoundingClientRect();
             const rect_center = new Point(
                 rect.left + rect.width / 2,
-                rect.top + rect.height / 2
+                rect.top + rect.height / 2,
             );
             const scrollTop =
-                window.scrollY || document.documentElement.scrollTop;
+                window.scrollY ?? document.documentElement.scrollTop;
             const scrollLeft =
-                window.scrollX || document.documentElement.scrollLeft;
+                window.scrollX ?? document.documentElement.scrollLeft;
             const offset = new Point(scrollLeft, scrollTop).translate(
-                rect_center
+                rect_center,
             );
-            // Now you can use this offset in your drawing logic
-            return instructions.map((instruction) => {
-                if (instruction.origin === "global") return instruction;
+            const clip = RectSolid.from_corners(
+                new Point(-rect.width / 2, -rect.height / 2),
+                new Point(rect.width / 2, rect.height / 2),
+            ).translate(offset);
+
+            const inst = instructions.map((instruction) => {
                 return {
                     ...instruction,
-                    obj: instruction.obj.translate(offset),
+                    obj:
+                        instruction.origin === "global"
+                            ? instruction.obj
+                            : instruction.obj.translate(offset),
+                    clip: instruction.clip ?? clip,
                 };
             });
+
+            return inst;
         }
         return [];
     }, [shapeRef, instructions]);
@@ -160,6 +181,7 @@ export const ShapeRender: React.FC<
                         shape_id={id}
                         z_index={instruction.z_index}
                         debug={instruction.debug}
+                        clip={instruction.clip}
                     />
                 );
             })}
@@ -195,7 +217,7 @@ export const ShapeRenderProvider: React.FC<ShapeRenderProviderProps> = ({
 
     return (
         <CanvasContext.Provider value={canvasRef}>
-            <canvas ref={canvasRef} className="pointer-events-none absolute" />
+            <canvas ref={canvasRef} className="pointer-events-none absolute z-30" />
             {children}
         </CanvasContext.Provider>
     );

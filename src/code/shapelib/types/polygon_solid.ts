@@ -168,9 +168,9 @@ export class PolygonSolid
         this.cache = {};
     }
 
-    toString(): string {
+    to_string(): string {
         return `PolygonSolid(${this.points
-            .map((p) => p.toString())
+            .map((p) => p.to_string())
             .join(", ")})`;
     }
 

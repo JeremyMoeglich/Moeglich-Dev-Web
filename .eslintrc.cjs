@@ -36,6 +36,9 @@ const config = {
         "@typescript-eslint/no-empty-function": "off",
         "@next/next/no-img-element": "off",
         "@typescript-eslint/no-unsafe-assignment": "off",
+        "@react-hooks/exhaustive-deps": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-base-to-string": "off",
     },
 };
 

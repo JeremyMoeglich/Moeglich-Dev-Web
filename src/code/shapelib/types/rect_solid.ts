@@ -49,6 +49,15 @@ export class RectSolid
         this.height = height;
     }
 
+    static from_corners(a: Point, b: Point): RectSolid {
+        return new RectSolid(
+            Math.min(a.x, b.x),
+            Math.min(a.y, b.y),
+            Math.abs(a.x - b.x),
+            Math.abs(a.y - b.y)
+        );
+    }
+
     static empty(): RectSolid {
         return new RectSolid(0, 0, 0, 0);
     }
@@ -93,7 +102,7 @@ export class RectSolid
         return value instanceof RectSolid;
     }
 
-    toString(): string {
+    to_string(): string {
         return `Rect(${this.x}, ${this.y}, ${this.width}, ${this.height})`;
     }
 

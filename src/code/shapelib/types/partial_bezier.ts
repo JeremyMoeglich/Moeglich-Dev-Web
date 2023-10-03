@@ -25,8 +25,8 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(zerozero, zerozero, zerozero);
     }
 
-    toString(): string {
-        return `BezierSegment(h1=${this.handle1.toString()}, h2=${this.handle2.toString()}, ep=${this.end_point.toString()})`;
+    to_string(): string {
+        return `BezierSegment(h1=${this.handle1.to_string()}, h2=${this.handle2.to_string()}, ep=${this.end_point.to_string()})`;
     }
 
     translate(p: Point): PartialBezier {

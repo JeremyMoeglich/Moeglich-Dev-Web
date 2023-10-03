@@ -1,9 +1,7 @@
-import { createBundle } from "~/code/bundle";
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
-import { package_visual, package_visual3d } from "./package";
+import { package_visual } from "./package";
 import { align } from "~/code/shapelib/funcs/utils";
 import {
-    Point,
     PolygonSolid,
     type Renderable,
     type Transformable,

@@ -1,7 +1,6 @@
 import { createBundle } from "~/code/bundle";
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { shape_interface } from "./commons";
-import { Point } from "~/code/shapelib";
 import { Text } from "~/code/shapelib/types/text";
 import { zerozero } from "~/code/shapelib/types/point";
 import { dedent } from "~/utils/dedent";
@@ -37,9 +36,7 @@ export function basic_polymorphism(i: number) {
     const final_height = 500;
     const text_bbox = text.bbox();
     const scaley = final_height / text_bbox.height;
-    return new InterFunc(({ t }: { t: number }) => {
-        return createBundle([
-            text.recenter('both').scale(scaley),
-        ]);
+    return new InterFunc(() => {
+        return createBundle([text.recenter("both").scale(scaley)]);
     });
 }

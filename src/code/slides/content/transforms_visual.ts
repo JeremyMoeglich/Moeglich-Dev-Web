@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createBundle } from "~/code/bundle";
 import { rad_to_deg } from "~/code/funcs/angle";
 import { Color } from "~/code/funcs/color";
-import { CircleSolid, PolygonSolid, RectSolid } from "~/code/shapelib";
+import { CircleSolid, PolygonSolid } from "~/code/shapelib";
 import { syncTextToShapes } from "~/code/shapelib/funcs/text_to_shape";
 import { align, box } from "~/code/shapelib/funcs/utils";
 import { InterFunc } from "~/code/shapelib/types/InterFunc";
 import { Point, zerozero } from "~/code/shapelib/types/point";
 import { Text } from "~/code/shapelib/types/text";
-import { dedent } from "~/utils/dedent";
 
 export function transforms_visual(
     rotate: (t: number) => number,
@@ -35,23 +35,6 @@ export function transforms_visual(
         ).set_setter((ctx) => {
             ctx.fillStyle = "white";
         });
-
-        const code = new Text(
-            dedent`
-                const shapes = [
-                    new Triangle(),
-                    new Square(),
-                    new Hexagon(),
-                    new Circle(),
-                    new Text("Test"),
-                ];
-            `,
-            zerozero,
-            30
-        )
-            .highlight("ts")
-            .recenter("both")
-            .scale(1.3);
 
         return createBundle([
             align(

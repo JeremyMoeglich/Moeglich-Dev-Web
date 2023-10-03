@@ -12,7 +12,7 @@ import { useTextShape } from "~/code/shapelib/funcs/use_text";
 import { CodeBlock } from "~/code/funcs/code_block";
 import { dedent } from "~/utils/dedent";
 import { ShapeRender } from "~/code/shapelib/funcs/shape_render";
-import { useAnimationFrame } from "~/utils/use_update";
+import { useAnimationTime } from "~/utils/use_update";
 import { motion } from "framer-motion";
 import type { languages } from "~/code/funcs/lex";
 import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
@@ -23,7 +23,6 @@ import { intersect_visual } from "./intersect_visual";
 import { multi_shape_visual } from "./multi_shape";
 import { basic_polymorphism } from "./basic_polymorphism";
 import { end_visual } from "./end_visual";
-import { generics_visual } from "./generics_visual";
 import { product_visual } from "./products";
 import { extend_compare_visual } from "./extend_compare_visual";
 import { merge_code } from "~/code/merge_code";
@@ -32,7 +31,6 @@ import { transforms_visual } from "./transforms_visual";
 import { deg_to_rad } from "~/code/funcs/angle";
 import { Text } from "~/code/shapelib/types/text";
 import { zerozero } from "~/code/shapelib/types/point";
-import { rand_points } from "./graph_visual";
 import { align } from "~/code/shapelib/funcs/utils";
 
 const empty_render: Bundle<Renderable & Interpolate & Transformable> =
@@ -61,7 +59,7 @@ export const stages: Stage[] = [
             show_debug,
             code_opacity,
         }) => {
-            const time = useAnimationFrame();
+            const time = useAnimationTime();
             const offset = new Point(offsetx, 0);
             const text = useTextShape("Hello World!")
                 .recenter("both")
@@ -234,7 +232,7 @@ export const stages: Stage[] = [
             xgap,
             static_props,
         }) => {
-            const t = useAnimationFrame();
+            const t = useAnimationTime();
             return (
                 <div className="h-full">
                     {defaults.title(title)}

@@ -5,7 +5,6 @@ import { get_slides } from "~/code/slides/slide_data";
 import { panic } from "functional-utilities";
 import { maybe_window } from "~/utils/maybe_window";
 import useLocalStorage from "use-local-storage";
-import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 
 function FullScreenApp() {
     const handle = useFullScreenHandle();
