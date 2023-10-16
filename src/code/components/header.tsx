@@ -2,39 +2,23 @@
 import { useRouter } from "next/router";
 import { ShapeRender } from "../shapelib/funcs/shape_render";
 import { Point } from "../shapelib";
-import { useAnimationTime } from "~/utils/use_update";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties } from "react";
 import { range } from "functional-utilities";
 import { createBundle } from "../bundle";
 import { useConstant } from "~/utils/use_persist";
 import { makeNoise3D } from "fast-simplex-noise";
 import Link from "next/link";
+import { useSimulation } from "~/utils/use_simulation";
+import { seeded_rand } from "~/utils/seeded_random";
 
-function useSimulation<S>(
-    func: (curr: S, dt: number, t: number) => S,
-    initial: S,
-    speed = 1,
-): S {
-    const t = useAnimationTime() * speed;
-    const last_t = useRef(t);
-    const [state, setState] = useState(initial);
-
-    useEffect(() => {
-        const dt = t - last_t.current;
-        last_t.current = t;
-        setState(func(state, dt, t));
-    }, [t]);
-
-    return state;
-}
-
+const rand = seeded_rand(1234);
 function probabilisticSpawn(desiredSpawn: number) {
     const wholeNumber = Math.floor(desiredSpawn);
     const fraction = desiredSpawn - wholeNumber;
 
     let actualSpawn = wholeNumber;
 
-    if (Math.random() < fraction) {
+    if (rand() < fraction) {
         actualSpawn++;
     }
 
@@ -46,13 +30,13 @@ function NavigationEntry(props: {
     current: boolean;
     path: string;
 }) {
-    const noise = useConstant(makeNoise3D());
+    const noise = useConstant(makeNoise3D(seeded_rand(5346)));
     const points = useSimulation(
         (curr, dt, t) => {
             const amount_to_add = dt / 7;
             const to_add = range(probabilisticSpawn(amount_to_add)).map(() => ({
                 pos: new Point(0, 0),
-                vel: new Point(Math.random() * 2 - 1, Math.random() * 2 - 1),
+                vel: new Point(rand() * 2 - 1, rand() * 2 - 1),
                 acc: new Point(0, 0),
                 lifetime: 0,
             }));
@@ -91,7 +75,7 @@ function NavigationEntry(props: {
             style={{
                 backgroundColor: props.current ? "#0077ffff" : "#04084b00",
                 color: props.current ? "white" : "gray",
-                transform: props.current ? "" : "skewX(-10deg)",
+                transform: props.current ? undefined : "skewX(-10deg)",
                 transitionDuration: "0.2s",
                 marginLeft: props.current ? "20px" : "0px",
                 marginRight: props.current ? "20px" : "0px",

@@ -9,6 +9,7 @@ import { CrossTextProvider } from "~/utils/cross_text";
 import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 import Head from "next/head";
 import { Header } from "~/code/components/header";
+import "~/code/wdyr";
 
 const MyApp: AppType<{ session: Session | null }> = ({
     Component,

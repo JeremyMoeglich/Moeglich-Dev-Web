@@ -147,6 +147,14 @@ export class Point
         return this.add(p);
     }
 
+    wrap(rect: RectSolid): Point {
+        // wrap the point such that it is within the rect
+        return new Point(
+            (this.x - rect.x) % rect.width,
+            (this.y - rect.y) % rect.height,
+        );
+    }
+
     factor(f: number): Point {
         return new Point(this.x * f, this.y * f);
     }

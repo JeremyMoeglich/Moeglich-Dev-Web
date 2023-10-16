@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function useUpdate<T>(
     f: (callback: (value: T) => (() => void) | void) => void,
-    initial: T
+    initial: T,
 ): T {
     const [value, setValue] = useState<T>(() => initial);
 
@@ -18,13 +18,14 @@ export function useUpdate<T>(
 }
 
 export function useAnimationTime(): number {
+    const startTimeRef = useRef(performance.now());
     const time = useUpdate((callback) => {
         const new_request_id = requestAnimationFrame((t) => {
-            callback(t);
+            callback(t - startTimeRef.current);
         });
         return () => {
             cancelAnimationFrame(new_request_id);
         };
-    }, performance.now());
+    }, 0);
     return time;
 }

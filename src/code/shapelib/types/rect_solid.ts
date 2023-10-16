@@ -90,6 +90,15 @@ export class RectSolid
         ) as this & ThisReturn;
     }
 
+    equals(other: this): boolean {
+        return (
+            this.x === other.x &&
+            this.y === other.y &&
+            this.width === other.width &&
+            this.height === other.height
+        );
+    }
+
     similarity(to: this): number {
         const x = Math.abs(this.x - to.x);
         const y = Math.abs(this.y - to.y);

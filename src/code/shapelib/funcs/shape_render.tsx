@@ -16,7 +16,9 @@ export type DrawParams = {
     z_index: number;
     shape_id?: string;
     origin?: "local" | "global";
-    obj: Renderable & Transformable & BoundingBox;
+    obj:
+        | (Renderable & Transformable & BoundingBox)
+        | ((func: RectSolid) => Renderable & Transformable & BoundingBox);
     action: "fill" | "stroke" | "both";
     clip?: RectSolid | "none" | undefined;
 };
@@ -53,8 +55,9 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
         if (!canvasRef.current) {
             return;
         }
+        const true_obj = obj as Renderable & Transformable & BoundingBox;
         rendered_shapes.set(shape_id, {
-            bbox: obj.bbox(),
+            bbox: true_obj.bbox(),
             shape_id,
             z_index,
             redraw: (ctx: CanvasRenderingContext2D) => {
@@ -68,18 +71,20 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
                 ctx.save();
                 ctx.beginPath();
                 if (clip !== "none") {
-                    if (!clip) { panic("No clip"); }
+                    if (!clip) {
+                        panic("No clip");
+                    }
                     clip.select_shape(ctx);
                     ctx.clip();
                 }
 
                 if (action === "fill" || action === "both") {
-                    obj.render(ctx, "fill");
+                    true_obj.render(ctx, "fill");
                 } else if (action === "stroke" || action === "both") {
-                    obj.render(ctx, "stroke");
+                    true_obj.render(ctx, "stroke");
                 }
                 if (debug) {
-                    obj.render_debug(ctx);
+                    true_obj.render_debug(ctx);
                 }
 
                 ctx.restore();
@@ -149,13 +154,27 @@ export const ShapeRender: React.FC<
                 new Point(rect.width / 2, rect.height / 2),
             ).translate(offset);
 
-            const inst = instructions.map((instruction) => {
+
+            const inst = instructions.map((instruction) => {                
+                const eval_clip =
+                    typeof instruction.clip === "object"
+                        ? instruction.clip
+                        : clip;
+
+
+                const true_obj =
+                    typeof instruction.obj === "function"
+                        ? instruction.obj(eval_clip)
+                        : instruction.obj;
+                const transformed =
+                    instruction.origin === "global" ||
+                    typeof instruction.obj === "function"
+                        ? true_obj
+                        : true_obj.translate(offset);
+
                 return {
                     ...instruction,
-                    obj:
-                        instruction.origin === "global"
-                            ? instruction.obj
-                            : instruction.obj.translate(offset),
+                    obj: transformed,
                     clip: instruction.clip ?? clip,
                 };
             });
@@ -217,7 +236,10 @@ export const ShapeRenderProvider: React.FC<ShapeRenderProviderProps> = ({
 
     return (
         <CanvasContext.Provider value={canvasRef}>
-            <canvas ref={canvasRef} className="pointer-events-none absolute z-30" />
+            <canvas
+                ref={canvasRef}
+                className="pointer-events-none absolute z-30"
+            />
             {children}
         </CanvasContext.Provider>
     );
