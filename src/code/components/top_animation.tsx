@@ -146,7 +146,7 @@ export function TopAnimation() {
     const simulation = useSimulation(
         (curr, dt, t) => {
             const total_points = Math.min(
-                10000,
+                300,
                 simDomainRef.current.area() / 100,
             );
 
@@ -220,25 +220,25 @@ export function TopAnimation() {
         [simulation],
     );
 
-    const lines = useMemo(() => {
-        const tree = create_kdtree(simulation.map((p) => p.pos));
-        const points = simulation.map((p) => p.pos);
-        const lines = points.map((point) => {
-            const neighbors = tree
-                .nearest(point, 5)
-                .filter((p) => p[0] !== point && p[0].x < point.x);
-            return neighbors.map((neighbor) =>
-                new LineSegment(point, neighbor[0])
-                    .to_polygon(1)
-                    .set_setter((ctx) => {
-                        ctx.fillStyle = `rgba(255, 255, 255, ${
-                            1 - neighbor[1] / 100
-                        })`;
-                    }),
-            );
-        });
-        return lines.flat();
-    }, [simulation]);
+    // const lines = useMemo(() => {
+    //     const tree = create_kdtree(simulation.map((p) => p.pos));
+    //     const points = simulation.map((p) => p.pos);
+    //     const lines = points.map((point) => {
+    //         const neighbors = tree
+    //             .nearest(point, 5)
+    //             .filter((p) => p[0] !== point && p[0].x < point.x);
+    //         return neighbors.map((neighbor) =>
+    //             new LineSegment(point, neighbor[0])
+    //                 .to_polygon(1)
+    //                 .set_setter((ctx) => {
+    //                     ctx.fillStyle = `rgba(255, 255, 255, ${
+    //                         1 - neighbor[1] / 100
+    //                     })`;
+    //                 }),
+    //         );
+    //     });
+    //     return lines.flat();
+    // }, [simulation]);
 
     return (
         <div className="relative flex h-full flex-col items-center justify-center py-11">
@@ -259,12 +259,6 @@ export function TopAnimation() {
                             action: "fill",
                             z_index: 4,
                             obj: rect_func,
-                        },
-                        {
-                            action: "fill",
-                            z_index: 3,
-                            obj: createBundle(lines),
-                            origin: "global",
                         },
                     ]}
                 />

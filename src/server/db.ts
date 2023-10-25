@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
 import { env } from "~/env.mjs";
 
@@ -11,6 +12,6 @@ export const prisma =
             env.NODE_ENV === "development"
                 ? ["query", "error", "warn"]
                 : ["error"],
-    });
+    }).$extends(withAccelerate());
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

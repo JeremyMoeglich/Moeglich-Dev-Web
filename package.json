@@ -9,15 +9,16 @@
     "start": "next start",
     "test": "vitest run",
     "bench": "vitest bench",
-    "postinstall": "prisma generate --data-proxy",
+    "postinstall": "prisma generate --no-engine",
     "studio": "dotenv -e .env.node -- prisma studio",
-    "updateprisma": "prisma generate --data-proxy && dotenv -e .env.node -- prisma db push --skip-generate",
+    "updateprisma": "prisma generate --no-engine && dotenv -e .env.node -- prisma db push --skip-generate",
     "socket": "dotenv -- cargo run --release --bin socket",
     "format": "prettier --write . --ignore-path .gitignore"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.3.1",
+    "@prisma/extension-accelerate": "^0.6.2",
     "@tanstack/react-query": "^4.35.7",
     "@trpc/client": "^10.38.5",
     "@trpc/next": "^10.38.5",
