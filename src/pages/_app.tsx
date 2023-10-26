@@ -26,7 +26,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
                         />
                         <link rel="icon" href="/favicon.ico" />
                     </Head>
-                    <main className="min-h-screen flex-col flex">
+                    <main className="h-screen w-full">
                         <Component {...pageProps} />
                     </main>
                 </ShapeRenderProvider>

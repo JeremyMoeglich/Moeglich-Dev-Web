@@ -6,6 +6,7 @@ import { create } from "zustand";
 import { useChannel } from "~/code/funcs/pusher_client";
 import { api } from "~/utils/api";
 import { persist } from "zustand/middleware";
+import { panic } from "functional-utilities";
 
 const superSecretKey = "waffel.123";
 
@@ -66,7 +67,8 @@ const Leaderboard: NextPage = () => {
         setLeaderboardState(leaderboard.data ?? leaderboardState ?? []);
     }, [leaderboard.data]);
 
-    const add_score_mutation = api.leaderboard_waffle.add.useMutation();
+    const update_score_mutation =
+        api.leaderboard_waffle.update_score.useMutation();
     const create_entry_mutation = api.leaderboard_waffle.create.useMutation();
     const change_nane_mutation =
         api.leaderboard_waffle.change_name.useMutation();
@@ -82,9 +84,11 @@ const Leaderboard: NextPage = () => {
                     : entry,
             ),
         );
-        add_score_mutation.mutate({
+        update_score_mutation.mutate({
             id: id,
-            score_offset: score_offset,
+            new_score:
+                score_offset +
+                (leaderboardState.find((v) => v.id === id) ?? panic()).score,
         });
     }
 
@@ -126,8 +130,8 @@ const Leaderboard: NextPage = () => {
     }
 
     return (
-        <div className="flex">
-            <div className="flex h-screen w-[900px] flex-col gap-8 bg-slate-900 p-8 ">
+        <div className="flex flex-row h-full max-[900px]:flex-wrap">
+            <div className="flex h-full w-[900px] flex-col gap-8 bg-slate-900 p-8 ">
                 {sortBy(leaderboardState, (v) => -v.score).map((user, i) => (
                     <div
                         key={user.id}
@@ -195,7 +199,7 @@ const Leaderboard: NextPage = () => {
                     </button>
                 )}
             </div>
-            <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-800">
+            <div className="flex h-full w-full flex-col items-center justify-center bg-slate-800">
                 <h1 className="text-center text-[150px] font-bold text-white ">
                     Waffel <br />
                     Leaderboard

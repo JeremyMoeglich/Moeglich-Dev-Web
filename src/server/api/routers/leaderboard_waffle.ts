@@ -12,33 +12,20 @@ export const leaderboardWaffleRouter = createTRPCRouter({
     get: publicProcedure.query(async ({ ctx }) => {
         return await ctx.prisma.leaderboardWaffle_Entry.findMany();
     }),
-    add: publicProcedure
+    update_score: publicProcedure
         .input(
             z.object({
                 id: z.string(),
-                score_offset: z.number(),
+                new_score: z.number(),
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_score = await ctx.prisma.$transaction(
-                async (transaction) => {
-                    const current =
-                        await transaction.leaderboardWaffle_Entry.findUnique({
-                            where: { id: input.id },
-                        });
-                    if (current === null) {
-                        throw new Error("No such entry");
-                    }
-                    return (
-                        await transaction.leaderboardWaffle_Entry.update({
-                            where: { id: input.id },
-                            data: {
-                                score: current.score + input.score_offset,
-                            },
-                        })
-                    ).score;
+            const new_score = await ctx.prisma.leaderboardWaffle_Entry.update({
+                where: { id: input.id },
+                data: {
+                    score: input.new_score,
                 },
-            );
+            });
             await request_refetch();
             return new_score;
         }),
