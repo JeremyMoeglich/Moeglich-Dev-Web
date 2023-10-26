@@ -1,17 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
 import { range, zip_longest } from "functional-utilities";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSimpleSpring } from "~/utils/spring";
 import { useConstant } from "~/utils/use_persist";
 import { useAnimationTime } from "~/utils/use_update";
 import { Color } from "../funcs/color";
 import { ShapeRender } from "../shapelib/funcs/shape_render";
-import { LineSegment, Point, RectSolid } from "../shapelib";
+import { Point, RectSolid } from "../shapelib";
 import { seeded_rand } from "~/utils/seeded_random";
 import { createBundle } from "../bundle";
 import { useSimulation } from "~/utils/use_simulation";
-import { create_kdtree } from "../shapelib/funcs/create_kdtree";
 // import { useContainerSize } from "../funcs/use_event";
 
 function Shift({

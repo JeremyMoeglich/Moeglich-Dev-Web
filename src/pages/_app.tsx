@@ -8,7 +8,6 @@ import "~/styles/globals.css";
 import { CrossTextProvider } from "~/utils/cross_text";
 import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 import Head from "next/head";
-import { Header } from "~/code/components/header";
 import "~/code/wdyr";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -27,8 +26,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
                         />
                         <link rel="icon" href="/favicon.ico" />
                     </Head>
-                    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#161229] to-[#04074b]">
-                        <Header></Header>
+                    <main className="min-h-screen flex-col flex">
                         <Component {...pageProps} />
                     </main>
                 </ShapeRenderProvider>

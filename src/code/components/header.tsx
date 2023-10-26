@@ -140,9 +140,9 @@ export function Header() {
     const path = router.pathname;
     const path_map = {
         "/": "Home",
-        "/projects": "Projects",
-        "/about": "About",
-        "/contact": "Contact",
+        // "/projects": "Projects",
+        // "/about": "About",
+        // "/contact": "Contact",
     };
 
     const current = path_map[path as keyof typeof path_map];

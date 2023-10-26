@@ -8,6 +8,7 @@ generator client {
 datasource db {
     provider = "cockroachdb"
     url      = env("DATABASE_URL")
+    directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model Example {
@@ -59,4 +60,10 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model LeaderboardWaffle_Entry {
+    id    String @id @default(cuid())
+    name  String
+    score Int
 }
