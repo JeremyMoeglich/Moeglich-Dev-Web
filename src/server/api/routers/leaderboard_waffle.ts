@@ -24,6 +24,11 @@ export const leaderboardWaffleRouter = createTRPCRouter({
                 where: { id: input.id },
                 data: {
                     score: input.new_score,
+                    LeaderboardWaffle_Change: {
+                        create: {
+                            score: input.new_score,
+                        },
+                    },
                 },
             });
             await request_refetch();

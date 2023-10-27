@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-    provider = "cockroachdb"
-    url      = env("DATABASE_URL")
+    provider  = "cockroachdb"
+    url       = env("DATABASE_URL")
     directUrl = env("DIRECT_DATABASE_URL")
 }
 
@@ -63,7 +63,16 @@ model VerificationToken {
 }
 
 model LeaderboardWaffle_Entry {
-    id    String @id @default(cuid())
-    name  String
+    id                       String                     @id @default(cuid())
+    name                     String
+    score                    Int
+    LeaderboardWaffle_Change LeaderboardWaffle_Change[]
+}
+
+model LeaderboardWaffle_Change {
+    id        String                  @id @default(cuid())
+    timestamp DateTime                @default(now())
+    entryId   String
+    entry     LeaderboardWaffle_Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
     score Int
 }
