@@ -1,5 +1,5 @@
 import Pusher from "pusher";
-import { env } from "../env.mjs";
+import { env } from "../env.js";
 
 export function create_pusher_server() {
     const pusher_server = new Pusher({

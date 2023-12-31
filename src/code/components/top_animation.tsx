@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
 import { range, zip_longest } from "functional-utilities";
@@ -26,7 +28,11 @@ function Shift({
     const [sizes, setSizes] = useState(
         parts.map((_) => ({ width: 0, height: 0 })),
     );
-    const size = useSimpleSpring(sizes[i] ?? { width: 0, height: 0 });
+    const size_x = useSimpleSpring(sizes[i]?.width ?? 0, {
+        damping: 26,
+        stiffness: 170,
+    });
+    const size_y = sizes.map(s => s.height).reduce((prev, curr) => Math.max(prev, curr), 0);
     const smooth_i = useSimpleSpring(i);
     const max_size = sizes.reduce(
         (prev, curr) => ({
@@ -60,8 +66,8 @@ function Shift({
                 display: "inline-block",
                 position: "relative",
                 overflow: "hidden",
-                width: size.width,
-                height: size.height,
+                width: size_x,
+                height: size_y,
                 fontSize: "200px",
                 fontFamily: "'Gabarito', cursive",
                 ...style,

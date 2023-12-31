@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { isEqual, minBy, sum } from "lodash-es";
 import { panic, zip } from "functional-utilities";

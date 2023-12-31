@@ -314,17 +314,18 @@ export class PolygonSolid
     }
 
     outline_intersects(other: this): boolean {
-        const lines = this.lines();
-        if (this.cache.outline_collider)
-            return lines.some((l) =>
-                (this.cache.outline_collider ?? panic())(l)
-            );
+        const collider = this.get_line_collider();
+        return other.lines().some((l) => collider(l));
+    }
+
+    get_line_collider(): (l: LineSegment) => boolean {
+        if (this.cache.outline_collider) return this.cache.outline_collider;
         const collider = create_collider<LineSegment, LineSegment>(
             this.lines(),
             (l, o) => l.outline_intersects(o)
         );
         this.cache.outline_collider = collider;
-        return other.lines().some((l) => collider(l));
+        return collider;
     }
 
     intersects(other: this): boolean {

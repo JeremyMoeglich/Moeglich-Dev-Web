@@ -1,5 +1,5 @@
 import Pusher, { type Channel } from "pusher-js";
-import { env } from "../../env.mjs";
+import { env } from "../../env.js";
 import { useEffect, useState } from "react";
 
 const PUSHER_APP_KEY = env.NEXT_PUBLIC_PUSHER_APP_KEY;

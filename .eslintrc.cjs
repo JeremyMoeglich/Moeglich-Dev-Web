@@ -39,6 +39,7 @@ const config = {
         "@react-hooks/exhaustive-deps": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-base-to-string": "off",
+        "@typescript-eslint/ban-types": "off",
     },
 };
 

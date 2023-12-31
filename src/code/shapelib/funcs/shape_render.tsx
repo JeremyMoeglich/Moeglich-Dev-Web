@@ -1,3 +1,5 @@
+"use client"
+
 // useDraw takes a ref to a canvas and an array of renderable objects and draws them to the canvas
 
 import React, { useEffect, useRef, useContext, useMemo } from "react";

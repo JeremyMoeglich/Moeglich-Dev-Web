@@ -1,3 +1,5 @@
+"use client"
+
 import { type NextPage } from "next";
 import { useState } from "react";
 import { CrossText } from "~/utils/cross_text";

@@ -1,3 +1,5 @@
+"use client"
+
 import { sortBy } from "lodash-es";
 import { type NextPage } from "next";
 import { useEffect, useState } from "react";
@@ -57,7 +59,7 @@ const Leaderboard: NextPage = () => {
         return () => {
             channel.unbind("refetch");
         };
-    }, [channel]);
+    }, [channel, leaderboard]);
 
     const [leaderboardState, setLeaderboardState] = useState(
         leaderboard.data ?? [],
@@ -65,12 +67,13 @@ const Leaderboard: NextPage = () => {
 
     useEffect(() => {
         setLeaderboardState(leaderboard.data ?? leaderboardState ?? []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leaderboard.data]);
 
     const update_score_mutation =
         api.leaderboard_waffle.update_score.useMutation();
     const create_entry_mutation = api.leaderboard_waffle.create.useMutation();
-    const change_nane_mutation =
+    const change_name_mutation =
         api.leaderboard_waffle.change_name.useMutation();
 
     function update_score(id: string, score_offset: number) {
@@ -123,7 +126,7 @@ const Leaderboard: NextPage = () => {
                     : entry,
             ),
         );
-        change_nane_mutation.mutate({
+        change_name_mutation.mutate({
             id: id,
             name: name,
         });

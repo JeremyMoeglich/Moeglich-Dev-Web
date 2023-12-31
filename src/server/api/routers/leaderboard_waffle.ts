@@ -10,7 +10,7 @@ async function request_refetch() {
 
 export const leaderboardWaffleRouter = createTRPCRouter({
     get: publicProcedure.query(async ({ ctx }) => {
-        return await ctx.prisma.leaderboardWaffle_Entry.findMany();
+        return await ctx.db.leaderboardWaffle_Entry.findMany();
     }),
     update_score: publicProcedure
         .input(
@@ -20,7 +20,7 @@ export const leaderboardWaffleRouter = createTRPCRouter({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_score = await ctx.prisma.leaderboardWaffle_Entry.update({
+            const new_score = await ctx.db.leaderboardWaffle_Entry.update({
                 where: { id: input.id },
                 data: {
                     score: input.new_score,
@@ -43,7 +43,7 @@ export const leaderboardWaffleRouter = createTRPCRouter({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_entry = await ctx.prisma.$transaction(
+            const new_entry = await ctx.db.$transaction(
                 async (transaction) => {
                     const current =
                         await transaction.leaderboardWaffle_Entry.findUnique({
@@ -72,7 +72,7 @@ export const leaderboardWaffleRouter = createTRPCRouter({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_name = await ctx.prisma.$transaction(
+            const new_name = await ctx.db.$transaction(
                 async (transaction) => {
                     const current =
                         await transaction.leaderboardWaffle_Entry.findUnique({

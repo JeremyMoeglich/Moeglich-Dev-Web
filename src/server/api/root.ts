@@ -2,6 +2,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { exampleRouter } from "~/server/api/routers/example";
 import { leaderboardWaffleRouter } from "./routers/leaderboard_waffle";
 
+
 /**
  * This is the primary router for your server.
  *
@@ -9,7 +10,7 @@ import { leaderboardWaffleRouter } from "./routers/leaderboard_waffle";
  */
 export const appRouter = createTRPCRouter({
     example: exampleRouter,
-    leaderboard_waffle: leaderboardWaffleRouter
+    leaderboard_waffle: leaderboardWaffleRouter,
 });
 
 // export type definition of API

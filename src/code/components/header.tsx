@@ -1,5 +1,7 @@
+"use client";
+
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { ShapeRender } from "../shapelib/funcs/shape_render";
 import { Point } from "../shapelib";
 import { type CSSProperties } from "react";
@@ -136,8 +138,7 @@ function NavigationEntry(props: {
 }
 
 export function Header() {
-    const router = useRouter();
-    const path = router.pathname;
+    const path = usePathname();
     const path_map = {
         "/": "Home",
         // "/projects": "Projects",
