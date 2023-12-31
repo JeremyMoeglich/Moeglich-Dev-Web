@@ -124,7 +124,7 @@ type AccumulatedBundle<T, Bs extends Array<Bundler<any, any>>> = Bs extends [
         : never
     : Record<string, never>;
 
-export type Bundle<T> = (T extends any // This maps each union type in T seperately. This technically doesn't change the type, but it avoid exponential complexity. Without this takes hours even for just 4 types.
+export type Bundle<T> = (T extends any // This maps each union type in T seperately. This technically doesn't change the type, but it avoids exponential complexity. Without this takes hours even for just 4 types.
     ? AccumulatedBundle<T, typeof this_bundlers>
     : never) & {
     objs: T[];
@@ -145,7 +145,7 @@ export function createBundle<T>(values: T[]) {
         }
     };
 
-    Object.setPrototypeOf(object, sharedPrototype);
+    Object.setPrototypeOf(object, sharedPrototype); // This technically means that objects gain methods that don't work, but it's fine as their not part of the type.
     return object as Bundle<T> & ThisReturn;
 }
 

@@ -1,8 +1,4 @@
-import {
-    type Bundle,
-    createBundle,
-    emptyBundle,
-} from "~/code/bundle";
+import { type Bundle, createBundle, emptyBundle } from "~/code/bundle";
 import { RectSolid } from "../types/rect_solid";
 import { type Renderable } from "../types/interfaces/renderable";
 import { type Transformable } from "../types/interfaces/transformable";
@@ -19,7 +15,7 @@ export function box<T extends Renderable & Transformable>(
         min_width?: number;
         min_height?: number;
         color: Color;
-    }
+    },
 ): Bundle<BezierSolid | RectSolid | T> {
     let bbox: RectSolid | BezierSolid = element.bbox();
     const center = bbox.center();
@@ -28,7 +24,7 @@ export function box<T extends Renderable & Transformable>(
             bbox.x,
             bbox.y,
             Math.max(options?.min_width ?? bbox.width, bbox.width),
-            Math.max(options?.min_height ?? bbox.height, bbox.height)
+            Math.max(options?.min_height ?? bbox.height, bbox.height),
         )
             .recenter("both")
             .translate(center);
@@ -39,7 +35,10 @@ export function box<T extends Renderable & Transformable>(
         ctx.lineWidth = 1;
         ctx.fillStyle = options.color.getHex();
     });
-    return createBundle([shape, element.scale(0.8, bbox.center())]);
+    return createBundle([shape, element.scale(0.8, bbox.center())] as [
+        BezierSolid | RectSolid,
+        T,
+    ]);
 }
 
 type AlignOptions = {
@@ -69,7 +68,7 @@ export function align<T extends Renderable & Transformable>(
         direction: "horizontal",
         method: "equal_gap",
         gap: 0,
-    }
+    },
 ): Bundle<T> {
     if (elements.length === 0) {
         return emptyBundle(RectSolid.empty()) as unknown as Bundle<T>;
@@ -82,11 +81,11 @@ export function align<T extends Renderable & Transformable>(
         options.direction === "horizontal"
             ? elements.reduce(
                   (total, element) => total + element.bbox().width,
-                  0
+                  0,
               )
             : elements.reduce(
                   (total, element) => total + element.bbox().height,
-                  0
+                  0,
               );
 
     const scaleFactor =
@@ -103,11 +102,11 @@ export function align<T extends Renderable & Transformable>(
                 ? new Point(position - transformed_element.bbox().center().x, 0)
                 : new Point(
                       0,
-                      position - transformed_element.bbox().center().y
+                      position - transformed_element.bbox().center().y,
                   );
 
         new_elements.push(
-            transformed_element.translate(translation) as unknown as T
+            transformed_element.translate(translation) as unknown as T,
         );
 
         switch (options.method) {
@@ -127,14 +126,14 @@ export function align<T extends Renderable & Transformable>(
     }
 
     return createBundle(new_elements).recenter(
-        options.direction === "horizontal" ? "x" : "y"
+        options.direction === "horizontal" ? "x" : "y",
     ) as unknown as Bundle<T>;
 }
 
 export function table<T extends Renderable & Transformable>(
     elements: T[][],
     x_widths: number[],
-    y_widths: number[]
+    y_widths: number[],
 ): Bundle<Bundle<T>> {
     const first_row = elements[0];
     if (!first_row || x_widths.length === 0 || y_widths.length === 0) {
@@ -171,7 +170,7 @@ export function table<T extends Renderable & Transformable>(
         for (const [element, x_width] of zip([elementRow, x_widths])) {
             const translation = new Point(
                 x_position - element.bbox().center().x,
-                y_position - element.bbox().center().y
+                y_position - element.bbox().center().y,
             );
             row.push(element.translate(translation) as unknown as T);
 
