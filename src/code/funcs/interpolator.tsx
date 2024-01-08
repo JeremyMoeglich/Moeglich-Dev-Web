@@ -42,9 +42,9 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
             const interpolated = to.objs.map((s1) => {
                 const matched = minBy(
                     from.filter(
-                        (s2) => !matchedItems.has(s2) && s1.can_interpolate(s2)
+                        (s2) => !matchedItems.has(s2) && s1.can_interpolate(s2),
                     ),
-                    (s2) => s1.similarity(s2)
+                    (s2) => s1.similarity(s2),
                 );
                 if (matched) {
                     matchedItems.add(matched);
@@ -56,10 +56,10 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
             const absentInTo = from.filter(
                 (s1) =>
                     !matchedItems.has(s1) &&
-                    !to.objs.some((s2) => s1.can_interpolate(s2))
+                    !to.objs.some((s2) => s1.can_interpolate(s2)),
             );
             const animatingOutShapes = absentInTo.map((s1) =>
-                s1.interpolate(t, s1.to_start())
+                s1.interpolate(t, s1.to_start()),
             );
 
             // Filter out shapes that have reached their "start" state
@@ -85,7 +85,7 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
                     zip([from, to.objs]).map(([s1, s2]) => {
                         if (!s1.can_interpolate(s2)) return Infinity;
                         return s1.similarity(s2);
-                    })
+                    }),
                 ) *
                 (1 + Math.abs(from.length - to.objs.length));
             return s;
@@ -97,7 +97,7 @@ export function interpolateProps<T>(
     startProps: T,
     endProps: T,
     progress: number,
-    disable?: (keyof T)[]
+    disable?: (keyof T)[],
 ): T {
     if (progress === 1) {
         return endProps;
@@ -124,7 +124,7 @@ export function interpolateProps<T>(
     ) {
         return startProps.map((prop, index) =>
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            interpolateProps(prop, endProps[index], progress)
+            interpolateProps(prop, endProps[index], progress),
         ) as T;
     } else if (
         typeof startProps === "object" &&
@@ -142,7 +142,7 @@ export function interpolateProps<T>(
                     result[key] = interpolateProps(
                         startProps[key],
                         endProps[key],
-                        progress
+                        progress,
                     );
                 } else {
                     result[key] = endProps[key];
@@ -216,7 +216,7 @@ export const Interpolator = <T,>({
                 interpolatedProps as T,
                 props as T,
                 progress,
-                disable
+                disable,
             );
 
             if (!isEqual(prevProps.current, newProps)) {

@@ -1,6 +1,6 @@
 export function shapeaction(
     ctx: CanvasRenderingContext2D,
-    action: "stroke" | "fill"
+    action: "stroke" | "fill",
 ) {
     if (action === "stroke") {
         ctx.stroke();

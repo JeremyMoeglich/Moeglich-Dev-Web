@@ -36,7 +36,7 @@ export const has_area_bundler: Bundler<HasArea, HasArea> = {
         },
         sample_on_area: (objects, min_per_unit, variant) => {
             const points = objects.flatMap((o) =>
-                o.sample_on_area(min_per_unit, variant)
+                o.sample_on_area(min_per_unit, variant),
             );
             return points;
         },

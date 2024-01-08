@@ -7,7 +7,7 @@ interface Destructor {
 
 export function useCustomEffect(
     callback: () => Destructor,
-    deps: React.DependencyList
+    deps: React.DependencyList,
 ) {
     const componentStillMounted = useRef(true);
     const destructor = callback();

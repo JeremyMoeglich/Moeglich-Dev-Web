@@ -43,7 +43,7 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer A) => infer R
     : never;
 
 function bindFirstArgumentToThis<F extends (x: any, ...args: any) => any>(
-    fn: F
+    fn: F,
 ): OmitFirstArg<F> {
     return function (
         this: Parameters<F>[0],
@@ -86,7 +86,7 @@ const this_bundlers = bundlers.map((bundler) => {
         functionality: Object.fromEntries(
             Object.entries(bundler.functionality).map(([key, value]) => {
                 return [key, bindFirstArgumentToThis(value)];
-            })
+            }),
         ),
     };
 }) as ThisBundlersObjectType;
@@ -103,17 +103,16 @@ type ReplaceThisReturn<T, R> = {
 
 type BundlerType<B extends Bundler<any, any>> = GuardedType<B["isType"]>;
 
-
 type ApplicableFunctionality<
     B extends Bundler<any, any>,
-    T
+    T,
 > = T extends BundlerType<B>
     ? ReplaceThisReturn<B["functionality"], T>
     : Record<string, never>;
 
 type AccumulatedBundle<T, Bs extends Array<Bundler<any, any>>> = Bs extends [
     infer B,
-    ...infer Rest
+    ...infer Rest,
 ]
     ? B extends Bundler<any, any>
         ? ApplicableFunctionality<B, T> &
@@ -134,7 +133,7 @@ export type Bundle<T> = (T extends any // This maps each union type in T seperat
 // Initialize the shared prototype just once
 const sharedPrototype: any = {};
 for (const bundler of this_bundlers) {
-  Object.assign(sharedPrototype, bundler.functionality);
+    Object.assign(sharedPrototype, bundler.functionality);
 }
 
 export function createBundle<T>(values: T[]) {
@@ -142,7 +141,7 @@ export function createBundle<T>(values: T[]) {
         objs: values,
         map_objs: function (this: Bundle<T>, fn: (obj: T) => any) {
             return createBundle(this.objs.map(fn));
-        }
+        },
     };
 
     Object.setPrototypeOf(object, sharedPrototype); // This technically means that objects gain methods that don't work, but it's fine as their not part of the type.
@@ -157,7 +156,7 @@ export function emptyBundle<T>(template: T): Bundle<T> {
 
 export function is_bundle<T>(
     value: unknown,
-    isType: (value: unknown) => value is T
+    isType: (value: unknown) => value is T,
 ): value is Bundle<T> {
     return (
         typeof value === "object" &&
@@ -174,16 +173,16 @@ export function mark_this<T extends object>(obj: T): T & ThisReturn {
     return obj as T & ThisReturn;
 }
 export function unmark_this<T extends object & ThisReturn>(
-    obj: T
+    obj: T,
 ): UnMarkThis<T> {
     return obj as UnMarkThis<T>;
 }
 
 export function rebundle_functionality<
     B extends Bundler<any, any>,
-    O extends BundlerType<B>
+    O extends BundlerType<B>,
 >(
-    bundler: B
+    bundler: B,
 ): ReplaceFirstArgument<ReplaceThisReturn<B["functionality"], O>, O[]> {
     return bundler.functionality as ReplaceFirstArgument<
         ReplaceThisReturn<B["functionality"], O>,

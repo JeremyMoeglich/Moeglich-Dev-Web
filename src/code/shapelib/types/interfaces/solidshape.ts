@@ -14,7 +14,7 @@ export interface SolidShape extends Shape {
     // Note that not every function using quality will need it at all, so it might be ignored for some shapes
 
     relation_to(
-        other: UnMarkThis<this>
+        other: UnMarkThis<this>,
     ):
         | "this_inside_other"
         | "other_inside_this"

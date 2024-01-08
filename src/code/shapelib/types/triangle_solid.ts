@@ -33,7 +33,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
         a: Point,
         b: Point,
         c: Point,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.a = a;
         this.b = b;
@@ -53,7 +53,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             this.a.interpolate(t, to.a),
             this.b.interpolate(t, to.b),
             this.c.interpolate(t, to.c),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -63,7 +63,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             center,
             center,
             center,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -83,7 +83,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             this.a.translate(p),
             this.b.translate(p),
             this.c.translate(p),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -92,7 +92,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             this.a.scale(scale, origin),
             this.b.scale(scale, origin),
             this.c.scale(scale, origin),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -101,7 +101,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             this.a.flip(axis),
             this.b.flip(axis),
             this.c.flip(axis),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -110,7 +110,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             f(this.a),
             f(this.b),
             f(this.c),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -138,7 +138,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
                     this.b.x * this.c.y -
                     this.b.y * this.c.x +
                     this.c.x * this.a.y -
-                    this.c.y * this.a.x
+                    this.c.y * this.a.x,
             ) / 2
         );
     }
@@ -157,8 +157,8 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
             points.push(
                 new Point(
                     (this.a.x * u + this.b.x * v + this.c.x * w) / s,
-                    (this.a.y * u + this.b.y * v + this.c.y * w) / s
-                )
+                    (this.a.y * u + this.b.y * v + this.c.y * w) / s,
+                ),
             );
         }
         return points;
@@ -171,7 +171,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
 
     sample_on_length(min_per_unit: number, variant: "rng" | "evenly"): Point[] {
         const lines = cyclic_pairs(this.vertices()).map(
-            ([a, b]) => new LineSegment(a, b)
+            ([a, b]) => new LineSegment(a, b),
         );
         return lines.flatMap((l) => l.sample_on_length(min_per_unit, variant));
     }
@@ -219,19 +219,19 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     center(): Point {
         return new Point(
             (this.a.x + this.b.x + this.c.x) / 3,
-            (this.a.y + this.b.y + this.c.y) / 3
+            (this.a.y + this.b.y + this.c.y) / 3,
         );
     }
 
     lines(): LineSegment[] {
         return cyclic_pairs(this.vertices()).map(
-            ([a, b]) => new LineSegment(a, b)
+            ([a, b]) => new LineSegment(a, b),
         );
     }
 
     outline_intersects(other: this): boolean {
         return this.lines().some((l) =>
-            other.lines().some((l2) => l.outline_intersects(l2))
+            other.lines().some((l2) => l.outline_intersects(l2)),
         );
     }
 
@@ -245,7 +245,7 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
     }
 
     relation_to(
-        other: this
+        other: this,
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -278,11 +278,11 @@ export class TriangleSolid implements SolidShape, PointMap, Interpolate {
 
     right_point_intersections(p: Point): number {
         const lines = cyclic_pairs(this.vertices()).map(
-            ([a, b]) => new LineSegment(a, b)
+            ([a, b]) => new LineSegment(a, b),
         );
         return lines.reduce(
             (acc, l) => acc + l.right_point_intersections(p),
-            0
+            0,
         );
     }
 

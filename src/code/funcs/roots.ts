@@ -4,7 +4,7 @@ export function find_roots_cubic(
     a3: number,
     a2: number,
     a1: number,
-    a0: number
+    a0: number,
 ): number[] {
     // Handle non-standard cases
     if (a3 === 0) {
@@ -90,7 +90,7 @@ export function find_roots_cubic(
 export function find_roots_quadratic(
     a2: number,
     a1: number,
-    a0: number
+    a0: number,
 ): number[] {
     // Handle non-standard cases
     if (a2 === 0) {
@@ -174,7 +174,7 @@ function find_roots_cubic_depressed(a1: number, a0: number): number[] {
 function find_roots_cubic_normalized(
     a2: number,
     a1: number,
-    a0: number
+    a0: number,
 ): number[] {
     const q = (3 * a1 - a2 ** 2) / 9;
     const r = (9 * a2 * a1 - 27 * a0 - 2 * a2 ** 3) / 54;
@@ -235,7 +235,7 @@ export function find_roots_quartic(
     a3: number,
     a2: number,
     a1: number,
-    a0: number
+    a0: number,
 ): number[] {
     if (a4 === 0) {
         return find_roots_cubic(a3, a2, a1, a0);
@@ -317,7 +317,7 @@ export function find_roots_quartic(
                     a0,
                     pp,
                     rr,
-                    dd
+                    dd,
                 );
             }
         } else {
@@ -333,7 +333,7 @@ export function find_roots_quartic(
                     a0,
                     pp,
                     rr,
-                    dd
+                    dd,
                 );
             }
         }
@@ -348,7 +348,7 @@ function find_roots_via_depressed_quartic(
     a0: number,
     pp: number,
     rr: number,
-    dd: number
+    dd: number,
 ): number[] {
     const a4_pow_2 = a4 * a4;
     const a4_pow_3 = a4_pow_2 * a4;
@@ -366,7 +366,7 @@ function find_roots_via_depressed_quartic(
 function find_roots_quartic_depressed(
     a2: number,
     a1: number,
-    a0: number
+    a0: number,
 ): number[] {
     if (a1 === 0) {
         return find_roots_biquadratic(1, a2, a0);

@@ -35,7 +35,7 @@ export class LineSegment
                 -width / 2,
                 -width / 2,
                 width,
-                width
+                width,
             ).to_polygon();
         }
 
@@ -58,7 +58,7 @@ export class LineSegment
     translate(p: Point) {
         return new LineSegment(
             this.start.translate(p),
-            this.end.translate(p)
+            this.end.translate(p),
         ) as this & ThisReturn;
     }
 
@@ -66,14 +66,14 @@ export class LineSegment
         const norigin = origin ?? zerozero;
         return new LineSegment(
             this.start.scale(scale, norigin),
-            this.end.scale(scale, norigin)
+            this.end.scale(scale, norigin),
         ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
         return new LineSegment(
             this.start.flip(axis),
-            this.end.flip(axis)
+            this.end.flip(axis),
         ) as this & ThisReturn;
     }
 
@@ -90,14 +90,14 @@ export class LineSegment
         const num_points = sample_amount_default(
             length,
             min_per_unit,
-            variant === "evenly" ? "min" : "rng"
+            variant === "evenly" ? "min" : "rng",
         );
         if (variant === "evenly") {
             const step = length / num_points;
             return range(num_points).map((i) => this.lerp(i * step));
         } else {
             return range(num_points).map((_) =>
-                this.lerp(Math.random() * length)
+                this.lerp(Math.random() * length),
             );
         }
     }
@@ -105,7 +105,7 @@ export class LineSegment
     lerp(t: number): Point {
         return new Point(
             this.start.x + t * (this.end.x - this.start.x),
-            this.start.y + t * (this.end.y - this.start.y)
+            this.start.y + t * (this.end.y - this.start.y),
         );
     }
 
@@ -117,7 +117,7 @@ export class LineSegment
         const center = this.center();
         const offset = new Point(
             axis !== "y" ? -center.x : 0,
-            axis !== "x" ? -center.y : 0
+            axis !== "x" ? -center.y : 0,
         );
         return this.translate(offset);
     }
@@ -135,7 +135,7 @@ export class LineSegment
             Math.min(this.start.x, this.end.x),
             Math.min(this.start.y, this.end.y),
             Math.abs(this.start.x - this.end.x),
-            Math.abs(this.start.y - this.end.y)
+            Math.abs(this.start.y - this.end.y),
         );
     }
 
@@ -214,7 +214,7 @@ export class LineSegment
     center(): Point {
         return new Point(
             (this.start.x + this.end.x) / 2,
-            (this.start.y + this.end.y) / 2
+            (this.start.y + this.end.y) / 2,
         );
     }
 
@@ -222,7 +222,7 @@ export class LineSegment
         const o = origin ?? this.center();
         return new LineSegment(
             this.start.rotate(angle, o),
-            this.end.rotate(angle, o)
+            this.end.rotate(angle, o),
         ) as this & ThisReturn;
     }
 }

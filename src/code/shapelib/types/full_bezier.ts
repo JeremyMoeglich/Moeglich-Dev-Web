@@ -36,7 +36,7 @@ export class FullBezier
     constructor(
         start_point: Point,
         bezier: PartialBezier,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.start_point = start_point;
         this.bezier = bezier;
@@ -61,7 +61,7 @@ export class FullBezier
         return new FullBezier(
             this.start_point.interpolate(t, to.start_point),
             this.bezier.interpolate(t, to.bezier),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -84,7 +84,7 @@ export class FullBezier
         return new FullBezier(
             this.start_point.translate(p),
             this.bezier.translate(p),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -92,7 +92,7 @@ export class FullBezier
         return new FullBezier(
             this.start_point.scale(scale, origin),
             this.bezier.scale(scale, origin),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -100,7 +100,7 @@ export class FullBezier
         return new FullBezier(
             this.start_point.flip(axis),
             this.bezier.flip(axis),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -108,7 +108,7 @@ export class FullBezier
         return new FullBezier(
             f(this.start_point),
             this.bezier.map_points(f),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -118,25 +118,25 @@ export class FullBezier
                 this.start_point.x,
                 this.bezier.handle1.x,
                 this.bezier.handle2.x,
-                this.bezier.end_point.x
+                this.bezier.end_point.x,
             );
             const my = Math.min(
                 this.start_point.y,
                 this.bezier.handle1.y,
                 this.bezier.handle2.y,
-                this.bezier.end_point.y
+                this.bezier.end_point.y,
             );
             const Mx = Math.max(
                 this.start_point.x,
                 this.bezier.handle1.x,
                 this.bezier.handle2.x,
-                this.bezier.end_point.x
+                this.bezier.end_point.x,
             );
             const My = Math.max(
                 this.start_point.y,
                 this.bezier.handle1.y,
                 this.bezier.handle2.y,
-                this.bezier.end_point.y
+                this.bezier.end_point.y,
             );
             return new RectSolid(mx, my, Mx - mx, My - my);
         }
@@ -187,7 +187,7 @@ export class FullBezier
                     (1 - t) * (1 - t) * (1 - t) * this.start_point.x +
                         3 * (1 - t) * (1 - t) * t * this.bezier.handle1.x +
                         3 * (1 - t) * t * t * this.bezier.handle2.x +
-                        t * t * t * this.bezier.end_point.x
+                        t * t * t * this.bezier.end_point.x,
                 );
         }
         for (const t of ty) {
@@ -196,7 +196,7 @@ export class FullBezier
                     (1 - t) * (1 - t) * (1 - t) * this.start_point.y +
                         3 * (1 - t) * (1 - t) * t * this.bezier.handle1.y +
                         3 * (1 - t) * t * t * this.bezier.handle2.y +
-                        t * t * t * this.bezier.end_point.y
+                        t * t * t * this.bezier.end_point.y,
                 );
         }
 
@@ -261,7 +261,9 @@ export class FullBezier
         const res2 = this.outline_length_up_to(t, steps * 100);
         // we log the factor by which the length differs from the more accurate calculation
         console.log(
-            `length factor: ${length / res2}, steps: ${steps} to ${steps * 100}`
+            `length factor: ${length / res2}, steps: ${steps} to ${
+                steps * 100
+            }`,
         );
 
         return length;
@@ -297,7 +299,7 @@ export class FullBezier
                 other.bezier.handle1.tuple(),
                 other.bezier.handle2.tuple(),
                 other.bezier.end_point.tuple(),
-            ]
+            ],
         );
         return intersections.length > 0;
     }
@@ -320,7 +322,7 @@ export class FullBezier
         const d = h0.y - p.y;
 
         const roots = find_roots_cubic(a, b, c, d).filter(
-            (t) => t >= 0 && t <= 1
+            (t) => t >= 0 && t <= 1,
         );
         const x_values = roots.map((t) => this.sample_t_x(t));
         return x_values.filter((x) => x >= p.x).length;
@@ -362,11 +364,11 @@ export class FullBezier
             if (Math.abs(difference) < 0.001) {
                 if (iterations > 1000) {
                     console.warn(
-                        `getCubicBezierTForLength took ${iterations} iterations to converge`
+                        `getCubicBezierTForLength took ${iterations} iterations to converge`,
                     );
                 } else if (iterations > 100) {
                     console.warn(
-                        `getCubicBezierTForLength took ${iterations} iterations to converge - consider increasing tolerance`
+                        `getCubicBezierTForLength took ${iterations} iterations to converge - consider increasing tolerance`,
                     );
                 }
                 return t;
@@ -380,7 +382,7 @@ export class FullBezier
         }
 
         throw new Error(
-            `Could not find t value for length ${length} within ${iterations} iterations`
+            `Could not find t value for length ${length} within ${iterations} iterations`,
         );
     }
 
@@ -389,7 +391,7 @@ export class FullBezier
         return new FullBezier(
             this.start_point.rotate(angle, o),
             this.bezier.map_points((p) => p.rotate(angle, o)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -401,7 +403,7 @@ export class FullBezier
         const center = this.center();
         const offset = new Point(
             axis !== "y" ? -center.x : 0,
-            axis !== "x" ? -center.y : 0
+            axis !== "x" ? -center.y : 0,
         );
         return this.translate(offset);
     }
@@ -414,7 +416,7 @@ export class FullBezier
             this.bezier.handle2.x,
             this.bezier.handle2.y,
             this.bezier.end_point.x,
-            this.bezier.end_point.y
+            this.bezier.end_point.y,
         );
     }
 

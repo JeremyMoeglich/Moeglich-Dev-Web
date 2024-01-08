@@ -46,10 +46,10 @@ export const transformable_bundler: Bundler<Transformable, Transformable> = {
                     const vec = b.center().translate(center.factor(-1));
                     const axis_vec = new Point(
                         axis !== "y" ? vec.x : 0,
-                        axis !== "x" ? vec.y : 0
+                        axis !== "x" ? vec.y : 0,
                     );
                     return s.translate(axis_vec);
-                }
+                },
             );
 
             return createBundle(translatedShapes);

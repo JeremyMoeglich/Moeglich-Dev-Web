@@ -134,7 +134,7 @@ export const languages = {
             "while",
             "with",
             "yield",
-        ]
+        ],
     ),
     ts: lex_to_lang(
         new Lexer([
@@ -256,7 +256,7 @@ export const languages = {
             "static",
             "type",
             "unique",
-        ]
+        ],
     ),
     rust: lex_to_lang(
         new Lexer([
@@ -317,7 +317,7 @@ export const languages = {
 
             error_token,
         ]),
-        colors
+        colors,
     ),
     python: lex_to_lang(
         new Lexer([
@@ -363,14 +363,14 @@ export const languages = {
 
             error_token,
         ]),
-        colors
+        colors,
     ),
 } satisfies Record<string, Language>;
 
 function lex_to_lang(
     lexer: Lexer,
     token_map: Record<string, Color>,
-    keywords: string[] = []
+    keywords: string[] = [],
 ): Language {
     return (code: string) => {
         const lexer_result = lexer.tokenize(code);

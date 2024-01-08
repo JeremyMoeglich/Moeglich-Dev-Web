@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // useDraw takes a ref to a canvas and an array of renderable objects and draws them to the canvas
 
@@ -156,13 +156,11 @@ export const ShapeRender: React.FC<
                 new Point(rect.width / 2, rect.height / 2),
             ).translate(offset);
 
-
-            const inst = instructions.map((instruction) => {                
+            const inst = instructions.map((instruction) => {
                 const eval_clip =
                     typeof instruction.clip === "object"
                         ? instruction.clip
                         : clip;
-
 
                 const true_obj =
                     typeof instruction.obj === "function"

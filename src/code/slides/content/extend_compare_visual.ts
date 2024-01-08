@@ -30,7 +30,7 @@ export function extend_compare_visual() {
                             rotate: "none",
                         }),
                         zerozero,
-                        20
+                        20,
                     ).highlight("ts"),
                     checkmark,
                     cross,
@@ -46,7 +46,7 @@ export function extend_compare_visual() {
                             rotate: "none",
                         }),
                         zerozero,
-                        20
+                        20,
                     ).highlight("ts"),
                     checkmark,
                     checkmark,
@@ -62,7 +62,7 @@ export function extend_compare_visual() {
                             rotate: "none",
                         }),
                         zerozero,
-                        20
+                        20,
                     ).highlight("ts"),
                     checkmark,
                     checkmark,
@@ -70,7 +70,7 @@ export function extend_compare_visual() {
                 ],
             ]),
             [350, 450, 600, 500],
-            [160, 170, 130, 130, 130]
+            [160, 170, 130, 130, 130],
         ).scale(0.8);
     });
 }

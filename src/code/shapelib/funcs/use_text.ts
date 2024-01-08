@@ -9,9 +9,9 @@ export function useTextShape(text: string, config?: TextToShapeConfig) {
     const shapes = useAsyncValue(
         useMemo(
             () => async () => await textToShapes(text, config),
-            [text, config]
+            [text, config],
         ),
-        undefined
+        undefined,
     );
     return shapes ?? emptyBundle(HollowShape.empty(BezierSolid.empty()));
 }

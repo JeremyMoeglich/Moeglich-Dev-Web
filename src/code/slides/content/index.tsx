@@ -71,19 +71,19 @@ export const stages: Stage[] = [
                     .flatMap((shape) => [
                         ...shape.fullBeziers().objs,
                         ...shape.fullBeziers().objs.map((fb) => fb),
-                    ])
+                    ]),
             );
 
             const text_bbox = text.bbox();
             const line_y = interpolate_between(
                 time / 1000,
                 text_bbox.y,
-                text_bbox.y + text_bbox.height
+                text_bbox.y + text_bbox.height,
             );
             const left_line_point = new Point(text_bbox.x - 0.1, line_y);
             const intersecting = full_beziers.filter(
                 (bezier) =>
-                    bezier.right_point_intersections(left_line_point) > 0
+                    bezier.right_point_intersections(left_line_point) > 0,
             );
             const samples =
                 bbox_opacity === 0
@@ -92,8 +92,8 @@ export const stages: Stage[] = [
                           .translate(
                               new Point(
                                   interpolate_between(time / 3000, -200, 1200),
-                                  0
-                              )
+                                  0,
+                              ),
                           )
                           .distribute_grid(1000)
                           .map((point) => {
@@ -120,7 +120,7 @@ export const stages: Stage[] = [
                                                 ctx.strokeStyle = "blue";
                                                 ctx.lineWidth = 1;
                                                 ctx.globalAlpha = bbox_opacity;
-                                            }
+                                            },
                                         ),
                                         debug: show_debug,
                                         z_index: 1,
@@ -128,7 +128,7 @@ export const stages: Stage[] = [
                                     {
                                         action: "stroke",
                                         obj: createBundle(
-                                            intersecting
+                                            intersecting,
                                         ).set_setter((ctx) => {
                                             ctx.strokeStyle = "red";
                                             ctx.lineWidth = 1;
@@ -146,9 +146,9 @@ export const stages: Stage[] = [
                                                 })
                                                 .map(([point]) => {
                                                     return point.to_circle_solid(
-                                                        10
+                                                        10,
                                                     );
-                                                })
+                                                }),
                                         ).set_setter((ctx) => {
                                             ctx.fillStyle = "red";
                                             ctx.globalAlpha = bbox_opacity;
@@ -164,9 +164,9 @@ export const stages: Stage[] = [
                                                 })
                                                 .map(([point]) => {
                                                     return point.to_circle_solid(
-                                                        10
+                                                        10,
                                                     );
-                                                })
+                                                }),
                                         ).set_setter((ctx) => {
                                             ctx.fillStyle = "blue";
                                             ctx.globalAlpha = bbox_opacity;
@@ -445,7 +445,7 @@ export const stages: Stage[] = [
                     new Point(-100, 0),
                     false,
                     false,
-                    "func"
+                    "func",
                 ),
                 xgap: 800,
             },
@@ -470,7 +470,7 @@ export const stages: Stage[] = [
                     new Point(-100, 0),
                     true,
                     false,
-                    "func"
+                    "func",
                 ),
                 xgap: 800,
             },
@@ -502,7 +502,7 @@ export const stages: Stage[] = [
                     new Point(0, -160),
                     true,
                     true,
-                    "func"
+                    "func",
                 ),
                 xgap: 500,
             },
@@ -540,7 +540,7 @@ export const stages: Stage[] = [
                     new Point(-70, -50),
                     true,
                     true,
-                    "class"
+                    "class",
                 ),
                 xgap: 700,
             },
@@ -635,7 +635,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     false,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -649,7 +649,7 @@ export const stages: Stage[] = [
                     (t) => t / 1000,
                     () => 1,
                     false,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -663,7 +663,7 @@ export const stages: Stage[] = [
                     () => 0,
                     (t) => interpolate_between(t / 1000, 0.6, 1.2),
                     false,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -682,7 +682,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -708,7 +708,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -739,7 +739,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -778,7 +778,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(180),
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -794,12 +794,12 @@ export const stages: Stage[] = [
                             () => deg_to_rad(180),
                             () => 1,
                             true,
-                            { only_triangle: true }
+                            { only_triangle: true },
                         ).calc({ t }),
                         new Text("Shared Mutable State", zerozero, 90)
                             .recenter("both")
                             .translate(new Point(80, 0)),
-                    ])
+                    ]),
                 ),
                 xgap: 0,
             },
@@ -818,7 +818,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -837,7 +837,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -869,7 +869,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    { only_triangle: true }
+                    { only_triangle: true },
                 ),
                 xgap: 0,
             },
@@ -891,7 +891,7 @@ export const stages: Stage[] = [
                     () => 0,
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -917,7 +917,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -949,7 +949,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -979,7 +979,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -1009,7 +1009,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -1037,7 +1037,7 @@ export const stages: Stage[] = [
                     () => deg_to_rad(90),
                     () => 1,
                     true,
-                    {}
+                    {},
                 ),
                 xgap: 0,
             },
@@ -1374,25 +1374,25 @@ export const stages: Stage[] = [
                             new Text(
                                 "1. Funktionen nutzen wenn State vermieden werden kann / global ist",
                                 zerozero,
-                                40
+                                40,
                             ),
                             new Text(
                                 "2. Klassen nutzen wenn State klar mit Methoden verbunden ist",
                                 zerozero,
-                                40
+                                40,
                             ),
                             new Text(
                                 "3. Mutability vermeiden wenn möglich",
                                 zerozero,
-                                40
+                                40,
                             ),
                         ],
                         {
                             direction: "vertical",
                             gap: 50,
                             method: "equal_gap",
-                        }
-                    )
+                        },
+                    ),
                 ),
                 xgap: 0,
             },

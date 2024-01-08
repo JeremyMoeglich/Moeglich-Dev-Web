@@ -33,7 +33,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(
             this.handle1.translate(p),
             this.handle2.translate(p),
-            this.end_point.translate(p)
+            this.end_point.translate(p),
         );
     }
 
@@ -53,7 +53,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(
             this.handle1.interpolate(t, to.handle1),
             this.handle2.interpolate(t, to.handle2),
-            this.end_point.interpolate(t, to.end_point)
+            this.end_point.interpolate(t, to.end_point),
         ) as this & ThisReturn;
     }
 
@@ -72,7 +72,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(
             this.handle1.scale(scale, origin),
             this.handle2.scale(scale, origin),
-            this.end_point.scale(scale, origin)
+            this.end_point.scale(scale, origin),
         );
     }
 
@@ -80,7 +80,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(
             this.handle1.flip(axis),
             this.handle2.flip(axis),
-            this.end_point.flip(axis)
+            this.end_point.flip(axis),
         );
     }
 
@@ -88,7 +88,7 @@ export class PartialBezier implements Stringifiable, PointMap, Interpolate {
         return new PartialBezier(
             f(this.handle1),
             f(this.handle2),
-            f(this.end_point)
+            f(this.end_point),
         ) as this & ThisReturn;
     }
 }

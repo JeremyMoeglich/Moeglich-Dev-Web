@@ -28,7 +28,7 @@ const noise4 = makeNoise3D(random);
 const triangle = new TriangleSolid(
     new Point(0, 50),
     new Point(100, 0),
-    new Point(100, 100)
+    new Point(100, 100),
 ).set_setter((ctx) => {
     ctx.fillStyle = "#fcce4f";
 });
@@ -50,15 +50,15 @@ export const pizza = createBundle([
                     .translate(
                         new Point(
                             noise1(p.x * 200, p.y, 1) * 50,
-                            noise2(p.x * 200, p.y, 1) * 50
-                        )
-                    )
+                            noise2(p.x * 200, p.y, 1) * 50,
+                        ),
+                    ),
             )
             .filter(
                 (c) =>
                     triangle_bezier.relation_to(c.to_bezier()) ===
-                    "other_inside_this"
-            )
+                    "other_inside_this",
+            ),
     ).set_setter((ctx) => {
         ctx.fillStyle = "#dd0000";
     }),
@@ -83,7 +83,7 @@ export const cookie = createBundle([
                     p.x - chip_size / 2,
                     p.y - chip_size / 2,
                     chip_size * 0.7,
-                    chip_size * 1.3
+                    chip_size * 1.3,
                 )
                     .to_polygon()
                     .rotate(noise3(p.x, p.y, 1) * 100)
@@ -91,15 +91,15 @@ export const cookie = createBundle([
                     .translate(
                         new Point(
                             noise1(p.x * 10, p.y * 10, 1) * 10,
-                            noise1(p.x * 10, p.y * 10, 1) * 10
-                        )
-                    )
+                            noise1(p.x * 10, p.y * 10, 1) * 10,
+                        ),
+                    ),
             )
             .filter(
                 (b) =>
                     circle_bezier.relation_to(b.to_bezier()) ===
-                    "other_inside_this"
-            )
+                    "other_inside_this",
+            ),
     ).set_setter((ctx) => {
         ctx.fillStyle = "black";
     }),
@@ -113,11 +113,11 @@ export const cheese = new HollowShape(rect.to_polygon().to_bezier(), [
                 .translate(
                     new Point(
                         noise1(p.x, p.y, 3) * 40,
-                        noise2(p.x, p.y, 3) * 40
-                    )
+                        noise2(p.x, p.y, 3) * 40,
+                    ),
                 )
                 .to_circle_solid(20)
-                .to_bezier()
+                .to_bezier(),
         )
         .filter((c) => rect.relation_to(c.bbox()) === "other_inside_this"),
 ]).set_setter((ctx) => {
@@ -143,8 +143,8 @@ export const end_visual = new InterFunc(({ t }: { t: number }) => {
         .scale(0.4)
         .map_points((p) =>
             p.translate(
-                new Point(0, p.x * interpolate_between(t / 6000, -0.07, 0.07))
-            )
+                new Point(0, p.x * interpolate_between(t / 6000, -0.07, 0.07)),
+            ),
         );
     const bbox = shape.bbox();
     return createBundle([
@@ -170,7 +170,7 @@ export const end_visual = new InterFunc(({ t }: { t: number }) => {
                                 : "1"
                             : "0",
                         p,
-                        30
+                        30,
                     ).set_setter((ctx) => {
                         ctx.fillStyle = "#bdff30";
                     });
@@ -183,7 +183,7 @@ export const end_visual = new InterFunc(({ t }: { t: number }) => {
                             .scale(1.5),
                         text,
                     ]);
-                })
+                }),
         ),
     ]);
 });

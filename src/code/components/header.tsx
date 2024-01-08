@@ -19,7 +19,7 @@ function NavigationEntry(props: {
                 textDecoration: props.current ? "underline" : "none",
             }}
         >
-            <div className="z-50 text-2xl">{props.name}</div>
+            <div className="z-50 text-3xl">{props.name}</div>
         </Link>
     );
 }
@@ -36,7 +36,7 @@ export function Header() {
     const current = path_map[path as keyof typeof path_map];
 
     return (
-        <div className="relative">
+        <div className="relative mb-40">
             <div className="flex justify-end">
                 {Object.entries(path_map).map(([path, name]) => (
                     <NavigationEntry
@@ -51,14 +51,14 @@ export function Header() {
                 <img
                     src="/images/home/top_left_grad.svg"
                     alt=""
-                    className="scale-150 origin-top-left"
+                    className="origin-top-left scale-[1.68]"
                 />
             </div>
             <div className="absolute right-0 top-0">
                 <img
                     src="/images/home/top_right_grad.svg"
                     alt=""
-                    className="scale-150 origin-top-right"
+                    className="origin-top-right scale-[1.68]"
                 />
             </div>
         </div>

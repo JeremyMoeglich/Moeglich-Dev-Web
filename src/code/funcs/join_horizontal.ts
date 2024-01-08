@@ -7,7 +7,7 @@ interface JoinConfig {
 
 export function join_horizontal(
     strings: string[],
-    config?: JoinConfig
+    config?: JoinConfig,
 ): string {
     if (strings.length === 0) {
         return "";
@@ -21,12 +21,12 @@ export function join_horizontal(
         (result, lines) => {
             const maxLength = Math.max(...lines.map((line) => line.length));
             result.paddedStrings.push(
-                lines.map((line) => line.padEnd(maxLength, " "))
+                lines.map((line) => line.padEnd(maxLength, " ")),
             );
             result.maxLengths.push(maxLength);
             return result;
         },
-        { paddedStrings: [] as string[][], maxLengths: [] as number[] }
+        { paddedStrings: [] as string[][], maxLengths: [] as number[] },
     );
 
     let paddedStrings = paddedStringsAndMaxLengths.paddedStrings;
@@ -44,13 +44,13 @@ export function join_horizontal(
 
     // Transpose the array of strings to line up lines of the same index
     let transposed = (paddedStrings[0] ?? panic()).map((_, i) =>
-        paddedStrings.map((x) => x[i] ?? panic())
+        paddedStrings.map((x) => x[i] ?? panic()),
     );
 
     // Add gap if needed
     if (config?.gap) {
         transposed = transposed.map((lines) =>
-            lines.map((line) => line + " ".repeat(config.gap ?? 0))
+            lines.map((line) => line + " ".repeat(config.gap ?? 0)),
         );
     }
 
@@ -58,7 +58,7 @@ export function join_horizontal(
     if (config?.padding === "shared") {
         const sharedPadding = Math.max(...maxLengths);
         transposed = transposed.map((lines) =>
-            lines.map((line) => line.padEnd(sharedPadding, " "))
+            lines.map((line) => line.padEnd(sharedPadding, " ")),
         );
     }
 

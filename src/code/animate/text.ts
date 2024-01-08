@@ -12,4 +12,3 @@ export async function moeglichdev_triangles() {
         return triangles;
     }, "moeglichdev_triangles");
 }
-

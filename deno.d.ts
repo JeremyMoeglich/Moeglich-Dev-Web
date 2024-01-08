@@ -575,7 +575,7 @@ declare namespace Deno {
          */
         step(
             name: string,
-            fn: (t: TestContext) => void | Promise<void>
+            fn: (t: TestContext) => void | Promise<void>,
         ): Promise<boolean>;
 
         /** Run a sub step of the parent test or step. Returns a promise
@@ -736,7 +736,7 @@ declare namespace Deno {
      */
     export function test(
         name: string,
-        fn: (t: TestContext) => void | Promise<void>
+        fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
     /** Register a test which will be run when `deno test` is used on the command
@@ -786,7 +786,7 @@ declare namespace Deno {
     export function test(
         name: string,
         options: Omit<TestDefinition, "fn" | "name">,
-        fn: (t: TestContext) => void | Promise<void>
+        fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
     /** Register a test which will be run when `deno test` is used on the command
@@ -824,7 +824,7 @@ declare namespace Deno {
      */
     export function test(
         options: Omit<TestDefinition, "fn">,
-        fn: (t: TestContext) => void | Promise<void>
+        fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
     /** Register a test which will be run when `deno test` is used on the command
@@ -856,7 +856,7 @@ declare namespace Deno {
      */
     export function test(
         options: Omit<TestDefinition, "fn" | "name">,
-        fn: (t: TestContext) => void | Promise<void>
+        fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
     /**
@@ -1023,7 +1023,7 @@ declare namespace Deno {
     export function bench(
         name: string,
         options: Omit<BenchDefinition, "fn" | "name">,
-        fn: () => void | Promise<void>
+        fn: () => void | Promise<void>,
     ): void;
 
     /**
@@ -1057,7 +1057,7 @@ declare namespace Deno {
      */
     export function bench(
         options: Omit<BenchDefinition, "fn">,
-        fn: () => void | Promise<void>
+        fn: () => void | Promise<void>,
     ): void;
 
     /**
@@ -1091,7 +1091,7 @@ declare namespace Deno {
      */
     export function bench(
         options: Omit<BenchDefinition, "fn" | "name">,
-        fn: () => void | Promise<void>
+        fn: () => void | Promise<void>,
     ): void;
 
     /** Exit the Deno process with optional exit code.
@@ -1471,7 +1471,7 @@ declare namespace Deno {
     export function copy(
         src: Reader,
         dst: Writer,
-        options?: { bufSize?: number }
+        options?: { bufSize?: number },
     ): Promise<number>;
 
     /**
@@ -1487,7 +1487,7 @@ declare namespace Deno {
      */
     export function iter(
         r: Reader,
-        options?: { bufSize?: number }
+        options?: { bufSize?: number },
     ): AsyncIterableIterator<Uint8Array>;
 
     /**
@@ -1505,7 +1505,7 @@ declare namespace Deno {
         r: ReaderSync,
         options?: {
             bufSize?: number;
-        }
+        },
     ): IterableIterator<Uint8Array>;
 
     /** Open a file and resolve to an instance of {@linkcode Deno.FsFile}. The
@@ -1527,7 +1527,7 @@ declare namespace Deno {
      */
     export function open(
         path: string | URL,
-        options?: OpenOptions
+        options?: OpenOptions,
     ): Promise<FsFile>;
 
     /** Synchronously open a file and return an instance of
@@ -1606,7 +1606,7 @@ declare namespace Deno {
      */
     export function read(
         rid: number,
-        buffer: Uint8Array
+        buffer: Uint8Array,
     ): Promise<number | null>;
 
     /** Synchronously read from a resource ID (`rid`) into an array buffer
@@ -1734,7 +1734,7 @@ declare namespace Deno {
     export function seek(
         rid: number,
         offset: number | bigint,
-        whence: SeekMode
+        whence: SeekMode,
     ): Promise<number>;
 
     /** Synchronously seek a resource ID (`rid`) to the given `offset` under mode
@@ -1781,7 +1781,7 @@ declare namespace Deno {
     export function seekSync(
         rid: number,
         offset: number | bigint,
-        whence: SeekMode
+        whence: SeekMode,
     ): number;
 
     /**
@@ -2542,7 +2542,7 @@ declare namespace Deno {
      */
     export function mkdir(
         path: string | URL,
-        options?: MkdirOptions
+        options?: MkdirOptions,
     ): Promise<void>;
 
     /** Synchronously creates a new directory with the specified path.
@@ -2754,7 +2754,7 @@ declare namespace Deno {
     export function chown(
         path: string | URL,
         uid: number | null,
-        gid: number | null
+        gid: number | null,
     ): Promise<void>;
 
     /** Synchronously change owner of a regular file or directory.
@@ -2779,7 +2779,7 @@ declare namespace Deno {
     export function chownSync(
         path: string | URL,
         uid: number | null,
-        gid: number | null
+        gid: number | null,
     ): void;
 
     /**
@@ -2811,7 +2811,7 @@ declare namespace Deno {
      */
     export function remove(
         path: string | URL,
-        options?: RemoveOptions
+        options?: RemoveOptions,
     ): Promise<void>;
 
     /** Synchronously removes the named file or directory.
@@ -2831,7 +2831,7 @@ declare namespace Deno {
      */
     export function removeSync(
         path: string | URL,
-        options?: RemoveOptions
+        options?: RemoveOptions,
     ): void;
 
     /** Synchronously renames (moves) `oldpath` to `newpath`. Paths may be files or
@@ -2855,7 +2855,7 @@ declare namespace Deno {
      */
     export function renameSync(
         oldpath: string | URL,
-        newpath: string | URL
+        newpath: string | URL,
     ): void;
 
     /** Renames (moves) `oldpath` to `newpath`. Paths may be files or directories.
@@ -2880,7 +2880,7 @@ declare namespace Deno {
      */
     export function rename(
         oldpath: string | URL,
-        newpath: string | URL
+        newpath: string | URL,
     ): Promise<void>;
 
     /** Asynchronously reads and returns the entire contents of a file as an UTF-8
@@ -2898,7 +2898,7 @@ declare namespace Deno {
      */
     export function readTextFile(
         path: string | URL,
-        options?: ReadFileOptions
+        options?: ReadFileOptions,
     ): Promise<string>;
 
     /** Synchronously reads and returns the entire contents of a file as an UTF-8
@@ -2933,7 +2933,7 @@ declare namespace Deno {
      */
     export function readFile(
         path: string | URL,
-        options?: ReadFileOptions
+        options?: ReadFileOptions,
     ): Promise<Uint8Array>;
 
     /** Synchronously reads and returns the entire contents of a file as an array
@@ -3153,7 +3153,7 @@ declare namespace Deno {
      */
     export function copyFile(
         fromPath: string | URL,
-        toPath: string | URL
+        toPath: string | URL,
     ): Promise<void>;
 
     /** Synchronously copies the contents and permissions of one file to another
@@ -3173,7 +3173,7 @@ declare namespace Deno {
      */
     export function copyFileSync(
         fromPath: string | URL,
-        toPath: string | URL
+        toPath: string | URL,
     ): void;
 
     /** Resolves to the full path destination of the named symbolic link.
@@ -3326,7 +3326,7 @@ declare namespace Deno {
     export function writeFile(
         path: string | URL,
         data: Uint8Array | ReadableStream<Uint8Array>,
-        options?: WriteFileOptions
+        options?: WriteFileOptions,
     ): Promise<void>;
 
     /** Synchronously write `data` to the given `path`, by default creating a new
@@ -3350,7 +3350,7 @@ declare namespace Deno {
     export function writeFileSync(
         path: string | URL,
         data: Uint8Array,
-        options?: WriteFileOptions
+        options?: WriteFileOptions,
     ): void;
 
     /** Write string `data` to the given `path`, by default creating a new file if
@@ -3369,7 +3369,7 @@ declare namespace Deno {
     export function writeTextFile(
         path: string | URL,
         data: string | ReadableStream<string>,
-        options?: WriteFileOptions
+        options?: WriteFileOptions,
     ): Promise<void>;
 
     /** Synchronously write string `data` to the given `path`, by default creating
@@ -3388,7 +3388,7 @@ declare namespace Deno {
     export function writeTextFileSync(
         path: string | URL,
         data: string,
-        options?: WriteFileOptions
+        options?: WriteFileOptions,
     ): void;
 
     /** Truncates (or extends) the specified file, to reach the specified `len`.
@@ -3607,7 +3607,7 @@ declare namespace Deno {
      */
     export function watchFs(
         paths: string | string[],
-        options?: { recursive: boolean }
+        options?: { recursive: boolean },
     ): FsWatcher;
 
     /**
@@ -3843,7 +3843,7 @@ declare namespace Deno {
      */
     export function addSignalListener(
         signal: Signal,
-        handler: () => void
+        handler: () => void,
     ): void;
 
     /** Removes the given signal listener that has been registered with
@@ -3864,7 +3864,7 @@ declare namespace Deno {
      */
     export function removeSignalListener(
         signal: Signal,
-        handler: () => void
+        handler: () => void,
     ): void;
 
     /**
@@ -4403,27 +4403,27 @@ declare namespace Deno {
             type: K,
             listener: (
                 this: PermissionStatus,
-                ev: PermissionStatusEventMap[K]
+                ev: PermissionStatusEventMap[K],
             ) => any,
-            options?: boolean | AddEventListenerOptions
+            options?: boolean | AddEventListenerOptions,
         ): void;
         addEventListener(
             type: string,
             listener: EventListenerOrEventListenerObject,
-            options?: boolean | AddEventListenerOptions
+            options?: boolean | AddEventListenerOptions,
         ): void;
         removeEventListener<K extends keyof PermissionStatusEventMap>(
             type: K,
             listener: (
                 this: PermissionStatus,
-                ev: PermissionStatusEventMap[K]
+                ev: PermissionStatusEventMap[K],
             ) => any,
-            options?: boolean | EventListenerOptions
+            options?: boolean | EventListenerOptions,
         ): void;
         removeEventListener(
             type: string,
             listener: EventListenerOrEventListenerObject,
-            options?: boolean | EventListenerOptions
+            options?: boolean | EventListenerOptions,
         ): void;
     }
 
@@ -4739,7 +4739,7 @@ declare namespace Deno {
     export function symlink(
         oldpath: string | URL,
         newpath: string | URL,
-        options?: SymlinkOptions
+        options?: SymlinkOptions,
     ): Promise<void>;
 
     /**
@@ -4760,7 +4760,7 @@ declare namespace Deno {
     export function symlinkSync(
         oldpath: string | URL,
         newpath: string | URL,
-        options?: SymlinkOptions
+        options?: SymlinkOptions,
     ): void;
 
     /**
@@ -4861,7 +4861,7 @@ declare namespace Deno {
     export function futimeSync(
         rid: number,
         atime: number | Date,
-        mtime: number | Date
+        mtime: number | Date,
     ): void;
 
     /**
@@ -4879,7 +4879,7 @@ declare namespace Deno {
     export function futime(
         rid: number,
         atime: number | Date,
-        mtime: number | Date
+        mtime: number | Date,
     ): Promise<void>;
 
     /**
@@ -4930,7 +4930,7 @@ declare namespace Deno {
     export function utimeSync(
         path: string | URL,
         atime: number | Date,
-        mtime: number | Date
+        mtime: number | Date,
     ): void;
 
     /**
@@ -4950,7 +4950,7 @@ declare namespace Deno {
     export function utime(
         path: string | URL,
         atime: number | Date,
-        mtime: number | Date
+        mtime: number | Date,
     ): Promise<void>;
 
     /** The event yielded from an {@linkcode HttpConn} which represents an HTTP
@@ -5112,7 +5112,7 @@ declare namespace Deno {
      */
     export function upgradeWebSocket(
         request: Request,
-        options?: UpgradeWebSocketOptions
+        options?: UpgradeWebSocketOptions,
     ): WebSocketUpgrade;
 
     /** Send a signal to process under given `pid`. The value and meaning of the
@@ -5287,7 +5287,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "A" | "AAAA" | "ANAME" | "CNAME" | "NS" | "PTR",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<string[]>;
 
     /**
@@ -5317,7 +5317,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "CAA",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<CAARecord[]>;
 
     /**
@@ -5347,7 +5347,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "MX",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<MXRecord[]>;
 
     /**
@@ -5377,7 +5377,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "NAPTR",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<NAPTRRecord[]>;
 
     /**
@@ -5407,7 +5407,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "SOA",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<SOARecord[]>;
 
     /**
@@ -5437,7 +5437,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "SRV",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<SRVRecord[]>;
 
     /**
@@ -5467,7 +5467,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: "TXT",
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<string[][]>;
 
     /**
@@ -5497,7 +5497,7 @@ declare namespace Deno {
     export function resolveDns(
         query: string,
         recordType: RecordType,
-        options?: ResolveDnsOptions
+        options?: ResolveDnsOptions,
     ): Promise<
         | string[]
         | CAARecord[]

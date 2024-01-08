@@ -38,7 +38,7 @@ export class Point3d implements Interpolate, Transformable3d {
         return Math.sqrt(
             Math.pow(this.x - to.x, 2) +
                 Math.pow(this.y - to.y, 2) +
-                Math.pow(this.z - to.z, 2)
+                Math.pow(this.z - to.z, 2),
         );
     }
 
@@ -50,7 +50,7 @@ export class Point3d implements Interpolate, Transformable3d {
         return new Point3d(
             this.x + (to.x - this.x) * t,
             this.y + (to.y - this.y) * t,
-            this.z + (to.z - this.z) * t
+            this.z + (to.z - this.z) * t,
         ) as this & ThisReturn;
     }
 
@@ -100,7 +100,7 @@ export class Point3d implements Interpolate, Transformable3d {
         return new Point3d(
             this.x + point.x,
             this.y + point.y,
-            this.z + point.z
+            this.z + point.z,
         ) as this;
     }
 
@@ -109,17 +109,17 @@ export class Point3d implements Interpolate, Transformable3d {
         return new Point3d(
             o.x + (this.x - o.x) * factor,
             o.y + (this.y - o.y) * factor,
-            o.z + (this.z - o.z) * factor
+            o.z + (this.z - o.z) * factor,
         ) as this;
     }
 
     rotate_around_line(
         line: { start: Point3d; end: Point3d },
-        angle: number
+        angle: number,
     ): Point3d {
         // Translate the point and line so that lineStart is at the origin
         const translatedPoint = this.translate3d(
-            line.start.scale3d(-1)
+            line.start.scale3d(-1),
         ).to_vec3();
         const translatedLineEnd = line.end
             .translate3d(line.start.scale3d(-1))
@@ -132,21 +132,21 @@ export class Point3d implements Interpolate, Transformable3d {
         const rotationMatrix = mat4.fromRotation(
             mat4.create(),
             angle,
-            lineDirection
+            lineDirection,
         );
 
         // Rotate the point
         const rotatedPoint = vec3.transformMat4(
             vec3.create(),
             translatedPoint,
-            rotationMatrix
+            rotationMatrix,
         );
 
         // Translate the point back
         const finalPoint = vec3.add(
             vec3.create(),
             rotatedPoint,
-            line.start.to_vec3()
+            line.start.to_vec3(),
         );
 
         return vec3ToPoint3d(finalPoint);

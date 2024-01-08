@@ -5,7 +5,7 @@ export interface Renderable {
     render(ctx: CanvasRenderingContext2D, action: "stroke" | "fill"): void;
     render_debug(ctx: CanvasRenderingContext2D): void;
     set_setter(
-        ctx_setter: (ctx: CanvasRenderingContext2D) => void
+        ctx_setter: (ctx: CanvasRenderingContext2D) => void,
     ): this & ThisReturn;
 }
 

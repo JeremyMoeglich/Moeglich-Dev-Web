@@ -26,7 +26,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     constructor(
         position: Point,
         radius: number,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.position = position;
         this.radius = radius;
@@ -47,7 +47,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         return new CircleSolid(
             this.position.interpolate(t, to.position),
             this.radius * (1 - t) + to.radius * t,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -83,7 +83,7 @@ export class CircleSolid implements SolidShape, Interpolate {
 
     bbox(): RectSolid {
         const top_left = this.position.translate(
-            new Point(-this.radius, -this.radius)
+            new Point(-this.radius, -this.radius),
         );
         const diameter = this.radius * 2;
         return new RectSolid(top_left.x, top_left.y, diameter, diameter);
@@ -101,7 +101,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         return new CircleSolid(
             this.position.translate(offset),
             this.radius,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -111,7 +111,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         return new CircleSolid(
             this.position.scale(scale, origin),
             this.radius * scale_num,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -137,7 +137,7 @@ export class CircleSolid implements SolidShape, Interpolate {
     }
 
     relation_to(
-        other: this
+        other: this,
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -177,9 +177,9 @@ export class CircleSolid implements SolidShape, Interpolate {
                 points.push(
                     this.position.translate(
                         new Point(Math.cos(angle), Math.sin(angle)).multiply(
-                            this.radius
-                        )
-                    )
+                            this.radius,
+                        ),
+                    ),
                 );
             }
             return points;
@@ -188,7 +188,7 @@ export class CircleSolid implements SolidShape, Interpolate {
             const amount = sample_amount_default(
                 outline_length,
                 min_per_unit,
-                "rng"
+                "rng",
             );
             for (let i = 0; i < amount; i++) {
                 const angle = Math.random() * 2 * Math.PI;
@@ -204,7 +204,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         const amount = sample_amount_default(
             this.area(),
             min_per_unit,
-            variant
+            variant,
         );
         return range(amount).map(() => {
             const angle = Math.random() * 2 * Math.PI;
@@ -277,32 +277,32 @@ export class CircleSolid implements SolidShape, Interpolate {
             new PartialBezier(
                 new Point(x + handleLength, y + r),
                 new Point(x + r, y + handleLength),
-                new Point(x + r, y)
-            )
+                new Point(x + r, y),
+            ),
         );
 
         bezierArray.push(
             new PartialBezier(
                 new Point(x + r, y - handleLength),
                 new Point(x + handleLength, y - r),
-                new Point(x, y - r)
-            )
+                new Point(x, y - r),
+            ),
         );
 
         bezierArray.push(
             new PartialBezier(
                 new Point(x - handleLength, y - r),
                 new Point(x - r, y - handleLength),
-                new Point(x - r, y)
-            )
+                new Point(x - r, y),
+            ),
         );
 
         bezierArray.push(
             new PartialBezier(
                 new Point(x - r, y + handleLength),
                 new Point(x - handleLength, y + r),
-                new Point(x, y + r)
-            )
+                new Point(x, y + r),
+            ),
         );
 
         return new BezierSolid(bezierArray);
@@ -321,7 +321,7 @@ export class CircleSolid implements SolidShape, Interpolate {
         return new CircleSolid(
             this.position.rotate(angle, origin),
             this.radius,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 

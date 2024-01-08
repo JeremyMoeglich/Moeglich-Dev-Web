@@ -32,7 +32,9 @@ function Shift({
         damping: 26,
         stiffness: 170,
     });
-    const size_y = sizes.map(s => s.height).reduce((prev, curr) => Math.max(prev, curr), 0);
+    const size_y = sizes
+        .map((s) => s.height)
+        .reduce((prev, curr) => Math.max(prev, curr), 0);
     const smooth_i = useSimpleSpring(i);
     const max_size = sizes.reduce(
         (prev, curr) => ({
@@ -68,8 +70,8 @@ function Shift({
                 overflow: "hidden",
                 width: size_x,
                 height: size_y,
-                fontSize: "200px",
-                fontFamily: "'Gabarito', cursive",
+                fontSize: "120px",
+                fontWeight: "600",
                 ...style,
             }}
             ref={parent_ref}
@@ -216,11 +218,19 @@ export function TopAnimation() {
     const rect_func = useCallback(
         (rect: RectSolid) => {
             simDomainRef.current = rect;
-            return createBundle(
-                simulation.map((p) => p.pos.to_circle_solid(p.lifetime / 100)),
-            ).set_setter((ctx) => {
-                ctx.fillStyle = "#ffffff9c";
-            });
+            const rounded = rect.bevel(100);
+            return createBundle([
+                // rounded.set_setter((ctx) => {
+                //     ctx.fillStyle = "#0000004d";
+                // }),
+                createBundle(
+                    simulation
+                        .filter((p) => rounded.contains(p.pos))
+                        .map((p) => p.pos.to_circle_solid(p.lifetime / 100)),
+                ).set_setter((ctx) => {
+                    ctx.fillStyle = "#ffffff9c";
+                }),
+            ]);
         },
         [simulation],
     );
@@ -246,44 +256,46 @@ export function TopAnimation() {
     // }, [simulation]);
 
     return (
-        <div className="relative flex h-full flex-col items-center justify-center py-11">
-            <div className="absolute h-full w-full">
-                <ShapeRender
-                    render_id="top_animation"
-                    instructions={[
-                        // {
-                        //     action: "fill",
-                        //     z_index: 5,
-                        //     obj: new Point(0, 0)
-                        //         .to_circle_solid(100)
-                        //         .set_setter((ctx) => {
-                        //             ctx.fillStyle = "#000000";
-                        //         }),
-                        // },
-                        {
-                            action: "fill",
-                            z_index: 4,
-                            obj: rect_func,
-                        },
-                    ]}
-                />
-            </div>
-            <div className="z-40 flex flex-row">
-                {letter_parts.map((parts, index) => (
-                    <Shift
-                        key={index}
-                        parts={parts}
-                        i={i}
-                        style={{
-                            color: Color.fromHex("#cfcfcf")
-                                .interpolate(
-                                    cnoise(index / 10, t / 4000),
-                                    Color.fromHex("#f2f55a"),
-                                )
-                                .getHex(),
-                        }}
+        <div className="ml-64 flex flex-col">
+            <div className="relative h-full w-fit justify-center">
+                <div className="absolute h-full w-full">
+                    <ShapeRender
+                        render_id="top_animation"
+                        instructions={[
+                            // {
+                            //     action: "fill",
+                            //     z_index: 5,
+                            //     obj: new Point(0, 0)
+                            //         .to_circle_solid(100)
+                            //         .set_setter((ctx) => {
+                            //             ctx.fillStyle = "#000000";
+                            //         }),
+                            // },
+                            {
+                                action: "fill",
+                                z_index: 4,
+                                obj: rect_func,
+                            },
+                        ]}
                     />
-                ))}
+                </div>
+                <div className="z-40 flex flex-row">
+                    {letter_parts.map((parts, index) => (
+                        <Shift
+                            key={index}
+                            parts={parts}
+                            i={i}
+                            style={{
+                                color: Color.fromHex("#cfcfcf")
+                                    .interpolate(
+                                        cnoise(index / 10, t / 4000),
+                                        Color.fromHex("#f2f55a"),
+                                    )
+                                    .getHex(),
+                            }}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

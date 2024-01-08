@@ -16,7 +16,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
         public readonly width: number,
         public readonly height: number,
         angle?: number,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         if (typeof image === "string") {
             this.image = new Image();
@@ -41,7 +41,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
         ].map((point) =>
             point
                 .rotate(this.angle, this.image_center)
-                .translate(this.image_center)
+                .translate(this.image_center),
         );
 
         return new PolygonSolid(points);
@@ -52,7 +52,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center.x - this.width / 2,
             this.image_center.y - this.height / 2,
             this.width,
-            this.height
+            this.height,
         ).rotate(this.angle, this.image_center);
     }
 
@@ -67,7 +67,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
                 -this.width / 2,
                 -this.height / 2,
                 this.width,
-                this.height
+                this.height,
             );
             ctx.restore();
         } else {
@@ -86,7 +86,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center.translate(offset),
             this.image.width,
             this.image.height,
-            this.angle
+            this.angle,
         ) as this & ThisReturn;
     }
 
@@ -99,7 +99,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center.scale(factor, o),
             this.image.width * factor_x,
             this.image.height * factor_y,
-            this.angle
+            this.angle,
         ) as this & ThisReturn;
     }
 
@@ -110,7 +110,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center.rotate(angle, o),
             this.image.width,
             this.image.height,
-            this.angle + angle
+            this.angle + angle,
         ) as this & ThisReturn;
     }
 
@@ -120,7 +120,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             zerozero.to_axis(axis),
             this.image.width,
             this.image.height,
-            this.angle
+            this.angle,
         ) as this & ThisReturn;
     }
 
@@ -130,7 +130,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center.interpolate(t, to.image_center),
             this.width + (to.width - this.width) * t,
             this.height + (to.height - this.height) * t,
-            this.angle + (to.angle - this.angle) * t
+            this.angle + (to.angle - this.angle) * t,
         ) as this & ThisReturn;
     }
 
@@ -161,7 +161,7 @@ export class ImageSolid implements Renderable, Interpolate, Transformable {
             this.image_center,
             w,
             h,
-            this.angle
+            this.angle,
         ) as this & ThisReturn;
     }
 

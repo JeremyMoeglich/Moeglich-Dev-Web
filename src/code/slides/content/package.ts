@@ -22,7 +22,7 @@ import {
 } from "~/code/shapelib/types/point3d";
 
 export function package_visual<
-    T extends Transformable & Interpolate & Renderable
+    T extends Transformable & Interpolate & Renderable,
 >(show_top: boolean, key: string, element?: T, element_height = 0) {
     const background = PolygonSolid.make_ngon(6, 100)
         .rotate(deg_to_rad(-30))
@@ -59,40 +59,40 @@ export function package_visual<
 
     const tp1 = (background.points[4] ?? panic()).lerp(
         0.4,
-        background.points[5] ?? panic()
+        background.points[5] ?? panic(),
     );
     const tp2 = (background.points[4] ?? panic()).lerp(
         0.6,
-        background.points[5] ?? panic()
+        background.points[5] ?? panic(),
     );
     const brp1 = (background.points[0] ?? panic()).lerp(
         0.6,
-        zerozero ?? panic()
+        zerozero ?? panic(),
     );
     const brp2 = (background.points[0] ?? panic()).lerp(
         0.4,
-        zerozero ?? panic()
+        zerozero ?? panic(),
     );
     const blp1 = (background.points[1] ?? panic()).lerp(
         0.4,
-        background.points[2] ?? panic()
+        background.points[2] ?? panic(),
     );
     const blp2 = (background.points[1] ?? panic()).lerp(
         0.6,
-        background.points[2] ?? panic()
+        background.points[2] ?? panic(),
     );
 
     return createBundle([
         new InterBlock(background, `background-${key}`),
         new InterBlock(
             (element ?? RectSolid.empty()).translate(
-                new Point(0, element_height ?? 0)
+                new Point(0, element_height ?? 0),
             ),
-            `element-${key}`
+            `element-${key}`,
         ),
         new InterBlock(
             createBundle([bottom_left, bottom_right]),
-            `bottom-${key}`
+            `bottom-${key}`,
         ),
         new InterBlock(
             createBundle([
@@ -102,18 +102,18 @@ export function package_visual<
                           (ctx) => {
                               ctx.fillStyle = "#FFFFee"; // yellow
                               ctx.globalAlpha = 0.5;
-                          }
+                          },
                       )
                     : RectSolid.empty(),
             ]),
-            `top-${key}`
+            `top-${key}`,
         ),
         new InterBlock(
             new PolygonSolid([brp2, blp1, blp2, brp1]).set_setter((ctx) => {
                 ctx.fillStyle = "#FFFFee"; // yellow
                 ctx.globalAlpha = 0.3;
             }),
-            `polygon-solid-${key}`
+            `polygon-solid-${key}`,
         ),
     ]);
 }
@@ -126,7 +126,7 @@ type TupleMap<T extends any[], F extends (arg: any) => any> = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapTuple<T extends any[], F extends (arg: T[number]) => any>(
     tuple: T,
-    fn: F
+    fn: F,
 ): TupleMap<T, F> {
     return tuple.map(fn) as TupleMap<T, F>;
 }
@@ -140,7 +140,7 @@ export function default_camera(variant: "isometric" | "perspective") {
 
         const pitch = Math.atan2(
             center.z - loc.z,
-            Math.sqrt((loc.x - center.x) ** 2 + (loc.y - center.y) ** 2)
+            Math.sqrt((loc.x - center.x) ** 2 + (loc.y - center.y) ** 2),
         );
         const yaw = Math.atan2(loc.y - center.y, loc.x - center.x);
         const rotation = new Point3d(pitch, yaw, 0);
@@ -157,7 +157,7 @@ export function default_camera(variant: "isometric" | "perspective") {
             aspect_ratio,
             near,
             far,
-            fov
+            fov,
         );
     }
 }
@@ -168,9 +168,9 @@ export function package_visual3d(t: number) {
         mapTuple(quad, (point) =>
             point.rotate3d(
                 new Point3d(deg_to_rad(0), deg_to_rad(0), deg_to_rad(t * 0.1)),
-                new Point3d(0, 0, 0)
-            )
-        )
+                new Point3d(0, 0, 0),
+            ),
+        ),
     );
     const camera = default_camera("isometric");
 
@@ -185,7 +185,7 @@ export function package_visual3d(t: number) {
     ];
 
     const faces = z_sort_faces(quads, camera).map((face) =>
-        face_to_poly(face, camera)
+        face_to_poly(face, camera),
     );
 
     return createBundle(faces);

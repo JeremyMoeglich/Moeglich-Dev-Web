@@ -29,7 +29,7 @@ export class Color implements Interpolate {
         return new Color(
             this.color.get("rgb.r"),
             this.color.get("rgb.g"),
-            this.color.get("rgb.b")
+            this.color.get("rgb.b"),
         );
     }
 
@@ -44,7 +44,7 @@ export class Color implements Interpolate {
         return new Color(
             newColor.get("rgb.r"),
             newColor.get("rgb.g"),
-            newColor.get("rgb.b")
+            newColor.get("rgb.b"),
         ) as this & ThisReturn;
     }
 
@@ -73,7 +73,7 @@ export class Color implements Interpolate {
         return new Color(
             color.get("rgb.r"),
             color.get("rgb.g"),
-            color.get("rgb.b")
+            color.get("rgb.b"),
         );
     }
 

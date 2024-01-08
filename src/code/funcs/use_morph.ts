@@ -5,14 +5,14 @@ import { useMemo } from "react";
 import { useAnimationTime } from "~/utils/use_update";
 
 export function useMorph<
-    T extends { map_points: (f: (p: Point) => Point) => T }
+    T extends { map_points: (f: (p: Point) => Point) => T },
 >(
     shape: T,
     config: {
         speed: number;
         amount: number;
         size: number;
-    }
+    },
 ): T {
     const time = useAnimationTime();
     const xnoise = useConstant(makeNoise3D());
@@ -27,7 +27,7 @@ export function useMorph<
                             xnoise(
                                 p.x * config.size,
                                 p.y * config.size,
-                                time * config.speed
+                                time * config.speed,
                             ) *
                                 config.amount,
 
@@ -35,12 +35,12 @@ export function useMorph<
                             ynoise(
                                 p.x * config.size,
                                 p.y * config.size,
-                                time * config.speed
+                                time * config.speed,
                             ) *
-                                config.amount
-                    )
+                                config.amount,
+                    ),
             ),
-        [shape, time, xnoise, ynoise, config]
+        [shape, time, xnoise, ynoise, config],
     );
 
     return new_shapes;

@@ -30,7 +30,7 @@ export function box<T extends Renderable & Transformable>(
             .translate(center);
     }
 
-    let shape = options.rounded ? bbox.round_corners(options.rounded) : bbox;
+    let shape = options.rounded ? bbox.bevel(options.rounded) : bbox;
     shape = shape.set_setter((ctx) => {
         ctx.lineWidth = 1;
         ctx.fillStyle = options.color.getHex();

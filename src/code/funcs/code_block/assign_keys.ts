@@ -10,7 +10,7 @@ function token_iden(token: Token): string {
 
 export function assignKeys(
     previous_tokens: KeyedToken[],
-    new_tokens: Token[]
+    new_tokens: Token[],
 ): KeyedToken[] {
     const identicalTokenMap: { [id: string]: Sequence[] } = {};
     const startIndexMap: { [id: string]: Sequence[] } = {};
@@ -55,10 +55,10 @@ export function assignKeys(
                     lastIndexOfNew + 1 < new_tokens.length
                 ) {
                     const nextIdPrev = token_iden(
-                        previous_tokens[lastIndexOfPrev + 1] ?? panic()
+                        previous_tokens[lastIndexOfPrev + 1] ?? panic(),
                     );
                     const nextIdNew = token_iden(
-                        new_tokens[lastIndexOfNew + 1] ?? panic()
+                        new_tokens[lastIndexOfNew + 1] ?? panic(),
                     );
                     if (
                         !usedPrevTokens[lastIndexOfPrev + 1] &&
@@ -85,7 +85,7 @@ export function assignKeys(
                                     usedNewTokens[lastIndexOfNew + 1] = true;
                                     sequencesCanBeExtended = true;
                                 }
-                            }
+                            },
                         );
                     }
                 }

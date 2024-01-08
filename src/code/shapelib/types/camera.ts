@@ -19,24 +19,24 @@ export class IsometricCamera implements Camera {
         mat4.translate(
             this.transformationMatrix,
             this.transformationMatrix,
-            vec3.negate(vec3.create(), this.position.to_vec3())
+            vec3.negate(vec3.create(), this.position.to_vec3()),
         );
 
         // Then apply the rotations
         mat4.rotateX(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.x
+            this.rotation.x,
         );
         mat4.rotateY(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.y
+            this.rotation.y,
         );
         mat4.rotateZ(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.z
+            this.rotation.z,
         );
     }
 
@@ -73,12 +73,12 @@ export class IsometricCamera implements Camera {
         const newPosition = vec3.add(
             vec3.create(),
             this.position.to_vec3(),
-            offset.to_vec3()
+            offset.to_vec3(),
         );
         return new IsometricCamera(
             vec3ToPoint3d(newPosition),
             this.rotation,
-            this.zoom_factor
+            this.zoom_factor,
         ) as this;
     }
 
@@ -86,12 +86,12 @@ export class IsometricCamera implements Camera {
         const newRotation = vec3.add(
             vec3.create(),
             this.rotation.to_vec3(),
-            angles.to_vec3()
+            angles.to_vec3(),
         );
         return new IsometricCamera(
             this.position,
             vec3ToPoint3d(newRotation),
-            this.zoom_factor
+            this.zoom_factor,
         ) as this;
     }
 
@@ -100,7 +100,7 @@ export class IsometricCamera implements Camera {
         return new IsometricCamera(
             this.position.scale3d(factor, o),
             this.rotation,
-            this.zoom_factor
+            this.zoom_factor,
         ) as this;
     }
 
@@ -108,17 +108,17 @@ export class IsometricCamera implements Camera {
         const direction = vec3.sub(
             vec3.create(),
             vec3.fromValues(target.x, target.y, target.z),
-            this.position.to_vec3()
+            this.position.to_vec3(),
         );
         const pitch = Math.atan2(
             direction[1],
-            Math.sqrt(direction[0] ** 2 + direction[2] ** 2)
+            Math.sqrt(direction[0] ** 2 + direction[2] ** 2),
         );
         const yaw = Math.atan2(-direction[0], direction[2]);
         return new IsometricCamera(
             this.position,
             { x: pitch, y: yaw, z: 0 } as Point3d,
-            this.zoom_factor
+            this.zoom_factor,
         ) as this;
     }
 
@@ -126,7 +126,7 @@ export class IsometricCamera implements Camera {
         return new IsometricCamera(
             this.position,
             this.rotation,
-            this.zoom_factor * factor
+            this.zoom_factor * factor,
         ) as this;
     }
 }
@@ -159,7 +159,7 @@ export class PerspectiveCamera implements Camera {
         aspectRatio: number,
         near: number,
         far: number,
-        fieldOfView: number
+        fieldOfView: number,
     ) {
         this.position = position;
         this.rotation = rotation;
@@ -175,24 +175,24 @@ export class PerspectiveCamera implements Camera {
         mat4.translate(
             this.transformationMatrix,
             this.transformationMatrix,
-            vec3.negate(vec3.create(), this.position.to_vec3())
+            vec3.negate(vec3.create(), this.position.to_vec3()),
         );
 
         // Then rotate it to its orientation
         mat4.rotateX(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.x
+            this.rotation.x,
         );
         mat4.rotateY(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.y
+            this.rotation.y,
         );
         mat4.rotateZ(
             this.transformationMatrix,
             this.transformationMatrix,
-            this.rotation.z
+            this.rotation.z,
         );
     }
 
@@ -241,7 +241,7 @@ export class PerspectiveCamera implements Camera {
         const newPosition = vec3.add(
             vec3.create(),
             this.position.to_vec3(),
-            offset.to_vec3()
+            offset.to_vec3(),
         );
         return new PerspectiveCamera(
             vec3ToPoint3d(newPosition),
@@ -249,7 +249,7 @@ export class PerspectiveCamera implements Camera {
             this.aspectRatio,
             this.near,
             this.far,
-            this.fieldOfView
+            this.fieldOfView,
         ) as this;
     }
 
@@ -257,7 +257,7 @@ export class PerspectiveCamera implements Camera {
         const newRotation = vec3.add(
             vec3.create(),
             this.rotation.to_vec3(),
-            angles.to_vec3()
+            angles.to_vec3(),
         );
         return new PerspectiveCamera(
             this.position.rotate3d(angles),
@@ -265,7 +265,7 @@ export class PerspectiveCamera implements Camera {
             this.aspectRatio,
             this.near,
             this.far,
-            this.fieldOfView
+            this.fieldOfView,
         ) as this;
     }
 
@@ -277,7 +277,7 @@ export class PerspectiveCamera implements Camera {
             this.aspectRatio,
             this.near,
             this.far,
-            this.fieldOfView
+            this.fieldOfView,
         ) as this;
     }
 
@@ -285,11 +285,11 @@ export class PerspectiveCamera implements Camera {
         const direction = vec3.sub(
             vec3.create(),
             vec3.fromValues(target.x, target.y, target.z),
-            this.position.to_vec3()
+            this.position.to_vec3(),
         );
         const pitch = Math.atan2(
             direction[1],
-            Math.sqrt(direction[0] ** 2 + direction[2] ** 2)
+            Math.sqrt(direction[0] ** 2 + direction[2] ** 2),
         );
         let yaw = Math.atan2(direction[0], direction[2]);
 
@@ -307,7 +307,7 @@ export class PerspectiveCamera implements Camera {
             this.aspectRatio,
             this.near,
             this.far,
-            this.fieldOfView
+            this.fieldOfView,
         ) as this;
     }
 
@@ -318,7 +318,7 @@ export class PerspectiveCamera implements Camera {
             this.aspectRatio,
             this.near,
             this.far,
-            this.fieldOfView * amount
+            this.fieldOfView * amount,
         ) as this;
     }
 }

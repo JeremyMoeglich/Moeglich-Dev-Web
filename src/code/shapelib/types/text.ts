@@ -53,7 +53,7 @@ export const measureTextSize = (
     fontSize: number,
     line_height_factor = 1.2,
     unit: keyof typeof units = "px",
-    fontName = `"Fira Code", monospace`
+    fontName = `"Fira Code", monospace`,
 ) => {
     if (text.length === 0) return { width: 0, height: 0 };
     if (!IS_BROWSER) return { width: 0, height: 0 };
@@ -70,13 +70,13 @@ export const measureTextSize = (
                         .split("\n")
                         .map(
                             (line) =>
-                                (context ?? panic()).measureText(line).width
-                        )
+                                (context ?? panic()).measureText(line).width,
+                        ),
                 ) ?? 0;
 
             const metaData: MetaData = {
                 rootFontSize: parseFloat(
-                    getComputedStyle(document.documentElement).fontSize
+                    getComputedStyle(document.documentElement).fontSize,
                 ),
                 viewportWidth: window.innerWidth,
                 viewportHeight: window.innerHeight,
@@ -84,7 +84,7 @@ export const measureTextSize = (
             const unitConverter = getUnitConverter(unit);
             const height = unitConverter(
                 line_height_factor * text.split("\n").length,
-                metaData
+                metaData,
             );
 
             const size = { width, height };
@@ -114,7 +114,7 @@ export class Text implements Interpolate, Renderable, Transformable {
         size: number,
         line_height = 1.2,
         font = `"Fira Code", monospace`,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.text = text;
         this.size = size;
@@ -133,13 +133,13 @@ export class Text implements Interpolate, Renderable, Transformable {
             this.size,
             this.line_height_factor,
             "px",
-            this.font
+            this.font,
         );
         return new RectSolid(
             this.position.x,
             this.position.y,
             width * this.scalex,
-            height * this.scaley
+            height * this.scaley,
         ).rotate(this.rotation);
     }
 
@@ -148,7 +148,7 @@ export class Text implements Interpolate, Renderable, Transformable {
         const scale = new Point(axis !== "y" ? -1 : 1, axis !== "x" ? -1 : 1);
         const offset = new Point(
             axis !== "y" ? (center.x - this.position.x) * 2 : 0,
-            axis !== "x" ? (center.y - this.position.y) * 2 : 0
+            axis !== "x" ? (center.y - this.position.y) * 2 : 0,
         );
         return this.scale(scale).translate(offset);
     }
@@ -161,7 +161,7 @@ export class Text implements Interpolate, Renderable, Transformable {
             this.size,
             this.line_height_factor,
             this.font,
-            this.ctx_setter
+            this.ctx_setter,
         );
         text.scalex =
             this.scalex * (typeof scale === "number" ? scale : scale.x);
@@ -179,7 +179,7 @@ export class Text implements Interpolate, Renderable, Transformable {
             this.size,
             this.line_height_factor,
             this.font,
-            this.ctx_setter
+            this.ctx_setter,
         );
         text.scalex = this.scalex;
         text.scaley = this.scaley;
@@ -194,7 +194,7 @@ export class Text implements Interpolate, Renderable, Transformable {
             this.size,
             this.line_height_factor,
             this.font,
-            this.ctx_setter
+            this.ctx_setter,
         );
         text.scalex = this.scalex;
         text.scaley = this.scaley;
@@ -212,7 +212,7 @@ export class Text implements Interpolate, Renderable, Transformable {
             this.position.interpolate(t, to.position),
             this.size + (to.size - this.size) * t,
             this.line_height_factor,
-            to.font
+            to.font,
         );
         text.scalex = this.scalex + (to.scalex - this.scalex) * t;
         text.scaley = this.scaley + (to.scaley - this.scaley) * t;
@@ -234,7 +234,7 @@ export class Text implements Interpolate, Renderable, Transformable {
     }
 
     set_setter(
-        ctx_setter: (ctx: CanvasRenderingContext2D) => void
+        ctx_setter: (ctx: CanvasRenderingContext2D) => void,
     ): this & ThisReturn {
         this.ctx_setter = ctx_setter;
         return this as this & ThisReturn;
@@ -300,8 +300,8 @@ export class Text implements Interpolate, Renderable, Transformable {
                             new Point(x, y),
                             this.size,
                             this.line_height_factor,
-                            this.font
-                        )
+                            this.font,
+                        ),
                     );
                     x = 0;
                     y += line_height;
@@ -318,7 +318,7 @@ export class Text implements Interpolate, Renderable, Transformable {
 
     highlight(language: keyof typeof languages): Bundle<Text> {
         const result = languages[language](this.text).sort(
-            (a, b) => a.start_offset - b.start_offset
+            (a, b) => a.start_offset - b.start_offset,
         );
         let x = 0;
         let last_line = -1;
@@ -331,7 +331,7 @@ export class Text implements Interpolate, Renderable, Transformable {
                     this.size,
                     this.line_height_factor,
                     "px",
-                    this.font
+                    this.font,
                 ).width;
                 last_line = real_line;
             }
@@ -340,7 +340,7 @@ export class Text implements Interpolate, Renderable, Transformable {
                 new Point(x, real_line * line_height),
                 this.size,
                 this.line_height_factor,
-                this.font
+                this.font,
             );
             x += text.bbox().width;
             return text.set_setter((ctx) => {
@@ -361,7 +361,7 @@ export class Text implements Interpolate, Renderable, Transformable {
         const center = this.center();
         const offset = new Point(
             axis !== "y" ? -center.x : 0,
-            axis !== "x" ? -center.y : 0
+            axis !== "x" ? -center.y : 0,
         );
         return this.translate(offset);
     }

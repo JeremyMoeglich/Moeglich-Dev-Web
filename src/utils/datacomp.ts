@@ -23,8 +23,8 @@ type UnwrapData<T> = T extends Data<infer R>
     ? R extends any[]
         ? UnwrapDataArray<R>
         : R extends object
-        ? UnwrapDataObject<R>
-        : R
+          ? UnwrapDataObject<R>
+          : R
     : never;
 
 type UnwrapDataArray<T extends any[]> = T extends (infer U)[]

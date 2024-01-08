@@ -27,7 +27,7 @@ class RectRBush<T extends BoundingBox> extends RBush<RBushElement<T>> {
 
 export function create_collider<T extends BoundingBox, C extends BoundingBox>(
     shapes: T[],
-    cmp: (shape: T, e: C) => boolean
+    cmp: (shape: T, e: C) => boolean,
 ) {
     const index = new RectRBush<T>();
 
@@ -35,7 +35,7 @@ export function create_collider<T extends BoundingBox, C extends BoundingBox>(
         shapes.map((t) => ({
             bbox: t.bbox(),
             element: t,
-        }))
+        })),
     );
 
     return (element: C) => {

@@ -6,7 +6,6 @@ import { zerozero } from "../shapelib/types/point";
 import { maybe_window } from "~/utils/maybe_window";
 import { useUpdate } from "~/utils/use_update";
 
-
 export function useEvent<T extends keyof EventTypes, O>(
     element: EventTarget | undefined,
     event: T,
@@ -26,10 +25,9 @@ export function useEvent<T extends keyof EventTypes, O>(
         return () => {
             element.removeEventListener(event, handler);
         };
-    }, initial)
+    }, initial);
     return state;
 }
-
 
 export function useMousePosition(
     element: Element | undefined,

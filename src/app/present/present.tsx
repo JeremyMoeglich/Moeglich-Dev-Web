@@ -20,7 +20,7 @@ function FullScreenApp() {
                     await handle.enter();
                 }
                 set_is_fullscreen((prev) => !prev);
-            })()
+            })(),
     );
     useKeydown(
         maybe_window(),
@@ -29,7 +29,7 @@ function FullScreenApp() {
             void (async () => {
                 await handle.exit();
                 set_is_fullscreen(false);
-            })()
+            })(),
     );
     return (
         <FullScreen handle={handle}>
@@ -43,7 +43,7 @@ const slides = get_slides();
 function App() {
     const [slide_index, unchecked_setSlideIndex] = useLocalStorage(
         "CurrentSlide",
-        0
+        0,
     );
     const [isHydrated, setIsHydrated] = useState(false);
 

@@ -27,7 +27,7 @@ export const has_length_bundler: Bundler<HasLength, HasLength> = {
         },
         sample_on_length: (objects, min_per_unit, variant) => {
             const points = objects.flatMap((o) =>
-                o.sample_on_length(min_per_unit, variant)
+                o.sample_on_length(min_per_unit, variant),
             );
             return points;
         },
@@ -37,7 +37,7 @@ export const has_length_bundler: Bundler<HasLength, HasLength> = {
         right_point_intersections: (objects, p) => {
             return objects.reduce(
                 (acc, o) => acc + o.right_point_intersections(p),
-                0
+                0,
             );
         },
     },

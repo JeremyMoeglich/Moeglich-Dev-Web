@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { sortBy } from "lodash-es";
 import { type NextPage } from "next";
@@ -67,7 +67,7 @@ const Leaderboard: NextPage = () => {
 
     useEffect(() => {
         setLeaderboardState(leaderboard.data ?? leaderboardState ?? []);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leaderboard.data]);
 
     const update_score_mutation =
@@ -133,7 +133,7 @@ const Leaderboard: NextPage = () => {
     }
 
     return (
-        <div className="flex flex-row h-full max-[900px]:flex-wrap">
+        <div className="flex h-full flex-row max-[900px]:flex-wrap">
             <div className="flex h-full w-[900px] flex-col gap-8 bg-slate-900 p-8 ">
                 {sortBy(leaderboardState, (v) => -v.score).map((user, i) => (
                     <div

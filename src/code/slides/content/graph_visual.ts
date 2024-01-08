@@ -4,7 +4,7 @@ import { Point } from "~/code/shapelib";
 function hashNumber(
     n: number,
     lower_bound: number,
-    upper_bound: number
+    upper_bound: number,
 ): number {
     const seed = 0x1234abcd; // Fixed seed to ensure deterministic output
     const c1 = 0xcc9e2d51;
@@ -47,7 +47,7 @@ function generate_point(seed: number, t: number) {
         const sample = start_sample + i * 10; // samples are 10 seconds apart
         const point = new Point(
             hashNumber(sample + seed, 0, 1000),
-            hashNumber(-sample + seed, 0, 1000)
+            hashNumber(-sample + seed, 0, 1000),
         );
         const t_offset = t - sample; // Adjusted to be in the same unit
         const influence = get_influence(t_offset / 1000);
@@ -56,15 +56,18 @@ function generate_point(seed: number, t: number) {
 
     const total_influence = samples.reduce(
         (acc, [_, influence]) => acc + influence,
-        0
+        0,
     );
     return samples
         .map(([point, influence]) => {
             return [point, influence / total_influence] as [Point, number];
         })
-        .reduce((acc, [point, influence]) => {
-            return acc.translate(point.multiply(influence));
-        }, new Point(0, 0));
+        .reduce(
+            (acc, [point, influence]) => {
+                return acc.translate(point.multiply(influence));
+            },
+            new Point(0, 0),
+        );
 }
 
 export function rand_points(t: number) {

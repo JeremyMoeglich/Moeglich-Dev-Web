@@ -13,7 +13,7 @@ interface Actions {
 
 export function useLifecycle(
     actions: Actions,
-    deps: React.DependencyList | undefined
+    deps: React.DependencyList | undefined,
 ) {
     const componentStillMounted = useRef(true);
 

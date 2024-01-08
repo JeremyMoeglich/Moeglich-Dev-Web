@@ -43,24 +43,22 @@ export const leaderboardWaffleRouter = createTRPCRouter({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_entry = await ctx.db.$transaction(
-                async (transaction) => {
-                    const current =
-                        await transaction.leaderboardWaffle_Entry.findUnique({
-                            where: { id: input.id },
-                        });
-                    if (current !== null) {
-                        throw new Error("Entry already exists");
-                    }
-                    return await transaction.leaderboardWaffle_Entry.create({
-                        data: {
-                            id: input.id,
-                            score: input.score,
-                            name: input.name,
-                        },
+            const new_entry = await ctx.db.$transaction(async (transaction) => {
+                const current =
+                    await transaction.leaderboardWaffle_Entry.findUnique({
+                        where: { id: input.id },
                     });
-                },
-            );
+                if (current !== null) {
+                    throw new Error("Entry already exists");
+                }
+                return await transaction.leaderboardWaffle_Entry.create({
+                    data: {
+                        id: input.id,
+                        score: input.score,
+                        name: input.name,
+                    },
+                });
+            });
             await request_refetch();
             return new_entry;
         }),
@@ -72,25 +70,23 @@ export const leaderboardWaffleRouter = createTRPCRouter({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            const new_name = await ctx.db.$transaction(
-                async (transaction) => {
-                    const current =
-                        await transaction.leaderboardWaffle_Entry.findUnique({
-                            where: { id: input.id },
-                        });
-                    if (current === null) {
-                        throw new Error("No such entry");
-                    }
-                    return (
-                        await transaction.leaderboardWaffle_Entry.update({
-                            where: { id: input.id },
-                            data: {
-                                name: input.name,
-                            },
-                        })
-                    ).name;
-                },
-            );
+            const new_name = await ctx.db.$transaction(async (transaction) => {
+                const current =
+                    await transaction.leaderboardWaffle_Entry.findUnique({
+                        where: { id: input.id },
+                    });
+                if (current === null) {
+                    throw new Error("No such entry");
+                }
+                return (
+                    await transaction.leaderboardWaffle_Entry.update({
+                        where: { id: input.id },
+                        data: {
+                            name: input.name,
+                        },
+                    })
+                ).name;
+            });
             await request_refetch();
             return new_name;
         }),

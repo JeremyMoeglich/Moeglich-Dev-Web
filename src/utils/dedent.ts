@@ -4,7 +4,7 @@ export function dedent(
 ): string {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const output = strings.reduce(
-        (acc, str, idx) => `${acc}${(values[idx - 1] ?? "") as string}${str}`
+        (acc, str, idx) => `${acc}${(values[idx - 1] ?? "") as string}${str}`,
     );
 
     const lines = output.split("\n");
@@ -12,7 +12,7 @@ export function dedent(
     const indent = Math.min(
         ...lines
             .filter((line) => line.trim() !== "")
-            .map((line) => line.search(/\S|$/))
+            .map((line) => line.search(/\S|$/)),
     );
 
     const unindentedLines = lines.map((line) => line.slice(indent));

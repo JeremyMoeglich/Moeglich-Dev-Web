@@ -52,7 +52,7 @@ export const CodeBlock: React.FC<{
                     scale,
                     1.2,
                     "rem",
-                    font
+                    font,
                 ).width;
                 return token;
             });
@@ -64,14 +64,14 @@ export const CodeBlock: React.FC<{
                     y: Math.max(acc.y, token.position.y),
                 };
             },
-            { x: 0, y: 0 }
+            { x: 0, y: 0 },
         );
         const offset_tokens = new_tokens.map((token) => {
             return {
                 ...token,
                 position: new Point(
                     token.position.x - size.x / 2,
-                    token.position.y - size.y / 2
+                    token.position.y - size.y / 2,
                 ),
             };
         });
@@ -85,7 +85,7 @@ export const CodeBlock: React.FC<{
                 y: Math.max(acc.y, token.position.y),
             };
         },
-        { x: 0, y: 0 }
+        { x: 0, y: 0 },
     );
 
     return (

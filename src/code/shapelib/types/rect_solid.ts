@@ -41,7 +41,7 @@ export class RectSolid
         y: number,
         width: number,
         height: number,
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.x = x;
         this.y = y;
@@ -54,7 +54,7 @@ export class RectSolid
             Math.min(a.x, b.x),
             Math.min(a.y, b.y),
             Math.abs(a.x - b.x),
-            Math.abs(a.y - b.y)
+            Math.abs(a.y - b.y),
         );
     }
 
@@ -76,7 +76,7 @@ export class RectSolid
             this.y * (1 - t) + to.y * t,
             this.width * (1 - t) + to.width * t,
             this.height * (1 - t) + to.height * t,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -86,7 +86,7 @@ export class RectSolid
             this.y + this.height / 2,
             0,
             0,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -121,7 +121,7 @@ export class RectSolid
             this.y + p.y,
             this.width,
             this.height,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -134,7 +134,7 @@ export class RectSolid
             this.y * scale_y + o.y * (1 - scale_y),
             this.width * scale_x,
             this.height * scale_y,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -146,7 +146,7 @@ export class RectSolid
                     this.y,
                     this.width,
                     this.height,
-                    this.ctx_setter
+                    this.ctx_setter,
                 ) as this & ThisReturn;
             case "y":
                 return new RectSolid(
@@ -154,7 +154,7 @@ export class RectSolid
                     -this.y - this.height,
                     this.width,
                     this.height,
-                    this.ctx_setter
+                    this.ctx_setter,
                 ) as this & ThisReturn;
             case "both":
                 return new RectSolid(
@@ -162,7 +162,7 @@ export class RectSolid
                     -this.y - this.height,
                     this.width,
                     this.height,
-                    this.ctx_setter
+                    this.ctx_setter,
                 ) as this & ThisReturn;
         }
     }
@@ -203,8 +203,8 @@ export class RectSolid
             (_) =>
                 new Point(
                     this.x + Math.random() * this.width,
-                    this.x + Math.random() * this.height
-                )
+                    this.x + Math.random() * this.height,
+                ),
         );
     }
 
@@ -229,7 +229,7 @@ export class RectSolid
     sample_on_length(min_per_unit: number, variant: "evenly" | "rng"): Point[] {
         const n = Math.ceil(this.outline_length() * min_per_unit);
         const lines = cyclic_pairs(this.vertices()).map(
-            ([a, b]) => new LineSegment(a, b)
+            ([a, b]) => new LineSegment(a, b),
         );
         if (variant === "rng") {
             return range(n).flatMap((_) => {
@@ -241,7 +241,7 @@ export class RectSolid
         } else {
             const n_per_line = Math.ceil(n / lines.length);
             return lines.flatMap((line) =>
-                line.sample_points(n_per_line, "evenly")
+                line.sample_points(n_per_line, "evenly"),
             );
         }
     }
@@ -251,12 +251,12 @@ export class RectSolid
             new TriangleSolid(
                 new Point(this.x, this.y),
                 new Point(this.x + this.width, this.y),
-                new Point(this.x + this.width, this.y + this.height)
+                new Point(this.x + this.width, this.y + this.height),
             ),
             new TriangleSolid(
                 new Point(this.x, this.y),
                 new Point(this.x + this.width, this.y + this.height),
-                new Point(this.x, this.y + this.height)
+                new Point(this.x, this.y + this.height),
             ),
         ];
     }
@@ -269,7 +269,7 @@ export class RectSolid
             tl.y,
             br.x - tl.x,
             br.y - tl.y,
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -283,7 +283,7 @@ export class RectSolid
     }
 
     relation_to(
-        other: this
+        other: this,
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -325,7 +325,7 @@ export class RectSolid
 
     lines(): LineSegment[] {
         return cyclic_pairs(this.vertices()).map(
-            ([a, b]) => new LineSegment(a, b)
+            ([a, b]) => new LineSegment(a, b),
         );
     }
 
@@ -353,7 +353,7 @@ export class RectSolid
     render_debug(ctx: CanvasRenderingContext2D): void {
         debug_context(ctx, (ctx) => {
             this.vertices().map((p) =>
-                p.to_circle_solid(2).render(ctx, "fill")
+                p.to_circle_solid(2).render(ctx, "fill"),
             );
         });
     }
@@ -374,19 +374,19 @@ export class RectSolid
 
         return range(1, n_x + 1).flatMap(
             (
-                i // Starting from 1 to have a gap at the beginning
+                i, // Starting from 1 to have a gap at the beginning
             ) =>
                 range(1, n_y + 1).map(
                     (j) =>
                         new Point(
                             this.x + x_offset + (i - 1) * dx,
-                            this.y + y_offset + (j - 1) * dy
-                        )
-                ) // Starting from 1 to have a gap at the beginning
+                            this.y + y_offset + (j - 1) * dy,
+                        ),
+                ), // Starting from 1 to have a gap at the beginning
         );
     }
 
-    round_corners(rounded_amount: number) {
+    bevel(rounded_amount: number) {
         // defines a square with rounded corners using 8 bezier curves 4 for each corner 4 for each side
         const bezierArray: PartialBezier[] = [];
 
@@ -395,8 +395,8 @@ export class RectSolid
             new PartialBezier(
                 new Point(this.x + rounded_amount, this.y),
                 new Point(this.x + this.width - rounded_amount, this.y),
-                new Point(this.x + this.width - rounded_amount, this.y)
-            )
+                new Point(this.x + this.width - rounded_amount, this.y),
+            ),
         );
 
         // top right corner
@@ -404,8 +404,8 @@ export class RectSolid
             new PartialBezier(
                 new Point(this.x + this.width, this.y),
                 new Point(this.x + this.width, this.y),
-                new Point(this.x + this.width, this.y + rounded_amount)
-            )
+                new Point(this.x + this.width, this.y + rounded_amount),
+            ),
         );
 
         // right edge
@@ -414,13 +414,13 @@ export class RectSolid
                 new Point(this.x + this.width, this.y + rounded_amount),
                 new Point(
                     this.x + this.width,
-                    this.y + this.height - rounded_amount
+                    this.y + this.height - rounded_amount,
                 ),
                 new Point(
                     this.x + this.width,
-                    this.y + this.height - rounded_amount
-                )
-            )
+                    this.y + this.height - rounded_amount,
+                ),
+            ),
         );
 
         // bottom right corner
@@ -430,9 +430,9 @@ export class RectSolid
                 new Point(this.x + this.width, this.y + this.height),
                 new Point(
                     this.x + this.width - rounded_amount,
-                    this.y + this.height
-                )
-            )
+                    this.y + this.height,
+                ),
+            ),
         );
 
         // bottom edge
@@ -440,11 +440,11 @@ export class RectSolid
             new PartialBezier(
                 new Point(
                     this.x + this.width - rounded_amount,
-                    this.y + this.height
+                    this.y + this.height,
                 ),
                 new Point(this.x + rounded_amount, this.y + this.height),
-                new Point(this.x + rounded_amount, this.y + this.height)
-            )
+                new Point(this.x + rounded_amount, this.y + this.height),
+            ),
         );
 
         // bottom left corner
@@ -452,8 +452,8 @@ export class RectSolid
             new PartialBezier(
                 new Point(this.x, this.y + this.height),
                 new Point(this.x, this.y + this.height),
-                new Point(this.x, this.y + this.height - rounded_amount)
-            )
+                new Point(this.x, this.y + this.height - rounded_amount),
+            ),
         );
 
         // left edge
@@ -461,8 +461,8 @@ export class RectSolid
             new PartialBezier(
                 new Point(this.x, this.y + this.height - rounded_amount),
                 new Point(this.x, this.y + rounded_amount),
-                new Point(this.x, this.y + rounded_amount)
-            )
+                new Point(this.x, this.y + rounded_amount),
+            ),
         );
 
         // top left corner
@@ -470,8 +470,8 @@ export class RectSolid
             new PartialBezier(
                 new Point(this.x, this.y),
                 new Point(this.x, this.y),
-                new Point(this.x + rounded_amount, this.y)
-            )
+                new Point(this.x + rounded_amount, this.y),
+            ),
         );
 
         return new BezierSolid(bezierArray);

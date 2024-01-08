@@ -7,7 +7,7 @@ const cache: Cache<any> = new Map();
 export function useAsyncValue<T>(
     asyncFunction: () => Promise<T>,
     initialValue: T,
-    cache_key?: string
+    cache_key?: string,
 ) {
     const [value, setValue] = useState(() => initialValue);
 

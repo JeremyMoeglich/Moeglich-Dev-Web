@@ -40,7 +40,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
 
     constructor(
         bezier: PartialBezier[],
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.bezier = bezier;
     }
@@ -67,14 +67,14 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     interpolate(t: number, to: this) {
         return new BezierSolid(
             zip([this.bezier, to.bezier]).map(([a, b]) => a.interpolate(t, b)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     similarity(to: this): number {
         return (
             sum(
-                zip([this.bezier, to.bezier]).map(([a, b]) => a.similarity(b))
+                zip([this.bezier, to.bezier]).map(([a, b]) => a.similarity(b)),
             ) * Math.abs(this.bezier.length - to.bezier.length + 1)
         );
     }
@@ -96,7 +96,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     translate(p: Point) {
         return new BezierSolid(
             this.bezier.map((b) => b.translate(p)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -104,21 +104,21 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         const o = origin ?? this.bbox().center();
         return new BezierSolid(
             this.bezier.map((b) => b.scale(scale, o)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
         return new BezierSolid(
             this.bezier.map((b) => b.flip(axis)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     map_points(f: (p: Point) => Point) {
         return new BezierSolid(
             this.bezier.map((b) => b.map_points(f)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -137,8 +137,8 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     fullBeziers(): Bundle<FullBezier> {
         return createBundle(
             cyclic_pairs(this.bezier).map(
-                ([prev, next]) => new FullBezier(prev.end_point, next)
-            )
+                ([prev, next]) => new FullBezier(prev.end_point, next),
+            ),
         );
     }
 
@@ -147,8 +147,8 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         const polygon = new PolygonSolid(
             this.fullBeziers().sample_on_length(
                 quality_to_amount_per_unit(quality),
-                "evenly"
-            )
+                "evenly",
+            ),
         );
         this.cache.approximated = polygon;
         return polygon;
@@ -173,7 +173,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         if (this.cache.outline_length) return this.cache.outline_length;
         const length = this.fullBeziers().objs.reduce(
             (acc, b) => acc + b.outline_length(),
-            0
+            0,
         );
         this.cache.outline_length = length;
         return length;
@@ -186,7 +186,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         const total_length = lengths.reduce((acc, l) => acc + l, 0);
         const amount_per_unit = amount / total_length;
         const points = zip([fullbeziers.objs, lengths]).flatMap(([b, l]) =>
-            (b).sample_on_length(amount_per_unit * (l))
+            b.sample_on_length(amount_per_unit * l),
         );
         return points;
     }
@@ -203,7 +203,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                 .objs.some((b) => (this.cache.outline_collider ?? panic())(b));
         const collider = create_collider<FullBezier, FullBezier>(
             this.fullBeziers().objs,
-            (b1, b2) => b1.outline_intersects(b2)
+            (b1, b2) => b1.outline_intersects(b2),
         );
         this.cache.outline_collider = collider;
         return other.fullBeziers().objs.some((b) => collider(b));
@@ -214,7 +214,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
     }
 
     relation_to(
-        other: this
+        other: this,
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -229,7 +229,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                 (
                     other.bezier[0] ??
                     panic("Bezier has not segments despite checking (Internal)")
-                ).end_point
+                ).end_point,
             )
         )
             return "other_inside_this";
@@ -238,7 +238,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                 (
                     this.bezier[0] ??
                     panic("Bezier has not segments despite checking (Internal)")
-                ).end_point
+                ).end_point,
             )
         )
             return "this_inside_other";
@@ -254,12 +254,12 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                 const bbox = b.bbox();
                 return [bbox.y, bbox.y + bbox.height];
             },
-            (p) => [p.y, p.y]
+            (p) => [p.y, p.y],
         );
         const counter = (p: Point) => {
             const intersections = collider(p);
             const amounts = intersections.map((b) =>
-                b.right_point_intersections(p)
+                b.right_point_intersections(p),
             );
             return sum(amounts);
         };
@@ -288,7 +288,7 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
                     b.handle2.x,
                     b.handle2.y,
                     b.end_point.x,
-                    b.end_point.y
+                    b.end_point.y,
                 );
             }
         });

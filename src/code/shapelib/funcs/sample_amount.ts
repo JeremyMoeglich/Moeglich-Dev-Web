@@ -1,7 +1,7 @@
 export function sample_amount_default(
     size: number,
     avr_per_unit: number,
-    variant: "min" | "rng"
+    variant: "min" | "rng",
 ): number {
     const flt_amount = size * avr_per_unit;
     const min_points = Math.floor(flt_amount);

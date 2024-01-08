@@ -18,7 +18,7 @@ export function intersect_visual(
     offset: Point,
     show_cross: boolean,
     intersect: boolean,
-    impl: "class" | "func"
+    impl: "class" | "func",
 ) {
     const cross_center_around = intersect
         ? new Point(60, -60)
@@ -42,12 +42,12 @@ export function intersect_visual(
             const circle = new Circle(0, 0, ${radius.toFixed(2)});
             `,
             new Point(radius - 10, radius - 10),
-            label_size
+            label_size,
         ).highlight("ts");
 
         const cross_center = new Point(
             interpolate_between(t / 1400, -60, 60),
-            interpolate_between(t / 2600, -60, 60)
+            interpolate_between(t / 2600, -60, 60),
         )
             .multiply(intersect ? 1 : 0.4)
             .translate(cross_center_around);
@@ -70,7 +70,7 @@ export function intersect_visual(
             `)
                       : dedent`
             const point = new Point(${cross_center.x.toFixed(
-                2
+                2,
             )}, ${cross_center.y.toFixed(2)});
             ` +
                         "\n\n" +
@@ -85,7 +85,7 @@ export function intersect_visual(
                       .multiply(0.2)
                       .translate(cross_center_around)
                       .translate(new Point(70, -80)),
-                  label_size
+                  label_size,
               ).highlight("ts")
             : undefined;
         const arr: (Renderable & Interpolate & Transformable)[] = [];
@@ -97,7 +97,7 @@ export function intersect_visual(
                 cross_center,
                 10,
                 3,
-                deg_to_rad(interpolate_between(t / 1400, 40, 50))
+                deg_to_rad(interpolate_between(t / 1400, 40, 50)),
             )
                 .set_setter((ctx) => {
                     if (contained && intersect) {
@@ -107,8 +107,8 @@ export function intersect_visual(
                     }
                 })
                 .scale(
-                    (contained && intersect ? 1.5 : 1) * (show_cross ? 1 : 0)
-                )
+                    (contained && intersect ? 1.5 : 1) * (show_cross ? 1 : 0),
+                ),
         );
         return createBundle(arr).translate(offset);
     });

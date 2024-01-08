@@ -1,6 +1,6 @@
 export function debug_context(
     ctx: CanvasRenderingContext2D,
-    fn: (ctx: CanvasRenderingContext2D) => void
+    fn: (ctx: CanvasRenderingContext2D) => void,
 ): void {
     ctx.save();
     ctx.fillStyle = "rgba(0, 255, 0, 0.5)";

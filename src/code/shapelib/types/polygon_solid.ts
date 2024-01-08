@@ -21,7 +21,7 @@ import { shapeaction } from "~/code/funcs/shapeact";
 
 const equalizePointCount = (
     shape1: PolygonSolid,
-    shape2: PolygonSolid
+    shape2: PolygonSolid,
 ): [PolygonSolid, PolygonSolid] => {
     // Find the number of points in each shape
     const [nPoints1, nPoints2] = [shape1.points.length, shape2.points.length];
@@ -80,7 +80,7 @@ export class PolygonSolid
     similarity(to: this): number {
         // Simple temporary solution
         const dist = sumBy(zip([this.points, to.points]), ([p1, p2]) =>
-            p1.distance(p2)
+            p1.distance(p2),
         );
         const len_diff = Math.abs(this.points.length - to.points.length);
         return dist + len_diff * 2;
@@ -96,7 +96,7 @@ export class PolygonSolid
 
     constructor(
         points: Point[],
-        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void
+        public ctx_setter?: (ctx: CanvasRenderingContext2D) => void,
     ) {
         this.points = points;
     }
@@ -121,7 +121,7 @@ export class PolygonSolid
     rotatePoints(index: number) {
         return new PolygonSolid(
             this.points.concat([...this.points].splice(0, index)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -140,7 +140,7 @@ export class PolygonSolid
                 const rotatedPoints = pto.rotatePoints(i);
                 const totalDistance = sumBy(
                     zip([pthis.points, rotatedPoints.points]),
-                    ([p1, p2]) => p1.distance(p2)
+                    ([p1, p2]) => p1.distance(p2),
                 );
 
                 if (totalDistance < minDistance) {
@@ -158,9 +158,9 @@ export class PolygonSolid
 
         return new PolygonSolid(
             zip([this.points, this.cache.optimalRotation.solid.points]).map(
-                ([p1, p2]) => p1.interpolate(t, p2)
+                ([p1, p2]) => p1.interpolate(t, p2),
             ),
-            to.ctx_setter
+            to.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -177,7 +177,7 @@ export class PolygonSolid
     translate(p: Point) {
         return new PolygonSolid(
             this.points.map((p2) => p2.translate(p)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -201,14 +201,14 @@ export class PolygonSolid
     scale(scale: number | Point, origin: Point = this.center()) {
         return new PolygonSolid(
             this.points.map((p) => p.scale(scale, origin)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
     flip(axis: Axis) {
         return new PolygonSolid(
             this.points.map((p) => p.flip(axis)),
-            this.ctx_setter
+            this.ctx_setter,
         ) as this & ThisReturn;
     }
 
@@ -241,7 +241,7 @@ export class PolygonSolid
         const area = Math.abs(
             cyclic_pairs(this.points)
                 .map(([curr, next]) => curr.x * next.y - curr.y * next.x)
-                .reduce((a, b) => a + b, 0) / 2
+                .reduce((a, b) => a + b, 0) / 2,
         );
         this.cache.area = area;
         return area;
@@ -251,16 +251,16 @@ export class PolygonSolid
         if (this.cache.triangulation) return this.cache.triangulation;
         const triangles = chunk(
             earcut(this.points.flatMap((p) => [p.x, p.y])).map(
-                (i) => this.points[i] ?? panic("Invalid earcut index")
+                (i) => this.points[i] ?? panic("Invalid earcut index"),
             ),
-            3
+            3,
         ).map(
             ([a, b, c]) =>
                 new TriangleSolid(
                     a ?? panic("Invalid earcut output length"),
                     b ?? panic("Invalid earcut output length"),
-                    c ?? panic("Invalid earcut output length")
-                )
+                    c ?? panic("Invalid earcut output length"),
+                ),
         );
         this.cache.triangulation = triangles;
         return triangles;
@@ -294,7 +294,7 @@ export class PolygonSolid
 
     sample_on_length(min_per_unit: number, variant: "rng" | "evenly"): Point[] {
         return this.lines().flatMap((l) =>
-            l.sample_on_length(min_per_unit, variant)
+            l.sample_on_length(min_per_unit, variant),
         );
     }
 
@@ -308,7 +308,7 @@ export class PolygonSolid
         this.points.splice(
             i2,
             0,
-            (this.points[i1] ?? panic()).midpoint(this.points[i2] ?? panic())
+            (this.points[i1] ?? panic()).midpoint(this.points[i2] ?? panic()),
         );
         this.cache = {};
     }
@@ -322,7 +322,7 @@ export class PolygonSolid
         if (this.cache.outline_collider) return this.cache.outline_collider;
         const collider = create_collider<LineSegment, LineSegment>(
             this.lines(),
-            (l, o) => l.outline_intersects(o)
+            (l, o) => l.outline_intersects(o),
         );
         this.cache.outline_collider = collider;
         return collider;
@@ -333,16 +333,16 @@ export class PolygonSolid
         return (
             this.outline_intersects(other) ||
             this.contains(
-                other.points[0] ?? panic("Invalid polygon (Internal)")
+                other.points[0] ?? panic("Invalid polygon (Internal)"),
             ) ||
             other.contains(
-                this.points[0] ?? panic("Invalid polygon (Internal)")
+                this.points[0] ?? panic("Invalid polygon (Internal)"),
             )
         );
     }
 
     relation_to(
-        other: this & ThisReturn
+        other: this & ThisReturn,
     ):
         | "this_inside_other"
         | "other_inside_this"
@@ -351,13 +351,13 @@ export class PolygonSolid
         if (this.outline_intersects(other)) return "outline_intersect";
         if (
             this.contains(
-                other.points[0] ?? panic("Invalid polygon (Internal)")
+                other.points[0] ?? panic("Invalid polygon (Internal)"),
             )
         )
             return "this_inside_other";
         if (
             other.contains(
-                this.points[0] ?? panic("Invalid polygon (Internal)")
+                this.points[0] ?? panic("Invalid polygon (Internal)"),
             )
         )
             return "other_inside_this";
@@ -370,7 +370,7 @@ export class PolygonSolid
         const collider = create_range_collider<LineSegment, Point>(
             this.lines(),
             (l) => [l.min_y(), l.max_y()],
-            (p) => [p.y, p.y]
+            (p) => [p.y, p.y],
         );
         const counter = (p: Point) => {
             const lines = collider(p);
@@ -388,11 +388,11 @@ export class PolygonSolid
         for (const [prev, next] of cyclic_pairs(this.points)) {
             const handle1 = new Point(
                 prev.x + (next.x - prev.x) / 3,
-                prev.y + (next.y - prev.y) / 3
+                prev.y + (next.y - prev.y) / 3,
             );
             const handle2 = new Point(
                 next.x - (next.x - prev.x) / 3,
-                next.y - (next.y - prev.y) / 3
+                next.y - (next.y - prev.y) / 3,
             );
 
             // Add a new Bezier curve to the array
@@ -463,7 +463,7 @@ export class PolygonSolid
         offset: Point,
         radius: number,
         thickness: number,
-        angle: number
+        angle: number,
     ): PolygonSolid {
         const tl = new Point(-thickness / 2, thickness / 2);
         const t_l = new Point(-thickness / 2, radius);

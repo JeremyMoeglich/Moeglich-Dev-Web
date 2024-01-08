@@ -21,7 +21,7 @@ import { Color } from "~/code/funcs/color";
 export function multi_shape_visual(
     labels: boolean,
     show_common: boolean,
-    colors: "abstract_inherit" | "inherit" | "local" | "none"
+    colors: "abstract_inherit" | "inherit" | "local" | "none",
 ) {
     return new InterFunc(({ t }: { t: number }) => {
         const size = interpolate_between(t / 3000, 40, 50);
@@ -39,7 +39,7 @@ export function multi_shape_visual(
                         (ctx.fillStyle =
                             colors === "none"
                                 ? default_shape_color
-                                : color_gen(0).getHex())
+                                : color_gen(0).getHex()),
                 )
                 .translate(gap_offset(-gap))
                 .translate(shape_offset)
@@ -50,7 +50,7 @@ export function multi_shape_visual(
                         (ctx.fillStyle =
                             colors === "none"
                                 ? default_shape_color
-                                : color_gen(1).getHex())
+                                : color_gen(1).getHex()),
                 )
                 .translate(shape_offset),
             syncTextToShapes("Test")
@@ -61,7 +61,7 @@ export function multi_shape_visual(
                         (ctx.fillStyle =
                             colors === "none"
                                 ? default_shape_color
-                                : color_gen(2).getHex())
+                                : color_gen(2).getHex()),
                 )
                 .translate(gap_offset(gap).translate(shape_offset))
                 .rotate(interpolate_between(t / 3000, -0.2, 0.2)),
@@ -71,8 +71,8 @@ export function multi_shape_visual(
             colors === "inherit"
                 ? "extends"
                 : colors === "abstract_inherit"
-                ? "extends"
-                : "implements";
+                  ? "extends"
+                  : "implements";
         labels &&
             shapes.push(
                 new InterBlock(
@@ -89,13 +89,13 @@ class Triangle ${show_common ? `${keyword} Shape ` : ""}${color_def}
 }
                 `,
                         label_offset,
-                        10
+                        10,
                     )
                         .recenter("x")
                         .translate(gap_offset(-gap))
                         .highlight("ts"),
-                    "Triangle"
-                )
+                    "Triangle",
+                ),
             );
         labels &&
             shapes.push(
@@ -113,12 +113,12 @@ class Circle ${show_common ? `${keyword} Shape ` : ""}${color_def}
 }
                 `,
                         label_offset,
-                        10
+                        10,
                     )
                         .recenter("x")
                         .highlight("ts"),
-                    "Circle"
-                )
+                    "Circle",
+                ),
             );
         labels &&
             shapes.push(
@@ -137,13 +137,13 @@ class Text ${show_common ? `${keyword} Shape ` : ""}{${color_def}
 }
                 `,
                         label_offset,
-                        10
+                        10,
                     )
                         .recenter("x")
                         .translate(gap_offset(gap))
                         .highlight("ts"),
-                    "Text"
-                )
+                    "Text",
+                ),
             );
         show_common &&
             shapes.push(
@@ -153,19 +153,19 @@ class Text ${show_common ? `${keyword} Shape ` : ""}{${color_def}
                             colors === "inherit"
                                 ? "class"
                                 : colors === "abstract_inherit"
-                                ? "abstract_class"
-                                : "interface",
+                                  ? "abstract_class"
+                                  : "interface",
                         color: true,
                         is_inside: true,
                         rotate: "none",
                     }),
                     zerozero,
-                    15
+                    15,
                 )
                     .recenter("both")
                     .highlight("ts")
                     .translate(label_offset)
-                    .translate(new Point(0, -250))
+                    .translate(new Point(0, -250)),
             );
         return createBundle(shapes)
             .scale(!show_common ? 2 : 1.5, zerozero)

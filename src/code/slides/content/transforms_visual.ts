@@ -15,7 +15,7 @@ export function transforms_visual(
     show_code: boolean,
     opt: {
         only_triangle?: boolean;
-    }
+    },
 ) {
     return new InterFunc(({ t }: { t: number }) => {
         const shapes = [
@@ -28,10 +28,10 @@ export function transforms_visual(
 
         const label = new Text(
             `Rotate: ${(rad_to_deg(rotate(t)) % 360).toFixed(
-                2
+                2,
             )}°\nScale: ${scale(t).toFixed(2)}`,
             zerozero,
-            show_code ? 30 : 40
+            show_code ? 30 : 40,
         ).set_setter((ctx) => {
             ctx.fillStyle = "white";
         });
@@ -40,7 +40,7 @@ export function transforms_visual(
             align(
                 shapes
                     .filter((s) =>
-                        opt.only_triangle ? s[1] === "Triangle" : true
+                        opt.only_triangle ? s[1] === "Triangle" : true,
                     )
                     .map((s) => {
                         return align(
@@ -57,12 +57,12 @@ export function transforms_visual(
                                         min_width: 150,
                                         rounded: 20,
                                         color: new Color(60, 60, 120),
-                                    }
+                                    },
                                 ),
                                 new Text(s[1], zerozero, 28).set_setter(
                                     (ctx) => {
                                         ctx.fillStyle = "white";
-                                    }
+                                    },
                                 ),
                             ],
                             show_code
@@ -75,21 +75,21 @@ export function transforms_visual(
                                       direction: "vertical",
                                       gap: 10,
                                       method: "equal_gap",
-                                  }
+                                  },
                         );
                     }),
                 {
                     direction: show_code ? "vertical" : "horizontal",
                     gap: 50,
                     method: "equal_gap",
-                }
+                },
             )
                 .scale(show_code ? 0.8 : 1.5)
                 .translate(show_code ? new Point(-740, 0) : zerozero),
             label
                 .recenter("x")
                 .translate(
-                    show_code ? new Point(-400, 300) : new Point(0, 250)
+                    show_code ? new Point(-400, 300) : new Point(0, 250),
                 ),
         ]);
     });

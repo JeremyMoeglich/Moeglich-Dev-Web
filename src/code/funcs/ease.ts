@@ -53,8 +53,8 @@ export const easingFunctions: Record<
         t === 1
             ? t
             : t < 0.5
-            ? 0.5 * 2 ** (20 * t - 10)
-            : 1 - 0.5 * 2 ** (-20 * t + 10),
+              ? 0.5 * 2 ** (20 * t - 10)
+              : 1 - 0.5 * 2 ** (-20 * t + 10),
     easeOutCirc: (t) => Math.sqrt(1 - (t - 1) ** 2),
     easeInOutCirc: (t) =>
         t < 0.5
