@@ -8,8 +8,6 @@ import type {
     GlslUnaryOperation,
 } from ".";
 
-const default_float: GlslFloatType = { type: "float", precision: "default" };
-
 function ident<T>(x: T): T {
     return x;
 }
@@ -26,7 +24,7 @@ export function infer_glsl_type(
                 case "boolean":
                     return { type: "bool" };
                 case "float":
-                    return default_float;
+                    return { type: "float", precision: "default" };
             }
         case "variable":
             return (
@@ -45,15 +43,23 @@ export function infer_glsl_type(
         case "binary_operation":
             return infer_binary_operation(vars, expr);
         case "swizzle":
+            const expr_type = infer_glsl_type(vars, expr.vector);
+            if (
+                expr_type.type !== "vec2" &&
+                expr_type.type !== "vec3" &&
+                expr_type.type !== "vec4"
+            ) {
+                throw new Error("Not a vector");
+            }
             switch (expr.swizzle.length) {
                 case 1:
-                    return default_float;
+                    return { type: "float", precision: expr_type.precision };
                 case 2:
-                    return { type: "vec2", precision: "default" };
+                    return { type: "vec2", precision: expr_type.precision };
                 case 3:
-                    return { type: "vec3", precision: "default" };
+                    return { type: "vec3", precision: expr_type.precision };
                 case 4:
-                    return { type: "vec4", precision: "default" };
+                    return { type: "vec4", precision: expr_type.precision };
                 default:
                     throw new Error("Invalid swizzle length");
             }
@@ -93,6 +99,30 @@ function vec_equivalent(
     };
 }
 
+function vec_precision(t: GlslFullType): {
+    type: GlslFloatType["type"];
+    precision: GlslFloatType["precision"];
+} {
+    switch (t.type) {
+        case "float":
+            return { type: "float", precision: t.precision };
+        case "vec2":
+            return { type: "vec2", precision: t.precision };
+        case "vec3":
+            return { type: "vec3", precision: t.precision };
+        case "vec4":
+            return { type: "vec4", precision: t.precision };
+        case "mat2":
+            return { type: "mat2", precision: t.precision };
+        case "mat3":
+            return { type: "mat3", precision: t.precision };
+        case "mat4":
+            return { type: "mat4", precision: t.precision };
+        default:
+            throw new Error("Not a vector");
+    }
+}
+
 const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
     // prettier-ignore
     ...same_as_first_argument([
@@ -105,10 +135,10 @@ const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
     step: (_, b) => b,
     smoothstep: (_a, _b, c) => c,
 
-    length: () => default_float,
-    distance: () => default_float,
-    dot: () => default_float,
-    cross: () => ({ type: "vec3", precision: "default" }),
+    length: (t) => ({ type: "float", precision: vec_precision(t).precision }),
+    distance: (t) => ({ type: "float", precision: vec_precision(t).precision }),
+    dot: (t) => ({ type: "float", precision: vec_precision(t).precision }),
+    cross: (t) => ({ type: "vec3", precision: vec_precision(t).precision }),
 
     lessThan: vec_equivalent("bvec"),
     lessThanEqual: vec_equivalent("bvec"),
@@ -127,9 +157,9 @@ const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
     textureCube: () => ({ type: "vec4", precision: "default" }),
     textureCubeLod: () => ({ type: "vec4", precision: "default" }),
 
-    vec2: () => ({ type: "vec2", precision: "default" }),
-    vec3: () => ({ type: "vec3", precision: "default" }),
-    vec4: () => ({ type: "vec4", precision: "default" }),
+    vec2: (t) => ({ type: "vec2", precision: vec_precision(t).precision }),
+    vec3: (t) => ({ type: "vec3", precision: vec_precision(t).precision }),
+    vec4: (t) => ({ type: "vec4", precision: vec_precision(t).precision }),
 };
 
 const unary_operations: Record<
