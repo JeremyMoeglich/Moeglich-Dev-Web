@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-    GlslFloatType,
+import type {
     GlslFullType,
     GlslShader,
     GlslStatement,
-    GlslType,
     GlslVariableDeclaration,
 } from ".";
 import { GlslInteger } from "./builder/glsl_integer";
-import { MapFromGlslType } from "./type_mapping";
-import { Simplify } from "type-fest";
+import type { MapFromGlslType } from "./type_mapping";
+import type { Simplify } from "type-fest";
 
 type Mutable<T> = {
     -readonly [K in keyof T]: Mutable<T[K]>;

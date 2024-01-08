@@ -1,4 +1,4 @@
-import { GlslFullType } from ".";
+import type { GlslFullType } from ".";
 
 // prettier-ignore
 export type MapFromGlslType<T extends GlslFullType> = 

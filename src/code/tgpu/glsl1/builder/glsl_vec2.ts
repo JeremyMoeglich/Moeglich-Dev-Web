@@ -1,6 +1,6 @@
 import type { GlslExpression } from "..";
 import type { GlslBoolean } from "./glsl_boolean";
-import { GlslFloat } from "./glsl_float";
+import type { GlslFloat } from "./glsl_float";
 import { GlslVec3 } from "./glsl_vec3";
 import { GlslVec4 } from "./glsl_vec4";
 import { makeGlslVec2, wrap_vec2 } from "./literals";
@@ -13,8 +13,8 @@ import {
     is_trackable,
 } from "./proto";
 import {
-    InferVecLength,
-    VecInferable,
+    type InferVecLength,
+    type VecInferable,
     swizzle_from_index,
 } from "./swizzle_util";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { GlslFullType, build_glsl_shader } from "~/code/tgpu/glsl1";
+import { type GlslFullType, build_glsl_shader } from "~/code/tgpu/glsl1";
 import { GlslVec2 } from "~/code/tgpu/glsl1/builder/glsl_vec2";
 import { extract_common_expressions } from "~/code/tgpu/glsl1/extract_common";
 

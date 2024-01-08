@@ -11,8 +11,8 @@ import {
     is_trackable,
 } from "./proto";
 import {
-    InferVecLength,
-    VecInferable,
+    type InferVecLength,
+    type VecInferable,
     swizzle_from_index,
 } from "./swizzle_util";
 
