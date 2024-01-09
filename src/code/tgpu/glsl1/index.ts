@@ -378,21 +378,18 @@ export type GlslScope = {
 export type GlslFullType = GlslType | ({ type: "array" } & GlslArray);
 
 export type GlslAttributeDeclaration<N extends string> = {
-    qualifier: "attribute";
     variable_type: GlslFloatType;
     name: N;
     invariant?: boolean;
 };
 
 export type GlslVaryingDeclaration<N extends string> = {
-    qualifier: "varying";
     variable_type: GlslFloatType;
     name: N;
     invariant?: boolean;
 };
 
 export type GlslUniformDeclaration<N extends string> = {
-    qualifier: "uniform";
     variable_type: GlslFullType;
     name: N;
     invariant?: boolean;
@@ -404,12 +401,26 @@ export type GlslVariableDeclaration<N extends string> = (
           variable_type: GlslFullType;
           initializer: GlslExpression;
       }
-    | GlslAttributeDeclaration<N>
-    | GlslVaryingDeclaration<N>
-    | GlslUniformDeclaration<N>
+    | (GlslAttributeDeclaration<N> & {
+          qualifier: "attribute";
+      })
+    | (GlslVaryingDeclaration<N> & {
+          qualifier: "varying";
+      })
+    | (GlslUniformDeclaration<N> & {
+          qualifier: "uniform";
+      })
 ) & {
     name: N;
     invariant?: boolean;
+};
+
+export type GlslRequiredVariableDeclaration<N extends string> = {
+    qualifier?: "const" | "attribute" | "varying" | "uniform";
+    variable_type: GlslFullType;
+    name: N;
+    invariant?: boolean;
+    initializer?: GlslExpression;
 };
 
 function build_glsl_variable_declaration(

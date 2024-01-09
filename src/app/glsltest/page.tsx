@@ -49,8 +49,8 @@ function Page() {
                 v_position = a_position.div(u_resolution.div(2)).sub(1);
                 gl_Position.set(v_position.pick([0, 1, 0, 1]));
             },
-            ([], [u_resolution], [v_position], { gl_FragColor }) => {
-                gl_FragColor.set(v_position.div(u_resolution).concat([0, 1]));
+            ([], [], [v_position], { gl_FragColor }) => {
+                gl_FragColor.set(v_position.div(2).concat([0, 1]));
             },
             gl,
         );

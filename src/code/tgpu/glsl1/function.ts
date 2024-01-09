@@ -79,6 +79,7 @@ export function create_glsl_shader<
     const uniforms = uniform.map((u, i) => {
         top_level_statements.push({
             type: "variable_declaration",
+            qualifier: "uniform",
             ...u,
         });
         return map_glsl_to_builder(u.variable_type, {
@@ -89,6 +90,7 @@ export function create_glsl_shader<
     const attributes = input.map((u, i) => {
         top_level_statements.push({
             type: "variable_declaration",
+            qualifier: "attribute",
             ...u,
         });
         return map_glsl_to_builder(u.variable_type, {
@@ -99,6 +101,7 @@ export function create_glsl_shader<
     const varyings = varying.map((u, i) => {
         top_level_statements.push({
             type: "variable_declaration",
+            qualifier: "varying",
             ...u,
         });
         return new GlslVariable(
