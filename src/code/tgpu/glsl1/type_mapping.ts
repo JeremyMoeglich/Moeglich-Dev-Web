@@ -1,7 +1,8 @@
 import type { GlslFullType } from ".";
 
+
 // prettier-ignore
-export type MapFromGlslType<T extends GlslFullType> = 
+export type MapGlslToLiteral<T extends GlslFullType> = 
         T extends { type: "void" } ? void :
         T extends { type: "bool" } ? boolean :
         T extends { type: "int" } ? number :
@@ -21,3 +22,4 @@ export type MapFromGlslType<T extends GlslFullType> =
         T extends { type: "sampler2D" } ? WebGLTexture :
         T extends { type: "samplerCube" } ? WebGLTexture :
     never;
+

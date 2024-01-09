@@ -1,4 +1,7 @@
 import type { GlslExpression } from "..";
+import { GlslBVec2 } from "./glsl_bvec2";
+import { GlslBVec3 } from "./glsl_bvec3";
+import { GlslBVec4 } from "./glsl_bvec4";
 import { makeGlslBoolean } from "./literals";
 import {
     type Trackable,
@@ -14,6 +17,47 @@ const GlslBooleanProto = build_proto([
     equality_proto(makeGlslBoolean),
     relation_proto(makeGlslBoolean),
     boolean_proto(makeGlslBoolean),
+    {
+        concat: function (
+            this: GlslBoolean,
+            other: GlslBoolean | boolean | GlslBVec2 | GlslBVec3,
+        ) {
+            if (is_trackable(other, "bvec2")) {
+                return new GlslBVec3({
+                    type: "function_call",
+                    name: "bvec3",
+                    arguments: [this.origin, other.origin],
+                });
+            } else if (is_trackable(other, "bvec3")) {
+                return new GlslBVec4({
+                    type: "function_call",
+                    name: "bvec4",
+                    arguments: [this.origin, other.origin],
+                });
+            } else if (typeof other === "boolean") {
+                return new GlslBVec2({
+                    type: "function_call",
+                    name: "bvec2",
+                    arguments: [
+                        this.origin,
+                        {
+                            type: "literal",
+                            value: other,
+                            literal_type: "boolean",
+                        },
+                    ],
+                });
+            } else {
+                return new GlslBVec2({
+                    type: "function_call",
+                    name: "bvec2",
+                    arguments: [this.origin, other.origin],
+                });
+            }
+        } as ((this: GlslBoolean, other: GlslBoolean | boolean) => GlslBVec2) &
+            ((this: GlslBoolean, other: GlslBVec2) => GlslBVec3) &
+            ((this: GlslBoolean, other: GlslBVec3) => GlslBVec4),
+    },
 ]);
 export const GlslBoolean = function (
     this: GlslBoolean,
@@ -45,6 +89,10 @@ export type GlslBoolean = Trackable<"bool"> & {
     and: (other: GlslBoolean | boolean) => GlslBoolean;
     or: (other: GlslBoolean | boolean) => GlslBoolean;
     not: () => GlslBoolean;
+
+    concat: ((other: GlslBoolean | boolean) => GlslBVec2) &
+        ((other: GlslBVec2) => GlslBVec3) &
+        ((other: GlslBVec3) => GlslBVec4);
 } & {
     new (origin: GlslExpression): GlslBoolean;
 };

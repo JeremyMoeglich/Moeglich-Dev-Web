@@ -1,57 +1,33 @@
 "use client";
 
-import { type GlslFullType, build_glsl_shader } from "~/code/tgpu/glsl1";
-import { GlslVec2 } from "~/code/tgpu/glsl1/builder/glsl_vec2";
-import { extract_common_expressions } from "~/code/tgpu/glsl1/extract_common";
+import { build_glsl_shader } from "~/code/tgpu/glsl1";
+import { GlslFloat } from "~/code/tgpu/glsl1/builder/glsl_float";
+import { GlslVariable } from "~/code/tgpu/glsl1/builder/glsl_var";
+import { BuildScope } from "~/code/tgpu/glsl1/builder/scope";
+import { create_glsl_shader } from "~/code/tgpu/glsl1/function";
 
 function Page() {
-    const v1 = new GlslVec2({ type: "variable", name: "a" })
-        .concat([5])
-        .pick([2, 1, 2]);
-    const v2 = v1.add([1, 2, 3]).mul(v1).pick(1);
-    const vars: Map<string, GlslFullType> = new Map();
-    vars.set("a", {
-        type: "vec2",
-        precision: "highp",
-    });
-    const extracted = extract_common_expressions(vars, v2.origin);
+    const f2 = create_glsl_shader(
+        [{ type: "float", precision: "highp" }],
+        [{ type: "float", precision: "highp" }],
+        [],
+        ([a], [b]) => {
+            return a.add(b).mul(a).div(2);
+        }
+    )
+
+    const scope: BuildScope = {
+        vars: new Map(),
+        statements: []
+    }
+    const e = new GlslFloat(1);
+    const v = new GlslVariable(e, scope);
+    v.set(v.pow(v));
+    v.set(v.mul(2));
+
     const text = build_glsl_shader({
         version: "100",
-        statements: [
-            {
-                type: "variable_declaration",
-                name: "a",
-                invariant: false,
-                qualifier: "uniform",
-                variable_type: {
-                    type: "vec2",
-                    precision: "highp",
-                },
-            },
-            {
-                type: "function_declaration",
-                name: "main",
-                return_type: {
-                    type: "void",
-                },
-                parameters: [],
-                body: [
-                    ...extracted.statements,
-                    {
-                        type: "variable_declaration",
-                        name: "output",
-                        invariant: false,
-                        initializer: {
-                            type: "variable",
-                            name: extracted.variable.name,
-                        },
-                        variable_type: {
-                            type: "int",
-                        },
-                    },
-                ],
-            },
-        ],
+        statements: scope.statements,
     });
     return (
         <div>

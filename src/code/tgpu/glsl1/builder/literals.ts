@@ -1,5 +1,8 @@
 import type { GlslExpression } from "..";
 import { GlslBoolean, type ToGlslBoolean } from "./glsl_boolean";
+import { GlslBVec2, type ToGlslBVec2 } from "./glsl_bvec2";
+import { GlslBVec3, type ToGlslBVec3 } from "./glsl_bvec3";
+import { GlslBVec4, type ToGlslBVec4 } from "./glsl_bvec4";
 import { GlslFloat, type ToGlslFloat } from "./glsl_float";
 import { GlslInteger, type ToGlslInteger } from "./glsl_integer";
 import { GlslVec2, type ToGlslVec2 } from "./glsl_vec2";
@@ -46,4 +49,25 @@ export function wrap_vec4(v: GlslExpression) {
 }
 export function makeGlslVec4(value: ToGlslVec4): GlslVec4 {
     return new GlslVec4(value);
+}
+
+export function wrap_bvec2(v: GlslExpression) {
+    return new GlslBVec2(v);
+}
+export function makeGlslBVec2(value: ToGlslBVec2): GlslBVec2 {
+    return new GlslBVec2(value);
+}
+
+export function wrap_bvec3(v: GlslExpression) {
+    return new GlslBVec3(v);
+}
+export function makeGlslBVec3(value: ToGlslBVec3): GlslBVec3 {
+    return new GlslBVec3(value);
+}
+
+export function wrap_bvec4(v: GlslExpression) {
+    return new GlslBVec4(v);
+}
+export function makeGlslBVec4(value: ToGlslBVec4): GlslBVec4 {
+    return new GlslBVec4(value);
 }

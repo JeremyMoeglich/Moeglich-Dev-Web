@@ -7,7 +7,7 @@ import type {
     GlslVariableDeclaration,
 } from ".";
 import { GlslInteger } from "./builder/glsl_integer";
-import type { MapFromGlslType } from "./type_mapping";
+import type { MapGlslToLiteral } from "./type_mapping";
 import type { Simplify } from "type-fest";
 
 type Mutable<T> = {
@@ -128,7 +128,7 @@ type GetRequired<Statement extends GlslStatement> = Statement extends {
     name: string;
 }
     ? {
-          [P in Statement["name"]]: MapFromGlslType<Statement["variable_type"]>;
+          [P in Statement["name"]]: MapGlslToLiteral<Statement["variable_type"]>;
       }
     : never;
 

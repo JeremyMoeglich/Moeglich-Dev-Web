@@ -1,9 +1,4 @@
-import type {
-    GlslExpression,
-    GlslFullType,
-    GlslStatement,
-    GlslVariableReference,
-} from ".";
+import type { GlslExpression, GlslFullType, GlslStatement } from ".";
 import { SHA256 } from "crypto-js";
 import { infer_glsl_type } from "./infer_type";
 import { panic } from "functional-utilities";
@@ -98,7 +93,7 @@ function replace_inplace(
     }
 }
 
-function take_unique(
+export function take_unique_var(
     vars: Map<string, GlslFullType>,
     hash: string,
     type: GlslFullType,
@@ -145,7 +140,7 @@ export function extract_common_expressions(
     expr: GlslExpression,
 ): {
     statements: GlslStatement[];
-    variable: GlslVariableReference;
+    output_expr: GlslExpression;
 } {
     const expr_data = new Map<
         string,
@@ -173,7 +168,7 @@ export function extract_common_expressions(
                 entry.count++;
                 if (entry.count === 2) {
                     const type = infer_glsl_type(vars, entry.actual);
-                    entry.name = take_unique(vars, expr_hash, type);
+                    entry.name = take_unique_var(vars, expr_hash, type);
                     replace_inplace(entry.original_ref, {
                         type: "variable",
                         name: entry.name,
@@ -201,28 +196,8 @@ export function extract_common_expressions(
         return expr_hash;
     }
     extract(expr);
-    if (expr.type === "variable") {
-        return {
-            statements,
-            variable: {
-                name: expr.name,
-            },
-        };
-    } else {
-        const type = infer_glsl_type(vars, expr);
-        const variable_name = take_unique(vars, hash(expr), type);
-        statements.push({
-            type: "variable_declaration",
-            name: variable_name,
-            initializer: expr,
-            invariant: false,
-            variable_type: type,
-        });
-        return {
-            statements,
-            variable: {
-                name: variable_name,
-            },
-        };
-    }
+    return {
+        statements,
+        output_expr: expr,
+    };
 }
