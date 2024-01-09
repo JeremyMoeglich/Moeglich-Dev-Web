@@ -5,50 +5,99 @@
 import { SHA256 } from "crypto-js";
 import { BuildScope } from "./scope";
 import type { GlslBuilder } from "./to_builder";
-import { take_unique_var } from "../extract_common";
+import { extract_common_expressions, take_unique_var } from "../extract_common";
 import { infer_glsl_type } from "../infer_type";
+import { GlslVariableReference } from "..";
 
 const keys = [
-    "set", "add_set", "sub_set", "mul_set", "div_set", "get", "value",
+    "set",
+    "add_set",
+    "sub_set",
+    "mul_set",
+    "div_set",
+    "get",
+    "value",
 ] as const;
 
 export const GlslVariable = function <T extends GlslBuilder>(
     this: GlslVariable<T>,
-    value: T,
+    value: T & { origin: GlslVariableReference },
     scope: BuildScope,
 ) {
     this.value = Object.assign(
         Object.create(Object.getPrototypeOf(value)),
         value,
     );
-    const hash = SHA256(
-        JSON.stringify({
-            i: scope.vars.size,
-            v: value.origin,
-        }),
-    ).toString();
-    const type = infer_glsl_type(scope.vars, value.origin);
-    const name = take_unique_var(scope.vars, hash, type);
-    scope.statements.push({
-        type: "variable_declaration",
-        name,
-        invariant: false,
-        initializer: value.origin,
-        variable_type: type,
-    });
-    this.value.origin = {
-        type: "variable",
-        name,
-    };
     return new Proxy(this, {
         get: (target, prop) => {
             if (prop === "set") {
                 return (other: T) => {
+                    const extracted = extract_common_expressions(
+                        scope.vars,
+                        other.origin,
+                    );
+                    scope.statements.push(...extracted.statements);
                     scope.statements.push({
                         type: "variable_assign",
-                        name,
+                        name: target.value.origin.name,
                         operator: "=",
-                        value: other.origin,
+                        value: extracted.output_expr,
+                    });
+                };
+            } else if (prop === "add_set") {
+                return (other: T) => {
+                    const extracted = extract_common_expressions(
+                        scope.vars,
+                        other.origin,
+                    );
+                    scope.statements.push(...extracted.statements);
+                    scope.statements.push({
+                        type: "variable_assign",
+                        name: target.value.origin.name,
+                        operator: "+=",
+                        value: extracted.output_expr,
+                    });
+                };
+            } else if (prop === "sub_set") {
+                return (other: T) => {
+                    const extracted = extract_common_expressions(
+                        scope.vars,
+                        other.origin,
+                    );
+                    scope.statements.push(...extracted.statements);
+                    scope.statements.push({
+                        type: "variable_assign",
+                        name: target.value.origin.name,
+                        operator: "-=",
+                        value: extracted.output_expr,
+                    });
+                };
+            } else if (prop === "div_set") {
+                return (other: T) => {
+                    const extracted = extract_common_expressions(
+                        scope.vars,
+                        other.origin,
+                    );
+                    scope.statements.push(...extracted.statements);
+                    scope.statements.push({
+                        type: "variable_assign",
+                        name: target.value.origin.name,
+                        operator: "/=",
+                        value: extracted.output_expr,
+                    });
+                };
+            } else if (prop === "mul_set") {
+                return (other: T) => {
+                    const extracted = extract_common_expressions(
+                        scope.vars,
+                        other.origin,
+                    );
+                    scope.statements.push(...extracted.statements);
+                    scope.statements.push({
+                        type: "variable_assign",
+                        name: target.value.origin.name,
+                        operator: "*=",
+                        value: extracted.output_expr,
                     });
                 };
             } else if (prop === "get") {
@@ -63,7 +112,10 @@ export const GlslVariable = function <T extends GlslBuilder>(
             return true;
         },
         has: (target, prop) => {
-            return (keys).includes(prop as (typeof keys)[number]) || prop in target.value;
+            return (
+                keys.includes(prop as (typeof keys)[number]) ||
+                prop in target.value
+            );
         },
         deleteProperty: (target, prop) => {
             delete target.value[prop as keyof T];
@@ -83,7 +135,7 @@ export type GlslVariable<T extends GlslBuilder> = T & {
     mul_set: (other: T) => void;
     div_set: (other: T) => void;
     get: () => T;
-    value: T;
+    value: T & { origin: GlslVariableReference };
 } & {
     new (value: T, scope: BuildScope): GlslVariable<T>;
 };

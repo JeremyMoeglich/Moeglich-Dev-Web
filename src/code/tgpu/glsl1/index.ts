@@ -377,27 +377,43 @@ export type GlslScope = {
 
 export type GlslFullType = GlslType | ({ type: "array" } & GlslArray);
 
-export type GlslVariableDeclaration = (
+export type GlslAttributeDeclaration<N extends string> = {
+    qualifier: "attribute";
+    variable_type: GlslFloatType;
+    name: N;
+    invariant?: boolean;
+};
+
+export type GlslVaryingDeclaration<N extends string> = {
+    qualifier: "varying";
+    variable_type: GlslFloatType;
+    name: N;
+    invariant?: boolean;
+};
+
+export type GlslUniformDeclaration<N extends string> = {
+    qualifier: "uniform";
+    variable_type: GlslFullType;
+    name: N;
+    invariant?: boolean;
+};
+
+export type GlslVariableDeclaration<N extends string> = (
     | {
           qualifier?: "const";
           variable_type: GlslFullType;
           initializer: GlslExpression;
       }
-    | {
-          qualifier: "attribute" | "varying";
-          variable_type: GlslFloatType;
-      }
-    | {
-          qualifier: "uniform";
-          variable_type: GlslFullType;
-      }
+    | GlslAttributeDeclaration<N>
+    | GlslVaryingDeclaration<N>
+    | GlslUniformDeclaration<N>
 ) & {
-    name: string;
-    invariant: boolean;
+    name: N;
+    invariant?: boolean;
 };
 
 function build_glsl_variable_declaration(
-    declaration: GlslVariableDeclaration,
+    declaration: GlslVariableDeclaration<string>,
 ): string {
     const core = (() => {
         if (declaration.variable_type.type === "array") {
@@ -583,7 +599,7 @@ function build_glsl_control(control: GlslControl): string {
 export type GlslStatement =
     | ({
           type: "variable_declaration";
-      } & GlslVariableDeclaration)
+      } & GlslVariableDeclaration<string>)
     | ({
           type: "variable_assign";
       } & GlslVariableAssign)
