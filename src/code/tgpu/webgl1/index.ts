@@ -124,9 +124,7 @@ export class ShaderInstance<
             "fragment",
             fragment_func,
         );
-
-        console.log(build_glsl_shader(vertex));
-        console.log(build_glsl_shader(fragment));
+        
         this.program = init_shader_program(gl, vertex, fragment);
         this.uniform_locations = new Map();
         for (const u of uniform) {
@@ -138,20 +136,19 @@ export class ShaderInstance<
                 type: u.variable_type,
             });
         }
+
         this.attribute_locations = new Map();
         for (const a of attribute) {
-            console.log(build_glsl_identifier(a.name));
+            const loc = gl.getAttribLocation(
+                this.program,
+                build_glsl_identifier(a.name),
+            );
             this.attribute_locations.set(a.name, {
-                loc: gl.getAttribLocation(
-                    this.program,
-                    build_glsl_identifier(a.name),
-                ),
+                loc: loc,
                 type: a.variable_type,
             });
         }
         this.gl = gl;
-        console.log(this.uniform_locations);
-        console.log(this.attribute_locations);
     }
 
     run(

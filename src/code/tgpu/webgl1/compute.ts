@@ -18,10 +18,16 @@ function getSharedWebGLContext() {
             return null;
         }
 
-
         // Append the canvas to the body to make it part of the DOM
         // It's invisible, so it won't affect your page layout
         document.body.appendChild(canvas);
+
+        // for debug show the canvas statically in the top right
+        canvas.style.position = "fixed";
+        canvas.style.top = "0";
+        canvas.style.right = "0";
+        canvas.style.width = "100px";
+        canvas.style.height = "100px";
 
         // Try to get a WebGL context
         sharedWebGLContext =
@@ -70,7 +76,7 @@ export function fragment_only_shader<
             attribute: [
                 // square
                 {
-                    name: "aPosition",
+                    name: "aVertexPosition",
                     variable_type: {
                         type: "vec2",
                         precision: "highp",
@@ -80,7 +86,7 @@ export function fragment_only_shader<
             uniform: uniforms,
             varying: [
                 {
-                    name: "position",
+                    name: "uPosition",
                     variable_type: {
                         type: "vec2",
                         precision: "highp",
@@ -88,8 +94,9 @@ export function fragment_only_shader<
                 },
             ],
         },
-        ([], [aPosition], [position]) => {
-            position.set(aPosition);
+        ([], [aPosition], [uPosition], { gl_Position }) => {
+            uPosition.set(aPosition);
+            gl_Position.set(aPosition.concat([0, 1]));
         },
         (uniforms, [], [position], other) => {
             func(uniforms, position, {
@@ -108,7 +115,7 @@ export function fragment_only_shader<
     return (uniforms, dim) => {
         gl.viewport(0, 0, dim[0], dim[1]);
         instance.run(uniforms, {
-            aPosition: [
+            aVertexPosition: [
                 [0, 0],
                 [0, dim[1]],
                 [dim[0], 0],
@@ -118,8 +125,8 @@ export function fragment_only_shader<
             ],
         });
 
-        const pixels = new Uint8Array(dim[0] * dim[1] * 4);
-        gl.readPixels(0, 0, dim[0], dim[1], gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const pixels = new Float32Array(dim[0] * dim[1] * 4);
+        gl.readPixels(0, 0, dim[0], dim[1], gl.RGBA, gl.FLOAT, pixels);
         return Array.from(pixels);
     };
 }
