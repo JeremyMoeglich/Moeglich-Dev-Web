@@ -286,7 +286,7 @@ const glsl_reserved = [...glsl_reserved_unused, ...glsl_reserved_used];
 
 export type GlslReserved = (typeof glsl_reserved)[number];
 
-function build_glsl_identifier(identifier: string): string {
+export function build_glsl_identifier(identifier: string): string {
     function cast_char_to_valid_char(char: string): string {
         if (char.match(/[a-zA-Z0-9]/)) {
             return char;

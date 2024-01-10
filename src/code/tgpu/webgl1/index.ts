@@ -1,17 +1,16 @@
-import { panic, typed_entries } from "functional-utilities";
+import { panic } from "functional-utilities";
 import {
     type GlslShader,
     build_glsl_shader,
-    GlslFullType,
     GlslFloatType,
     GlslUniformDeclaration,
     GlslAttributeDeclaration,
     GlslVaryingDeclaration,
-    GlslVariableDeclaration,
     GlslRequiredVariableDeclaration,
+    GlslFullType,
+    build_glsl_identifier,
 } from "../glsl1";
 import { GlslShaderFunction, create_glsl_shader } from "../glsl1/function";
-import { MapGlslToBuilder } from "../glsl1/builder/to_builder";
 import { MapGlslToLiteral } from "../glsl1/type_mapping";
 
 export function init_shader_program(
@@ -64,7 +63,7 @@ type DeclarationsByName<
     [K in T[number]["name"]]: Extract<T[number], { name: K }>;
 };
 
-type ExtractLiterals<
+export type ExtractLiterals<
     N extends string,
     U extends GlslRequiredVariableDeclaration<N>[],
 > = {
@@ -83,7 +82,13 @@ export class ShaderInstance<
     N extends string,
 > {
     program: WebGLProgram;
-    uniform_locations: Map<string, WebGLUniformLocation>;
+    uniform_locations: Map<
+        string,
+        {
+            loc: WebGLUniformLocation;
+            type: GlslFullType;
+        }
+    >;
     attribute_locations: Map<
         string,
         {
@@ -120,22 +125,33 @@ export class ShaderInstance<
             fragment_func,
         );
 
+        console.log(build_glsl_shader(vertex));
+        console.log(build_glsl_shader(fragment));
         this.program = init_shader_program(gl, vertex, fragment);
         this.uniform_locations = new Map();
         for (const u of uniform) {
-            this.uniform_locations.set(
-                u.name,
-                gl.getUniformLocation(this.program, u.name)!,
-            );
+            this.uniform_locations.set(u.name, {
+                loc: gl.getUniformLocation(
+                    this.program,
+                    build_glsl_identifier(u.name),
+                )!,
+                type: u.variable_type,
+            });
         }
         this.attribute_locations = new Map();
         for (const a of attribute) {
+            console.log(build_glsl_identifier(a.name));
             this.attribute_locations.set(a.name, {
-                loc: gl.getAttribLocation(this.program, a.name)!,
+                loc: gl.getAttribLocation(
+                    this.program,
+                    build_glsl_identifier(a.name),
+                ),
                 type: a.variable_type,
             });
         }
         this.gl = gl;
+        console.log(this.uniform_locations);
+        console.log(this.attribute_locations);
     }
 
     run(
@@ -156,47 +172,63 @@ export class ShaderInstance<
             attributes as Record<string, number[][] | number[]>,
         )) {
             const { loc, type } = this.attribute_locations.get(name)!;
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, loc);
+            const buffer = this.gl.createBuffer()!;
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
             this.gl.bufferData(
                 this.gl.ARRAY_BUFFER,
                 new Float32Array(attribute.flat()),
                 this.gl.STATIC_DRAW,
             );
             this.gl.enableVertexAttribArray(loc);
-            this.gl.vertexAttribPointer(loc, 2, to_gl_type(type), false, 0, 0);
+            this.gl.vertexAttribPointer(
+                loc,
+                type_to_float_amount(type),
+                this.gl.FLOAT,
+                false,
+                0,
+                0,
+            );
         }
 
-        const sample_attribute =
-            Object.values(attributes)[0] ?? panic("No attributes");
+        for (const [name, value] of Object.entries(
+            uniforms as Record<string, number[]>,
+        )) {
+            const { loc, type } = this.uniform_locations.get(name)!;
+            switch (type.type) {
+                case "float":
+                    this.gl.uniform1f(loc, value as unknown as number);
+                    break;
+                case "vec2":
+                    this.gl.uniform2fv(loc, value);
+                    break;
+                case "vec3":
+                    this.gl.uniform3fv(loc, value);
+                    break;
+                case "vec4":
+                    this.gl.uniform4fv(loc, value);
+                    break;
+                case "mat2":
+                    this.gl.uniformMatrix2fv(loc, false, value);
+                    break;
+                case "mat3":
+                    this.gl.uniformMatrix3fv(loc, false, value);
+                    break;
+                case "mat4":
+                    this.gl.uniformMatrix4fv(loc, false, value);
+                    break;
+                default:
+                    throw new Error(`Unsupported uniform type: ${type.type}`);
+            }
+        }
 
-        this.gl.drawArrays(
-            this.gl.TRIANGLES,
-            0,
-            (sample_attribute as any[]).length,
-        );
+        const sample_attribute = (Object.values(attributes)[0] ??
+            panic("No attributes")) as (number | number[])[];
+
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, sample_attribute.length);
     }
 }
 
-function to_gl_type(type: GlslFloatType): number {
-    switch (type.type) {
-        case "float":
-            return WebGLRenderingContext.FLOAT;
-        case "vec2":
-            return WebGLRenderingContext.FLOAT_VEC2;
-        case "vec3":
-            return WebGLRenderingContext.FLOAT_VEC3;
-        case "vec4":
-            return WebGLRenderingContext.FLOAT_VEC4;
-        case "mat2":
-            return WebGLRenderingContext.FLOAT_MAT2;
-        case "mat3":
-            return WebGLRenderingContext.FLOAT_MAT3;
-        case "mat4":
-            return WebGLRenderingContext.FLOAT_MAT4;
-    }
-}
-
-function values_per_vertex(type: GlslFloatType): number {
+function type_to_float_amount(type: GlslFloatType): number {
     switch (type.type) {
         case "float":
             return 1;

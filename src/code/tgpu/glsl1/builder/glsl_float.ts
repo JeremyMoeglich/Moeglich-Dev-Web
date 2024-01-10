@@ -44,7 +44,14 @@ const GlslFloatProto = build_proto([
         },
         concat: function (
             this: GlslFloat,
-            other: GlslFloat | number | GlslVec2 | GlslVec3,
+            other:
+                | GlslFloat
+                | number
+                | GlslVec2
+                | GlslVec3
+                | [number]
+                | [number, number]
+                | [number, number, number],
         ) {
             if (is_trackable(other, "vec2")) {
                 return new GlslVec3({
@@ -71,6 +78,61 @@ const GlslFloatProto = build_proto([
                         },
                     ],
                 });
+            } else if (Array.isArray(other)) {
+                if (other.length === 1) {
+                    return new GlslVec2({
+                        type: "function_call",
+                        name: "vec2",
+                        arguments: [
+                            this.origin,
+                            {
+                                type: "literal",
+                                value: other[0],
+                                literal_type: "float",
+                            },
+                        ],
+                    });
+                } else if (other.length === 2) {
+                    return new GlslVec3({
+                        type: "function_call",
+                        name: "vec3",
+                        arguments: [
+                            this.origin,
+                            {
+                                type: "literal",
+                                value: other[0],
+                                literal_type: "float",
+                            },
+                            {
+                                type: "literal",
+                                value: other[1],
+                                literal_type: "float",
+                            },
+                        ],
+                    });
+                }
+                return new GlslVec4({
+                    type: "function_call",
+                    name: "vec4",
+                    arguments: [
+                        this.origin,
+                        {
+                            type: "literal",
+                            value: other[0],
+                            literal_type: "float",
+                        },
+                        {
+                            type: "literal",
+                            value: other[1],
+                            literal_type: "float",
+                        },
+                        {
+                            type: "literal",
+                            value: other[2],
+                            literal_type: "float",
+                        },
+                    ],
+                });
             } else {
                 return new GlslVec2({
                     type: "function_call",
@@ -78,9 +140,18 @@ const GlslFloatProto = build_proto([
                     arguments: [this.origin, other.origin],
                 });
             }
-        } as ((this: GlslFloat, other: GlslFloat | number) => GlslVec2) &
-            ((this: GlslFloat, other: GlslVec2) => GlslVec3) &
-            ((this: GlslFloat, other: GlslVec3) => GlslVec4),
+        } as ((
+            this: GlslFloat,
+            other: GlslFloat | number | [number],
+        ) => GlslVec2) &
+            ((
+                this: GlslFloat,
+                other: GlslVec2 | [number, number],
+            ) => GlslVec3) &
+            ((
+                this: GlslFloat,
+                other: GlslVec3 | [number, number, number],
+            ) => GlslVec4),
     },
 ]);
 export const GlslFloat = function (
@@ -161,9 +232,9 @@ export type GlslFloat = Trackable<"float"> & {
     to_vec2: () => GlslVec2;
     to_vec3: () => GlslVec3;
     to_vec4: () => GlslVec4;
-    concat: ((other: GlslFloat | number) => GlslVec2) &
-        ((other: GlslVec2) => GlslVec3) &
-        ((other: GlslVec3) => GlslVec4);
+    concat: ((other: GlslFloat | number | [number]) => GlslVec2) &
+        ((other: GlslVec2 | [number, number]) => GlslVec3) &
+        ((other: GlslVec3 | [number, number, number]) => GlslVec4);
 } & {
     new (origin: GlslExpression): GlslFloat;
 };

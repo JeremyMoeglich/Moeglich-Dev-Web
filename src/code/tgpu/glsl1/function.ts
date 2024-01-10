@@ -29,20 +29,20 @@ export type GlslShaderFunction<
     U extends GlslUniformDeclaration<N>[],
     A extends GlslAttributeDeclaration<N>[],
     V extends GlslVaryingDeclaration<N>[],
-    K extends "vertex" | "fragment",
+    Kind extends "vertex" | "fragment",
     N extends string,
 > = (
     uniform: { [K in keyof U]: MapGlslToBuilder<U[K]["variable_type"]> },
-    input: { [K in keyof A]: MapGlslToBuilder<A[K]["variable_type"]> },
+    attributes: { [K in keyof A]: MapGlslToBuilder<A[K]["variable_type"]> },
     varying: {
-        [K in keyof V]: K extends "vertex"
+        [K in keyof V]: Kind extends "vertex"
             ? GlslVariable<MapGlslToBuilder<V[K]["variable_type"]>>
             : MapGlslToBuilder<V[K]["variable_type"]>;
     },
     other: {
         scope: BuildScope;
         decl: <T extends GlslBuilder>(value: T) => GlslVariable<T>;
-    } & (K extends "vertex"
+    } & (Kind extends "vertex"
         ? {
               gl_Position: GlslVariable<GlslVec4>;
               gl_PointSize: GlslVariable<GlslFloat>;

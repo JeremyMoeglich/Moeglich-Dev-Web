@@ -14,35 +14,37 @@ type Mutable<T> = {
     -readonly [K in keyof T]: Mutable<T[K]>;
 };
 
-type GetAttributes<T extends GlslShader> = GetDeclarationsFromStatements<
-    T["statements"],
-    "attribute"
->;
-type GetUniforms<T extends GlslShader> = GetDeclarationsFromStatements<
-    T["statements"],
-    "uniform"
->;
-type GetVaryings<T extends GlslShader> = GetDeclarationsFromStatements<
-    T["statements"],
-    "varying"
->;
+type GetAttributes<
+    N extends string,
+    T extends GlslShader,
+> = GetDeclarationsFromStatements<N, T["statements"], "attribute">;
+type GetUniforms<
+    N extends string,
+    T extends GlslShader,
+> = GetDeclarationsFromStatements<N, T["statements"], "uniform">;
+type GetVaryings<
+    N extends string,
+    T extends GlslShader,
+> = GetDeclarationsFromStatements<N, T["statements"], "varying">;
 
 type GetDeclarationsFromStatements<
+    N extends string,
     Shader extends GlslStatement[],
-    Qualifier extends GlslVariableDeclaration["qualifier"],
+    Qualifier extends GlslVariableDeclaration<N>["qualifier"],
 > = Shader extends [infer H, ...infer T]
     ? H extends GlslStatement
         ? T extends GlslStatement[]
             ?
-                  | GetDeclarationFromStatement<H, Qualifier>
-                  | GetDeclarationsFromStatements<T, Qualifier>
+                  | GetDeclarationFromStatement<N, H, Qualifier>
+                  | GetDeclarationsFromStatements<N, T, Qualifier>
             : never
         : never
     : never;
 
 type GetDeclarationFromStatement<
+    N extends string,
     Statement extends GlslStatement,
-    Qualifier extends GlslVariableDeclaration["qualifier"],
+    Qualifier extends GlslVariableDeclaration<N>["qualifier"],
 > = Statement extends {
     type: "variable_declaration";
     qualifier: Qualifier;
@@ -118,9 +120,9 @@ const sample = {
     ],
 } as const;
 
-type Attributes = GetAttributes<Mutable<typeof sample>>;
-type Uniforms = GetUniforms<Mutable<typeof sample>>;
-type Varyings = GetVaryings<Mutable<typeof sample>>;
+type Attributes = GetAttributes<string, Mutable<typeof sample>>;
+type Uniforms = GetUniforms<string, Mutable<typeof sample>>;
+type Varyings = GetVaryings<string, Mutable<typeof sample>>;
 
 type GetRequired<Statement extends GlslStatement> = Statement extends {
     type: "variable_declaration";
@@ -128,7 +130,9 @@ type GetRequired<Statement extends GlslStatement> = Statement extends {
     name: string;
 }
     ? {
-          [P in Statement["name"]]: MapGlslToLiteral<Statement["variable_type"]>;
+          [P in Statement["name"]]: MapGlslToLiteral<
+              Statement["variable_type"]
+          >;
       }
     : never;
 
