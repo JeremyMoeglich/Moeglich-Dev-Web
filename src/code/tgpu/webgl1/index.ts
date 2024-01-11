@@ -9,9 +9,9 @@ import {
     GlslRequiredVariableDeclaration,
     GlslFullType,
     build_glsl_identifier,
-} from "../glsl1";
-import { GlslShaderFunction, create_glsl_shader } from "../glsl1/function";
-import { MapGlslToLiteral } from "../glsl1/type_mapping";
+} from "../glsl";
+import { GlslShaderFunction, create_glsl_shader } from "../glsl/function";
+import { MapGlslToLiteral } from "../glsl/type_mapping";
 
 export function init_shader_program(
     gl: WebGLRenderingContext,

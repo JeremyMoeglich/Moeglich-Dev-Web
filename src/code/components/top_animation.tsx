@@ -13,6 +13,7 @@ import { Point, RectSolid } from "../shapelib";
 import { seeded_rand } from "~/utils/seeded_random";
 import { createBundle } from "../bundle";
 import { useSimulation } from "~/utils/use_simulation";
+import Link from "next/link";
 // import { useContainerSize } from "../funcs/use_event";
 
 function Shift({
@@ -258,28 +259,7 @@ export function TopAnimation() {
     return (
         <div className="ml-64 flex flex-col">
             <div className="relative h-full w-fit justify-center">
-                <div className="absolute h-full w-full">
-                    <ShapeRender
-                        render_id="top_animation"
-                        instructions={[
-                            // {
-                            //     action: "fill",
-                            //     z_index: 5,
-                            //     obj: new Point(0, 0)
-                            //         .to_circle_solid(100)
-                            //         .set_setter((ctx) => {
-                            //             ctx.fillStyle = "#000000";
-                            //         }),
-                            // },
-                            {
-                                action: "fill",
-                                z_index: 4,
-                                obj: rect_func,
-                            },
-                        ]}
-                    />
-                </div>
-                <div className="z-40 flex flex-row">
+                <div className="relative z-40 flex flex-row">
                     {letter_parts.map((parts, index) => (
                         <Shift
                             key={index}
@@ -295,6 +275,39 @@ export function TopAnimation() {
                             }}
                         />
                     ))}
+
+                    <div className="absolute h-full w-full">
+                        <ShapeRender
+                            render_id="top_animation"
+                            instructions={[
+                                // {
+                                //     action: "fill",
+                                //     z_index: 5,
+                                //     obj: new Point(0, 0)
+                                //         .to_circle_solid(100)
+                                //         .set_setter((ctx) => {
+                                //             ctx.fillStyle = "#000000";
+                                //         }),
+                                // },
+                                {
+                                    action: "fill",
+                                    z_index: 4,
+                                    obj: rect_func,
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+                <div className="text-3xl text-white">
+                    <p className="max-w-[700px]">
+                        Full-stack developer experienced in a wide range of
+                        languages and technologies
+                    </p>
+                    <div className="font-bold mt-3">
+                        <Link href={"https://github.com/JeremyMoeglich"}>GitHub</Link> |{" "}
+                        <Link href={"/projects"}>Projects</Link> |{" "}
+                        <Link href={"/contact"}>Contact</Link>
+                    </div>
                 </div>
             </div>
         </div>

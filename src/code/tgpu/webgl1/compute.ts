@@ -1,12 +1,12 @@
 import { maybe_global } from "functional-utilities";
 import { ExtractLiterals, ShaderInstance } from ".";
-import { GlslUniformDeclaration } from "../glsl1";
-import { GlslBoolean } from "../glsl1/builder/glsl_boolean";
-import { GlslVariable } from "../glsl1/builder/glsl_var";
-import { GlslVec2 } from "../glsl1/builder/glsl_vec2";
-import { GlslVec4 } from "../glsl1/builder/glsl_vec4";
-import { BuildScope } from "../glsl1/builder/scope";
-import { GlslBuilder, MapGlslToBuilder } from "../glsl1/builder/to_builder";
+import { GlslUniformDeclaration } from "../glsl";
+import { GlslBoolean } from "../glsl/builder/glsl_boolean";
+import { GlslVariable } from "../glsl/builder/glsl_var";
+import { GlslVec2 } from "../glsl/builder/glsl_vec2";
+import { GlslVec4 } from "../glsl/builder/glsl_vec4";
+import { BuildScope } from "../glsl/builder/scope";
+import { GlslBuilder, MapGlslToBuilder } from "../glsl/builder/to_builder";
 
 let sharedWebGLContext: WebGLRenderingContext | null = null;
 
