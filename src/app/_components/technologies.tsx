@@ -8,50 +8,8 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "~/@/components/ui/carousel";
-import * as Icons from "./icons";
 import { useEffect, useState } from "react";
-
-const cards: {
-    title: string;
-    description: string;
-    icon: () => JSX.Element;
-}[] = [
-    {
-        icon: () => <Icons.ReactIcon />,
-        title: "React",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.TailwindIcon />,
-        title: "Tailwind",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.NextJsIcon />,
-        title: "Next",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.QwikIcon />,
-        title: "Qwik",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.PythonIcon />,
-        title: "Python",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.NodeJsIcon />,
-        title: "Node",
-        description: "todo",
-    },
-    {
-        icon: () => <Icons.PytorchIcon />,
-        title: "Pytorch",
-        description: "todo",
-    },
-];
+import { technologies } from "~/data/tech";
 
 export function Technologies() {
     const [api, setApi] = useState<CarouselApi>();
@@ -78,7 +36,7 @@ export function Technologies() {
                     className="w-full max-w-[800px]"
                 >
                     <CarouselContent>
-                        {cards.map((card, i) => (
+                        {technologies.map((card, i) => (
                             <CarouselItem key={i} className="basis-1/5">
                                 <div
                                     style={{
@@ -90,7 +48,7 @@ export function Technologies() {
                                     className="rounded-xl p-4 backdrop-blur"
                                     onClick={() => api?.scrollTo(i)}
                                 >
-                                    {card.icon()}
+                                    {card.icon === "temp" ? card.name : card.icon()}
                                 </div>
                             </CarouselItem>
                         ))}
@@ -103,10 +61,10 @@ export function Technologies() {
                 <h3 className="text-3xl">
                     My Experience with{" "}
                     <span className="font-bold text-green-400">
-                        {cards[current]?.title}
+                        {technologies[current]?.name}
                     </span>
                 </h3>
-                <p>{cards[current]?.description}</p>
+                <p>{technologies[current]?.description}</p>
             </div>
         </div>
     );

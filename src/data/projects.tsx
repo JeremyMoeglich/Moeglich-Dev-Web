@@ -1,4 +1,5 @@
 import type { Page } from "puppeteer";
+import { TLink } from "~/app/_components/tlink";
 
 export const projects = [
     {
@@ -16,25 +17,51 @@ export const projects = [
                         pnpm und enthält diese Projekte
                         <ul>
                             <li>
-                                Eine Website mit Sveltekit als Metaframework und
-                                Typescript als Sprache. <br />
+                                Eine Website mit <TLink name="Sveltekit" /> als
+                                Metaframework und Typescript als Sprache. <br />
                                 Weitere Technologien:
                                 <ul>
-                                    <li>Vercel + Strato: Hosting</li>
-                                    <li>Tailwind + Scss + Postcss: Styling</li>
-                                    <li>Firebase: Logging, Kontaktformulare</li>
-                                    <li>Google Analytics</li>
+                                    <li>
+                                        <TLink name="Vercel" /> +{" "}
+                                        <TLink name="Strato" />: Hosting
+                                    </li>
+                                    <li>
+                                        <TLink name="Tailwind" /> +{" "}
+                                        <TLink name="Scss" /> +{" "}
+                                        <TLink name="Postcss" />: Styling
+                                    </li>
+                                    <li>
+                                        <TLink name="Firebase" />: Logging,
+                                        Kontaktformulare
+                                    </li>
+                                    <li>
+                                        <TLink name="Google Analytics" />
+                                    </li>
+                                    <li>
+                                        <TLink name="Github Actions" />: CI/CD, Deployments
+                                    </li>
                                 </ul>
                             </li>
                             <li>
-                                Ein Admin Panel (ebenfalls Sveltekit,
-                                Typescript) welches Tools wie ein Email
-                                generator, einsicht auf Logs oder ein Paketbild
-                                generator enthält <br />
+                                Ein Admin Panel (ebenfalls{" "}
+                                <TLink name="Sveltekit" />,
+                                <TLink name="Typescript" />) welches Tools wie
+                                ein Email Generator, einsicht auf Logs oder ein
+                                Paketbild Generator enthält <br />
                                 Weitere Technologien:
                                 <ul>
-                                    <li>Prisma + CockroachDB: Datenbank zum Speichern von Accounts</li>
+                                    <li>
+                                        <TLink name="Prisma" /> +{" "}
+                                        <TLink name="CockroachDb" />: Datenbank
+                                        zum Speichern von Accounts
+                                    </li>
+                                    <li>
+                                        <TLink name="Vercel" />: Hosting
+                                    </li>
                                 </ul>
+                            </li>
+                            <li>
+
                             </li>
                         </ul>
                     </p>
@@ -111,5 +138,4 @@ export const projects = [
         site_image: "images/projects/satworld_site.png",
         site_url: "http://newshopware.satworldit.de/",
     },
-    {},
 ] as const;
