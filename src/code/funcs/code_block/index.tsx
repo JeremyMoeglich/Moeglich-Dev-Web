@@ -94,7 +94,7 @@ export const CodeBlock: React.FC<{
                 return (
                     <div
                         key={`${animateId}-${token.key}`}
-                        className="absolute min-w-max font-normal transition-all duration-[700ms]"
+                        className="absolute font-normal transition-all duration-700"
                         aria-label={`${animateId}-${token.key}-${i}`}
                         style={{
                             transform: `translate(${token.position.x}px, ${`${

@@ -47,14 +47,14 @@ export function Header() {
                     ></NavigationEntry>
                 ))}
             </div>
-            <div className="absolute left-0 top-0">
+            <div className="pointer-events-none absolute left-0 top-0">
                 <img
                     src="/images/home/top_left_grad.svg"
                     alt=""
                     className="origin-top-left scale-[1.68]"
                 />
             </div>
-            <div className="absolute right-0 top-0">
+            <div className="pointer-events-none absolute right-0 top-0">
                 <img
                     src="/images/home/top_right_grad.svg"
                     alt=""
