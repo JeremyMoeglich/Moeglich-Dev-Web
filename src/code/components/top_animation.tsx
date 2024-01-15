@@ -258,8 +258,8 @@ export function TopAnimation() {
 
     return (
         <div className="flex justify-center">
-            <div className="relative h-full w-fit justify-center">
-                <div className="relative z-40 flex flex-row w-[900px]">
+            <div className="w-fit">
+                <div className="relative flex flex-row w-[900px]">
                     {letter_parts.map((parts, index) => (
                         <Shift
                             key={index}
