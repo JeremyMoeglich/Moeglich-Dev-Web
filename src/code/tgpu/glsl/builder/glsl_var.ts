@@ -2,11 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { SHA256 } from "crypto-js";
 import { BuildScope } from "./scope";
 import type { GlslBuilder } from "./to_builder";
-import { extract_common_expressions, take_unique_var } from "../extract_common";
-import { infer_glsl_type } from "../infer_type";
+import { extract_common_expressions } from "../extract_common";
 import { GlslVariableReference } from "..";
 
 const keys = [

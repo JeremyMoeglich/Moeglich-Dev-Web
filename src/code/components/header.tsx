@@ -24,7 +24,7 @@ function NavigationEntry(props: {
     );
 }
 
-export function Header() {
+export function Header(props: { slim: boolean }) {
     const path = usePathname();
     const path_map = {
         "/": "Home",
@@ -47,20 +47,24 @@ export function Header() {
                     ></NavigationEntry>
                 ))}
             </div>
-            <div className="pointer-events-none absolute left-0 top-0">
-                <img
-                    src="/images/home/top_left_grad.svg"
-                    alt=""
-                    className="origin-top-left scale-[1.68]"
-                />
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0">
-                <img
-                    src="/images/home/top_right_grad.svg"
-                    alt=""
-                    className="origin-top-right scale-[1.68]"
-                />
-            </div>
+            {!props.slim ? (
+                <>
+                    <div className="pointer-events-none absolute left-0 top-0">
+                        <img
+                            src="/images/home/top_left_grad.svg"
+                            alt=""
+                            className="origin-top-left scale-[1.68]"
+                        />
+                    </div>
+                    <div className="pointer-events-none absolute right-0 top-0">
+                        <img
+                            src="/images/home/top_right_grad.svg"
+                            alt=""
+                            className="origin-top-right scale-[1.68]"
+                        />
+                    </div>
+                </>
+            ) : null}
         </div>
     );
 }

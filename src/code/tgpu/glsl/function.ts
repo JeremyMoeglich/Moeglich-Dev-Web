@@ -3,12 +3,10 @@
 import { SHA256 } from "crypto-js";
 import type {
     GlslAttributeDeclaration,
-    GlslFloatType,
     GlslFullType,
     GlslShader,
     GlslStatement,
     GlslUniformDeclaration,
-    GlslVariableDeclaration,
     GlslVaryingDeclaration,
 } from ".";
 import {
