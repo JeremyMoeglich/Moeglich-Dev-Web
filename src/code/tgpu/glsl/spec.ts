@@ -489,7 +489,7 @@ export function build_glsl_identifier(identifier: string): string {
         .split("")
         .map(cast_char_to_valid_char)
         .join("");
-    if (glsl_reserved.includes(new_string as GlslReserved)) {
+    if (glsl_reserved.includes(new_string)) {
         return `_${new_string}`;
     }
 
@@ -499,6 +499,14 @@ export function build_glsl_identifier(identifier: string): string {
 
     if (new_string?.[0]?.match(/[0-9]/)) {
         return `_${new_string}`;
+    }
+
+    if (new_string.startsWith("__")) {
+        if (["__LINE__", "__FILE__", "__VERSION__"].includes(new_string)) {
+            return new_string;
+        } else {
+            return `var${new_string}`;
+        }
     }
 
     return new_string;
@@ -759,8 +767,8 @@ export type GlslRequiredVariableDeclaration<
     ? { centroid?: boolean; interpolation?: "smooth" | "flat" }
     : {});
 
-function build_glsl_variable_declaration(
-    declaration: GlslVariableDeclaration<1 | 2, string, GlslShaderKind>,
+function build_glsl_variable_declaration<V extends 1 | 2, K extends GlslShaderKind>(
+    declaration: GlslVariableDeclaration<V, string, K>,
 ): string {
     const core = (() => {
         if (declaration.variable_type.type === "array") {
@@ -805,11 +813,11 @@ function build_glsl_variable_assign(assignment: GlslVariableAssign): string {
     }
 }
 
-export type GlslFunctionDeclaration<V extends 1 | 2> = {
+export type GlslFunctionDeclaration<V extends 1 | 2, K extends GlslShaderKind> = {
     name: string;
     parameters: GlslFunctionParameter<V>[];
     return_type: GlslFullType<V> | { type: "void" };
-    body: GlslStatement<V>[];
+    body: GlslStatement<V, K>[];
 };
 
 export type GlslFunctionParameter<V extends 1 | 2> = {
@@ -823,8 +831,8 @@ function build_glsl_function_parameter<V extends 1 | 2>(
     return `${build_glsl_type(parameter.type)} ${parameter.name}`;
 }
 
-function build_glsl1_function_declaration<V extends 1 | 2>(
-    declaration: GlslFunctionDeclaration<V>,
+function build_glsl1_function_declaration<V extends 1 | 2, K extends GlslShaderKind>(
+    declaration: GlslFunctionDeclaration<V, K>,
 ): string {
     return `${build_glsl_type(declaration.return_type)} ${
         declaration.name
@@ -833,13 +841,13 @@ function build_glsl1_function_declaration<V extends 1 | 2>(
         .join(", ")})${build_glsl_scope({ statements: declaration.body })}`;
 }
 
-export type GlslIf<V extends 1 | 2> = {
+export type GlslIf<V extends 1 | 2, K extends GlslShaderKind> = {
     condition: GlslExpression;
-    if: GlslStatement<V>[];
-    else?: GlslStatement<V>[];
+    if: GlslStatement<V, K>[];
+    else?: GlslStatement<V, K>[];
 };
 
-function build_glsl_if<V extends 1 | 2>(if_statement: GlslIf<V>): string {
+function build_glsl_if<V extends 1 | 2, K extends GlslShaderKind>(if_statement: GlslIf<V, K>): string {
     return `if (${build_glsl_expression(
         if_statement.condition,
     )}) ${build_glsl_scope({ statements: if_statement.if })} ${
@@ -849,7 +857,7 @@ function build_glsl_if<V extends 1 | 2>(if_statement: GlslIf<V>): string {
     }`;
 }
 
-export type GlslFor<V extends 1 | 2> = {
+export type GlslFor<V extends 1 | 2, K extends GlslShaderKind> = {
     initializer: {
         variable_type: GlslFullType<V>;
         name: string;
@@ -857,10 +865,12 @@ export type GlslFor<V extends 1 | 2> = {
     };
     condition: GlslExpression;
     increment: GlslVariableAssign;
-    body: GlslStatement<V>[];
+    body: GlslStatement<V, K>[];
 };
 
-function build_glsl_for<V extends 1 | 2>(for_statement: GlslFor<V>): string {
+function build_glsl_for<V extends 1 | 2, K extends GlslShaderKind>(
+    for_statement: GlslFor<V, K>,
+): string {
     return `for (${build_glsl_variable_declaration({
         ...for_statement.initializer,
         invariant: false,
@@ -871,14 +881,14 @@ function build_glsl_for<V extends 1 | 2>(for_statement: GlslFor<V>): string {
     )}) ${build_glsl_scope({ statements: for_statement.body })}`;
 }
 
-export type GlslWhile<V extends 1 | 2> = {
+export type GlslWhile<V extends 1 | 2, K extends GlslShaderKind> = {
     condition: GlslExpression;
-    body: GlslStatement<V>[];
+    body: GlslStatement<V, K>[];
     do_while: boolean;
 };
 
-function build_glsl_while<V extends 1 | 2>(
-    while_statement: GlslWhile<V>,
+function build_glsl_while<V extends 1 | 2, K extends GlslShaderKind>(
+    while_statement: GlslWhile<V, K>,
 ): string {
     if (while_statement.do_while) {
         return `do ${build_glsl_scope({
@@ -891,13 +901,13 @@ function build_glsl_while<V extends 1 | 2>(
     }
 }
 
-export type GlslPrecisionDeclaration<V extends 1 | 2> = {
+export type GlslPrecisionDeclaration<V extends 1 | 2, K extends GlslShaderKind> = {
     precision: "highp" | "mediump" | "lowp";
-    precision_type?: GlslFloatType<V>["type"];
+    precision_type?: GlslFloatingPointType<V, K>["type"];
 };
 
-function build_glsl_precision_declaration<V extends 1 | 2>(
-    declaration: GlslPrecisionDeclaration<V>,
+function build_glsl_precision_declaration<V extends 1 | 2, K extends GlslShaderKind>(
+    declaration: GlslPrecisionDeclaration<V, K>,
 ): string {
     return `precision ${declaration.precision} ${
         declaration.precision_type ?? ""
