@@ -172,13 +172,15 @@ function build_glsl_unary_operation(
     }
 }
 
-export type GlslIfdef<V extends 1 | 2> = {
+export type GlslIfdef<V extends 1 | 2, K extends GlslShaderKind> = {
     identifier: string;
-    if: GlslStatement<V>[];
-    else?: GlslStatement<V>[];
+    if: GlslStatement<V, K>[];
+    else?: GlslStatement<V, K>[];
 };
 
-function build_glsl_ifdef<V extends 1 | 2>(ifdef: GlslIfdef<V>): string {
+function build_glsl_ifdef<V extends 1 | 2, K extends GlslShaderKind>(
+    ifdef: GlslIfdef<V, K>,
+): string {
     return `#ifdef ${ifdef.identifier}\n${build_glsl_scope({
         statements: ifdef.if,
     })}\n#else\n${build_glsl_scope({
@@ -186,7 +188,9 @@ function build_glsl_ifdef<V extends 1 | 2>(ifdef: GlslIfdef<V>): string {
     })}\n#endif`;
 }
 
-function build_glsl_scope<V extends 1 | 2>(scope: GlslScope<V>): string {
+function build_glsl_scope<V extends 1 | 2, K extends GlslShaderKind>(
+    scope: GlslScope<V, K>,
+): string {
     return `{\n${scope.statements.map(build_glsl_statement).join("\n")}\n}`;
 }
 
@@ -489,7 +493,7 @@ export function build_glsl_identifier(identifier: string): string {
         .split("")
         .map(cast_char_to_valid_char)
         .join("");
-    if (glsl_reserved.includes(new_string)) {
+    if (glsl_reserved.includes(new_string as (typeof glsl_reserved)[number])) {
         return `_${new_string}`;
     }
 
@@ -580,8 +584,8 @@ function build_glsl_type(
     return value.type;
 }
 
-export type GlslScope<V extends 1 | 2> = {
-    statements: GlslStatement<V>[];
+export type GlslScope<V extends 1 | 2, K extends GlslShaderKind> = {
+    statements: GlslStatement<V, K>[];
 };
 
 export type GlslIntegralType<V extends 1 | 2> =
@@ -697,26 +701,24 @@ export type Glsl2InDeclaration<N extends string, K extends GlslShaderKind> = {
     interpolation?: "smooth" | "flat";
 };
 
-export type Glsl2OutDeclaration<N extends string, K extends GlslShaderKind> =
-    | {
-          variable_type: K extends "vertex"
-              ? GlslInOutType
-              :
-                    | GlslIntegralType<2>
-                    | GlslBasicFloatingPointType // matrix are not allowed
-                    | GlslArrayType<
-                          2,
-                          GlslIntegralType<2> | GlslBasicFloatingPointType
-                      >;
-          name: N;
-          invariant?: boolean;
-          interpolation?: "smooth" | "flat";
+export type Glsl2OutDeclaration<N extends string, K extends GlslShaderKind> = {
+    variable_type: K extends "vertex"
+        ? GlslInOutType
+        :
+              | GlslIntegralType<2>
+              | GlslBasicFloatingPointType // matrix are not allowed
+              | GlslArrayType<
+                    2,
+                    GlslIntegralType<2> | GlslBasicFloatingPointType
+                >;
+    name: N;
+    invariant?: boolean;
+    interpolation?: "smooth" | "flat";
+} & (K extends "vertex"
+    ? {
+          centroid?: boolean;
       }
-    | (K extends "vertex"
-          ? {
-                centroid?: boolean;
-            }
-          : {});
+    : {});
 
 export type GlslVariableDeclaration<
     V extends 1 | 2,
@@ -767,8 +769,8 @@ export type GlslRequiredVariableDeclaration<
     ? { centroid?: boolean; interpolation?: "smooth" | "flat" }
     : {});
 
-function build_glsl_variable_declaration<V extends 1 | 2, K extends GlslShaderKind>(
-    declaration: GlslVariableDeclaration<V, string, K>,
+function build_glsl_variable_declaration(
+    declaration: GlslVariableDeclaration<1 | 2, string, GlslShaderKind>,
 ): string {
     const core = (() => {
         if (declaration.variable_type.type === "array") {
@@ -813,7 +815,10 @@ function build_glsl_variable_assign(assignment: GlslVariableAssign): string {
     }
 }
 
-export type GlslFunctionDeclaration<V extends 1 | 2, K extends GlslShaderKind> = {
+export type GlslFunctionDeclaration<
+    V extends 1 | 2,
+    K extends GlslShaderKind,
+> = {
     name: string;
     parameters: GlslFunctionParameter<V>[];
     return_type: GlslFullType<V> | { type: "void" };
@@ -831,9 +836,10 @@ function build_glsl_function_parameter<V extends 1 | 2>(
     return `${build_glsl_type(parameter.type)} ${parameter.name}`;
 }
 
-function build_glsl1_function_declaration<V extends 1 | 2, K extends GlslShaderKind>(
-    declaration: GlslFunctionDeclaration<V, K>,
-): string {
+function build_glsl_function_declaration<
+    V extends 1 | 2,
+    K extends GlslShaderKind,
+>(declaration: GlslFunctionDeclaration<V, K>): string {
     return `${build_glsl_type(declaration.return_type)} ${
         declaration.name
     }(${declaration.parameters
@@ -847,7 +853,9 @@ export type GlslIf<V extends 1 | 2, K extends GlslShaderKind> = {
     else?: GlslStatement<V, K>[];
 };
 
-function build_glsl_if<V extends 1 | 2, K extends GlslShaderKind>(if_statement: GlslIf<V, K>): string {
+function build_glsl_if<V extends 1 | 2, K extends GlslShaderKind>(
+    if_statement: GlslIf<V, K>,
+): string {
     return `if (${build_glsl_expression(
         if_statement.condition,
     )}) ${build_glsl_scope({ statements: if_statement.if })} ${
@@ -901,13 +909,16 @@ function build_glsl_while<V extends 1 | 2, K extends GlslShaderKind>(
     }
 }
 
-export type GlslPrecisionDeclaration<V extends 1 | 2, K extends GlslShaderKind> = {
+export type GlslPrecisionDeclaration<V extends 1 | 2> = {
     precision: "highp" | "mediump" | "lowp";
-    precision_type?: GlslFloatingPointType<V, K>["type"];
+    precision_type?:
+        | GlslFloatingPointType<V>["type"]
+        | GlslIntegralType<V>["type"]
+        | (V extends 2 ? GlslOpaqueType<V>["type"] : never);
 };
 
-function build_glsl_precision_declaration<V extends 1 | 2, K extends GlslShaderKind>(
-    declaration: GlslPrecisionDeclaration<V, K>,
+function build_glsl_precision_declaration<V extends 1 | 2>(
+    declaration: GlslPrecisionDeclaration<V>,
 ): string {
     return `precision ${declaration.precision} ${
         declaration.precision_type ?? ""
@@ -942,7 +953,7 @@ export type Glsl1Control =
           control_type: "discard";
       };
 
-function build_glsl1_control(control: Glsl1Control): string {
+function build_glsl_control(control: Glsl1Control): string {
     switch (control.control_type) {
         case "return":
             return control.value ? build_glsl_expression(control.value) : "";
@@ -964,7 +975,7 @@ export type GlslStatement<V extends 1 | 2, K extends GlslShaderKind> =
       } & GlslVariableAssign)
     | ({
           type: "function_declaration";
-      } & GlslFunctionDeclaration<V>)
+      } & GlslFunctionDeclaration<V, K>)
     | ({
           type: "precision_declaration";
       } & GlslPrecisionDeclaration<V>)
@@ -973,10 +984,10 @@ export type GlslStatement<V extends 1 | 2, K extends GlslShaderKind> =
       } & Glsl1InvariantDeclaration)
     | ({
           type: "scope";
-      } & GlslScope<V>)
+      } & GlslScope<V, K>)
     | ({
           type: "ifdef";
-      } & GlslIfdef<V>)
+      } & GlslIfdef<V, K>)
     | ({
           type: "struct";
       } & GlslStructType<V, GlslFullType<V>>)
@@ -985,16 +996,16 @@ export type GlslStatement<V extends 1 | 2, K extends GlslShaderKind> =
       } & Glsl1Control)
     | ({
           type: "if";
-      } & GlslIf<V>)
+      } & GlslIf<V, K>)
     | ({
           type: "for";
-      } & GlslFor<V>)
+      } & GlslFor<V, K>)
     | ({
           type: "while";
-      } & GlslWhile<V>);
+      } & GlslWhile<V, K>);
 
-function build_glsl_statement(
-    statement: GlslStatement<1 | 2, GlslShaderKind>,
+function build_glsl_statement<V extends 1 | 2, K extends GlslShaderKind>(
+    statement: GlslStatement<V, K>,
 ): string {
     switch (statement.type) {
         case "variable_declaration":
@@ -1002,7 +1013,7 @@ function build_glsl_statement(
         case "variable_assign":
             return build_glsl_variable_assign(statement);
         case "function_declaration":
-            return build_glsl1_function_declaration(statement);
+            return build_glsl_function_declaration(statement);
         case "precision_declaration":
             return build_glsl_precision_declaration(statement);
         case "invariant_declaration":
@@ -1014,7 +1025,7 @@ function build_glsl_statement(
         case "struct":
             return build_glsl_struct(statement);
         case "control":
-            return `return ${build_glsl1_control(statement)};`;
+            return build_glsl_control(statement);
         case "if":
             return build_glsl_if(statement);
         case "for":
@@ -1024,13 +1035,13 @@ function build_glsl_statement(
     }
 }
 
-export type GlslShader<V extends 1 | 2> = {
+export type GlslShader<V extends 1 | 2, K extends GlslShaderKind> = {
     version: V;
-    statements: GlslStatement<V>[];
+    statements: GlslStatement<V, K>[];
 };
 
-export function build_glsl_shader<V extends 1 | 2>(
-    shader: GlslShader<V>,
+export function build_glsl_shader(
+    shader: GlslShader<1 | 2, GlslShaderKind>,
 ): string {
     const version_string =
         shader.version === 1 ? "#version 100" : "#version 300 es";

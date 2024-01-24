@@ -9,9 +9,12 @@ import { BuildScope } from "../glsl/builder/scope";
 import { GlslBuilder, MapGlslToBuilder } from "../glsl/builder/to_builder";
 
 let sharedWebGLContext: WebGLRenderingContext | null = null;
-
-function getSharedWebGLContext() {
-    if (!sharedWebGLContext) {
+let sharedWebGL2Context: WebGL2RenderingContext | null = null;
+let sharedCanvas: HTMLCanvasElement | null = null;
+function getSharedWebGLContext<V extends 1 | 2>(
+    version: V,
+): (V extends 1 ? WebGLRenderingContext : WebGL2RenderingContext) | null {
+    if (!sharedCanvas) {
         // Create an invisible canvas element
         const canvas = maybe_global("document")?.createElement("canvas");
         if (!canvas) {
@@ -26,24 +29,43 @@ function getSharedWebGLContext() {
         canvas.style.position = "fixed";
         canvas.style.top = "0";
         canvas.style.right = "0";
-        canvas.style.width = "100px";
-        canvas.style.height = "100px";
+        canvas.style.width = "0px";
+        canvas.style.height = "0px";
 
-        // Try to get a WebGL context
-        sharedWebGLContext =
-            canvas.getContext("webgl") ||
-            (canvas.getContext("experimental-webgl") as WebGLRenderingContext);
-
-        // Check if WebGL is available
-        if (!sharedWebGLContext) {
-            console.error(
-                "Unable to initialize WebGL. Your browser may not support it.",
-            );
-            return null;
-        }
+        sharedCanvas = canvas;
     }
 
-    return sharedWebGLContext;
+    if (version === 1) {
+        if (!sharedWebGLContext) {
+            const gl =
+                sharedCanvas.getContext("webgl") ??
+                sharedCanvas.getContext("experimental-webgl");
+            if (!gl) {
+                return null;
+            }
+
+            sharedWebGLContext = gl as WebGLRenderingContext;
+        }
+
+        return sharedWebGLContext as V extends 1
+            ? WebGLRenderingContext
+            : WebGL2RenderingContext;
+    } else {
+        if (!sharedWebGL2Context) {
+            const gl =
+                sharedCanvas.getContext("webgl2") ??
+                sharedCanvas.getContext("experimental-webgl2");
+            if (!gl) {
+                return null;
+            }
+
+            sharedWebGL2Context = gl as WebGL2RenderingContext;
+        }
+
+        return sharedWebGL2Context as V extends 1
+            ? WebGLRenderingContext
+            : WebGL2RenderingContext;
+    }
 }
 export function fragment_only_shader<
     N extends string,
