@@ -6,6 +6,7 @@ import * as Icons from "~/app/_components/icons";
 export const projects = [
     {
         name: "Tagaro",
+        summary: "Onlineshop für Sky",
         description: {
             de: () => (
                 <div>
@@ -83,6 +84,7 @@ export const projects = [
     },
     {
         name: "Moeglich.dev",
+        summary: "Meine Website",
         description: {
             de: "",
         },
@@ -276,6 +278,24 @@ const link_map = {
 };
 
 export function TLink({ name }: { name: keyof typeof link_map }) {
-    console.log(name, link_map[name]);
     return <Link href={`/${link_map[name].kind}/${name}`}>{name}</Link>;
+}
+
+export function TLinkComponent({
+    name,
+    children,
+    className,
+}: {
+    name: keyof typeof link_map;
+    children: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <Link
+            href={`/projects/${link_map[name].kind}/${name}`}
+            className={className}
+        >
+            {children}
+        </Link>
+    );
 }

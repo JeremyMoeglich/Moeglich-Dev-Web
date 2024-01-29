@@ -12,6 +12,7 @@ import type { NonEmptyArray } from "functional-utilities";
 const inter = Gabarito({
     subsets: ["latin"],
     variable: "--font-sans",
+    display: "swap",
 });
 
 export const metadata = {

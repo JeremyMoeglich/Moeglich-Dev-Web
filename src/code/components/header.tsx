@@ -37,15 +37,18 @@ export function Header(props: { slim: boolean }) {
 
     return (
         <div className="relative mb-40">
-            <div className="flex justify-end">
-                {Object.entries(path_map).map(([path, name]) => (
-                    <NavigationEntry
-                        key={path}
-                        name={name}
-                        current={current === name}
-                        path={path}
-                    ></NavigationEntry>
-                ))}
+            <div className="flex">
+                <h3 className="z-50 p-3 text-3xl text-white">moeglich.dev</h3>
+                <div className="ml-auto flex">
+                    {Object.entries(path_map).map(([path, name]) => (
+                        <NavigationEntry
+                            key={path}
+                            name={name}
+                            current={current === name}
+                            path={path}
+                        ></NavigationEntry>
+                    ))}
+                </div>
             </div>
             {!props.slim ? (
                 <>
