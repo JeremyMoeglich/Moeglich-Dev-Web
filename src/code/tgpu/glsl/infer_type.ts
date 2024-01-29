@@ -1,21 +1,22 @@
 import { panic } from "functional-utilities";
-import type {
-    GlslBinaryOperation,
-    GlslExpression,
-    GlslFloatType,
-    GlslFullType,
-    GlslFunctionCall,
-    GlslUnaryOperation,
+import {
+    glslFloatingPointTypes,
+    type GlslBinaryOperation,
+    type GlslExpression,
+    type GlslFloatingPointType,
+    type GlslFullType,
+    type GlslFunctionCall,
+    type GlslUnaryOperation,
 } from ".";
 
 function ident<T>(x: T): T {
     return x;
 }
 
-export function infer_glsl_type(
-    vars: Map<string, GlslFullType>,
+export function infer_glsl_type<V extends 1 | 2>(
+    vars: Map<string, GlslFullType<V>>,
     expr: GlslExpression,
-): GlslFullType {
+): GlslFullType<V> {
     switch (expr.type) {
         case "literal":
             switch (expr.literal_type) {
@@ -66,20 +67,22 @@ export function infer_glsl_type(
     }
 }
 
-function same_as_first_argument(
+function same_as_first_argument<V extends 1 | 2>(
     names: string[],
-): Record<string, (...args: GlslFullType[]) => GlslFullType> {
-    const result: Record<string, (...args: GlslFullType[]) => GlslFullType> =
-        {};
+): Record<string, (...args: GlslFullType<V>[]) => GlslFullType<V>> {
+    const result: Record<
+        string,
+        (...args: GlslFullType<V>[]) => GlslFullType<V>
+    > = {};
     for (const name of names) {
         result[name] = ident;
     }
     return result;
 }
 
-function vec_equivalent(
+function vec_equivalent<V extends 1 | 2>(
     to: "ivec" | "bvec",
-): (t: GlslFullType) => GlslFullType {
+): (t: GlslFullType<V>) => GlslFullType<V> {
     const bvec_map = {
         vec2: "bvec2",
         vec3: "bvec3",
@@ -99,31 +102,31 @@ function vec_equivalent(
     };
 }
 
-function vec_precision(t: GlslFullType): {
-    type: GlslFloatType["type"];
-    precision: GlslFloatType["precision"];
+function get_precision<V extends 1 | 2>(
+    t: GlslFullType<V>,
+): {
+    type: GlslFloatingPointType<V>["type"];
+    precision: GlslFloatingPointType<V>["precision"];
 } {
-    switch (t.type) {
-        case "float":
-            return { type: "float", precision: t.precision };
-        case "vec2":
-            return { type: "vec2", precision: t.precision };
-        case "vec3":
-            return { type: "vec3", precision: t.precision };
-        case "vec4":
-            return { type: "vec4", precision: t.precision };
-        case "mat2":
-            return { type: "mat2", precision: t.precision };
-        case "mat3":
-            return { type: "mat3", precision: t.precision };
-        case "mat4":
-            return { type: "mat4", precision: t.precision };
-        default:
-            throw new Error("Not a vector");
+    if (
+        glslFloatingPointTypes.includes(
+            t.type as (typeof glslFloatingPointTypes)[number],
+        )
+    ) {
+        return {
+            type: t.type as GlslFloatingPointType<V>["type"],
+            precision: (t as GlslFloatingPointType<V>).precision,
+        };
     }
+    throw new Error(
+        "Not a floating point value, this likely indicates a type error within the glsl",
+    );
 }
 
-const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
+const glsl1_functions: Record<
+    string,
+    (...args: GlslFullType<1>[]) => GlslFullType<1>
+> = {
     // prettier-ignore
     ...same_as_first_argument([
         "radians", "degrees", "sin", "cos", "tan", "asin", "acos", "atan",
@@ -135,10 +138,10 @@ const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
     step: (_, b) => b,
     smoothstep: (_a, _b, c) => c,
 
-    length: (t) => ({ type: "float", precision: vec_precision(t).precision }),
-    distance: (t) => ({ type: "float", precision: vec_precision(t).precision }),
-    dot: (t) => ({ type: "float", precision: vec_precision(t).precision }),
-    cross: (t) => ({ type: "vec3", precision: vec_precision(t).precision }),
+    length: (t) => ({ type: "float", precision: get_precision(t).precision }),
+    distance: (t) => ({ type: "float", precision: get_precision(t).precision }),
+    dot: (t) => ({ type: "float", precision: get_precision(t).precision }),
+    cross: (t) => ({ type: "vec3", precision: get_precision(t).precision }),
 
     lessThan: vec_equivalent("bvec"),
     lessThanEqual: vec_equivalent("bvec"),
@@ -157,14 +160,14 @@ const functions: Record<string, (...args: GlslFullType[]) => GlslFullType> = {
     textureCube: () => ({ type: "vec4", precision: "default" }),
     textureCubeLod: () => ({ type: "vec4", precision: "default" }),
 
-    vec2: (t) => ({ type: "vec2", precision: vec_precision(t).precision }),
-    vec3: (t) => ({ type: "vec3", precision: vec_precision(t).precision }),
-    vec4: (t) => ({ type: "vec4", precision: vec_precision(t).precision }),
+    vec2: (t) => ({ type: "vec2", precision: get_precision(t).precision }),
+    vec3: (t) => ({ type: "vec3", precision: get_precision(t).precision }),
+    vec4: (t) => ({ type: "vec4", precision: get_precision(t).precision }),
 };
 
 const unary_operations: Record<
     GlslUnaryOperation["operation"],
-    (v: GlslFullType) => GlslFullType
+    (v: GlslFullType<1>) => GlslFullType<1>
 > = {
     "!": () => ({ type: "bool" }),
     "-": ident,
@@ -178,7 +181,7 @@ const unary_operations: Record<
 
 const binary_operations: Record<
     GlslBinaryOperation["operation"],
-    (a: GlslFullType, b: GlslFullType) => GlslFullType
+    (a: GlslFullType<1>, b: GlslFullType<1>) => GlslFullType<1>
 > = {
     "!=": () => ({ type: "bool" }),
     "&&": () => ({ type: "bool" }),
@@ -201,11 +204,11 @@ const binary_operations: Record<
     "^^": ident,
 };
 
-function infer_function_call(
-    vars: Map<string, GlslFullType>,
+function infer_function_call<V extends 1 | 2>(
+    vars: Map<string, GlslFullType<V>>,
     expr: GlslFunctionCall,
-): GlslFullType {
-    const f = functions[expr.name];
+): GlslFullType<V> {
+    const f = glsl1_functions[expr.name];
     if (!f) {
         throw new Error(`Unknown function ${expr.name}`);
     }
@@ -213,10 +216,10 @@ function infer_function_call(
     return f(...args);
 }
 
-function infer_unary_operation(
-    vars: Map<string, GlslFullType>,
+function infer_unary_operation<V extends 1 | 2>(
+    vars: Map<string, GlslFullType<V>>,
     expr: GlslUnaryOperation,
-): GlslFullType {
+): GlslFullType<V> {
     const f = unary_operations[expr.operation];
     if (!f) {
         throw new Error(`Unknown unary operation ${expr.operation}`);
@@ -225,15 +228,15 @@ function infer_unary_operation(
     return f(arg);
 }
 
-function infer_binary_operation(
-    vars: Map<string, GlslFullType>,
+function infer_binary_operation<V extends 1 | 2>(
+    vars: Map<string, GlslFullType<V>>,
     expr: GlslBinaryOperation,
-): GlslFullType {
+): GlslFullType<V> {
     const f = binary_operations[expr.operation];
     if (!f) {
         throw new Error(`Unknown binary operation ${expr.operation}`);
     }
     const a = infer_glsl_type(vars, expr.left);
     const b = infer_glsl_type(vars, expr.right);
-    return f(a, b);
+    return f(a, b);s
 }

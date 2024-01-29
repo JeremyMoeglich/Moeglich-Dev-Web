@@ -1,5 +1,7 @@
+import { typed_from_entries } from "functional-utilities";
+import Link from "next/link";
 import type { Page } from "puppeteer";
-import { TLink } from "~/app/_components/tlink";
+import * as Icons from "~/app/_components/icons";
 
 export const projects = [
     {
@@ -7,12 +9,12 @@ export const projects = [
         description: {
             de: () => (
                 <div>
-                    <p>
+                    <div>
                         Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
                         mehrere Jahre Onlineshop, Bestellungs Automatisierung
                         und allgemein alles IT mache.
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                         Das Tagaro Project ist eine Monorepo mit Turborepo +
                         pnpm und enthält diese Projekte
                         <ul>
@@ -38,7 +40,8 @@ export const projects = [
                                         <TLink name="Google Analytics" />
                                     </li>
                                     <li>
-                                        <TLink name="Github Actions" />: CI/CD, Deployments
+                                        <TLink name="Github Actions" />: CI/CD,
+                                        Deployments
                                     </li>
                                 </ul>
                             </li>
@@ -60,15 +63,13 @@ export const projects = [
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                
-                            </li>
+                            <li></li>
                         </ul>
-                    </p>
+                    </div>
                 </div>
             ),
         },
-        icon: "images/projects/tagaro_icon.png",
+        icon: "images/projects/tagaro_icon.svg",
         site_image: "images/projects/tagaro_site.png",
         site_url: "https://tagaro.de",
         site_load_action: async (site: Page) => {
@@ -85,7 +86,7 @@ export const projects = [
         description: {
             de: "",
         },
-        icon: "images/projects/moeglichdev_icon.png",
+        icon: "favicon.svg",
         site_image: "images/projects/moeglichdev_site.png",
         site_url: "https://moeglich.dev",
         github_url: "https://github.com/JeremyMoeglich/Moeglich-Dev-Web",
@@ -139,3 +140,142 @@ export const projects = [
         site_url: "http://newshopware.satworldit.de/",
     },
 ] as const;
+
+export const technologies = [
+    {
+        icon: () => <Icons.ReactIcon />,
+        name: "React",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.TailwindIcon />,
+        name: "Tailwind",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.NextJsIcon />,
+        name: "Next",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.QwikIcon />,
+        name: "Qwik",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.PythonIcon />,
+        name: "Python",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.NodeJsIcon />,
+        name: "Node",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.PytorchIcon />,
+        name: "Pytorch",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Sveltekit",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Typescript",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Scss",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Postcss",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Firebase",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Google Analytics",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Prisma",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "CockroachDb",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Docker",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Nginx",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Git",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Github Actions",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Linux",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Vercel",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Strato",
+        description: "todo",
+    },
+] as const;
+
+const link_map = {
+    ...typed_from_entries(
+        technologies.map((tech) => [
+            tech.name,
+            {
+                ...tech,
+                kind: "tech",
+            },
+        ]),
+    ),
+    ...typed_from_entries(
+        projects.map((project) => [
+            project.name,
+            {
+                ...project,
+                kind: "project",
+            },
+        ]),
+    ),
+};
+
+export function TLink({ name }: { name: keyof typeof link_map }) {
+    console.log(name, link_map[name]);
+    return <Link href={`/${link_map[name].kind}/${name}`}>{name}</Link>;
+}

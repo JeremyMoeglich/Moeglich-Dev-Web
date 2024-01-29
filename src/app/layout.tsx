@@ -17,7 +17,7 @@ const inter = Gabarito({
 export const metadata = {
     title: "Moeglich.Dev",
     description: "Moeglichdev - Website / Portfolio of Jeremy Moeglich",
-    icons: [{ rel: "icon", url: "/favicon.ico" }] satisfies NonEmptyArray<{
+    icons: [{ rel: "icon", url: "/favicon.svg" }] satisfies NonEmptyArray<{
         rel: string;
         url: string;
     }>,

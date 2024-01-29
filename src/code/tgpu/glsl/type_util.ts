@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
+    GlslAnyShader,
     GlslFullType,
     GlslShader,
+    GlslShaderKind,
     GlslStatement,
     GlslVariableDeclaration,
 } from ".";
@@ -16,24 +18,24 @@ type Mutable<T> = {
 
 type GetAttributes<
     N extends string,
-    T extends GlslShader,
+    T extends GlslAnyShader,
 > = GetDeclarationsFromStatements<N, T["statements"], "attribute">;
 type GetUniforms<
     N extends string,
-    T extends GlslShader,
+    T extends GlslAnyShader,
 > = GetDeclarationsFromStatements<N, T["statements"], "uniform">;
 type GetVaryings<
     N extends string,
-    T extends GlslShader,
+    T extends GlslAnyShader,
 > = GetDeclarationsFromStatements<N, T["statements"], "varying">;
 
 type GetDeclarationsFromStatements<
     N extends string,
-    Shader extends GlslStatement[],
-    Qualifier extends GlslVariableDeclaration<N>["qualifier"],
+    Shader extends GlslStatement<1 | 2, GlslShaderKind>[],
+    Qualifier extends GlslVariableDeclaration<1 | 2, GlslShaderKind, N>["qualifier"],
 > = Shader extends [infer H, ...infer T]
-    ? H extends GlslStatement
-        ? T extends GlslStatement[]
+    ? H extends GlslStatement<1 | 2, GlslShaderKind>
+        ? T extends GlslStatement<1 | 2, GlslShaderKind>[]
             ?
                   | GetDeclarationFromStatement<N, H, Qualifier>
                   | GetDeclarationsFromStatements<N, T, Qualifier>
@@ -43,8 +45,8 @@ type GetDeclarationsFromStatements<
 
 type GetDeclarationFromStatement<
     N extends string,
-    Statement extends GlslStatement,
-    Qualifier extends GlslVariableDeclaration<N>["qualifier"],
+    Statement extends GlslStatement<1 | 2, GlslShaderKind>,
+    Qualifier extends GlslVariableDeclaration<1 | 2, GlslShaderKind, N>["qualifier"],
 > = Statement extends {
     type: "variable_declaration";
     qualifier: Qualifier;
@@ -57,7 +59,7 @@ const data = new GlslInteger({ type: "variable", name: "a" })
     .mul(2)
     .eq(10);
 const sample = {
-    version: "100",
+    version: 1,
     statements: [
         {
             type: "variable_declaration",
@@ -124,9 +126,9 @@ type Attributes = GetAttributes<string, Mutable<typeof sample>>;
 type Uniforms = GetUniforms<string, Mutable<typeof sample>>;
 type Varyings = GetVaryings<string, Mutable<typeof sample>>;
 
-type GetRequired<Statement extends GlslStatement> = Statement extends {
+type GetRequired<Statement extends GlslStatement<1 | 2, GlslShaderKind>> = Statement extends {
     type: "variable_declaration";
-    variable_type: GlslFullType;
+    variable_type: GlslFullType<1 | 2>;
     name: string;
 }
     ? {

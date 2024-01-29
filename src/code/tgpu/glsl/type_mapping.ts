@@ -2,7 +2,7 @@ import type { GlslFullType } from ".";
 
 
 // prettier-ignore
-export type MapGlslToLiteral<T extends GlslFullType> = 
+export type MapGlslToLiteral<T extends GlslFullType<1 | 2>> = 
         T extends { type: "void" } ? void :
         T extends { type: "bool" } ? boolean :
         T extends { type: "int" } ? number :

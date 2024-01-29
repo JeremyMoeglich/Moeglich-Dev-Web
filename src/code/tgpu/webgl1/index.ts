@@ -224,7 +224,7 @@ export class ShaderInstance<
         this.gl.drawArrays(this.gl.TRIANGLES, 0, sample_attribute.length);
     }
 }
-
+//--unity-launch --ozone-platform=wayland --enable-features=WaylandWindowDecorations
 function type_to_float_amount(type: GlslFloatType): number {
     switch (type.type) {
         case "float":

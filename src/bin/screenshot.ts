@@ -1,7 +1,7 @@
 import puppeteer, { type Page, type Browser } from "puppeteer";
-import { projects } from "~/data/projects";
 import { packageDirectory } from "pkg-dir";
 import { readFile } from "fs/promises";
+import { projects } from "~/data/tlink";
 
 const projectRoot = await packageDirectory();
 if (!projectRoot) throw new Error("Could not find project root");
@@ -23,7 +23,9 @@ async function takeScreenshot(
     console.log(`Taking screenshot of ${url} to ${path}`);
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
-    await page.goto(url);
+    await page.goto(url, {
+        timeout: 15000
+    });
     if (load_action) await load_action(page);
     await page.waitForNetworkIdle();
     await page.screenshot({ path: path });

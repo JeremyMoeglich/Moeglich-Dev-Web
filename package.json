@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cargo run --release --bin source_gen && next build",
     "dev": "bunx --bun next dev",
-    "lint": "next lint",
+    "check": "tsc --noEmit && next lint",
     "start": "next start",
     "test": "vitest run",
     "bench": "vitest bench",

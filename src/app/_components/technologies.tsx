@@ -9,7 +9,7 @@ import {
     CarouselPrevious,
 } from "~/@/components/ui/carousel";
 import { useEffect, useState } from "react";
-import { technologies } from "~/data/tech";
+import { technologies } from "~/data/tlink";
 
 export function Technologies() {
     const [api, setApi] = useState<CarouselApi>();

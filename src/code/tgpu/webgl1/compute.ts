@@ -88,7 +88,7 @@ export function fragment_only_shader<
         },
     ) => void,
 ): (uniforms: ExtractLiterals<N, U>, dim: [number, number]) => number[] {
-    const gl = getSharedWebGLContext();
+    const gl = getSharedWebGLContext(1);
     if (!gl) {
         return () => [];
     }
