@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
+import { Layout } from "~/code/components/Layout";
 import { projects, technologies } from "~/data/tlink";
 export default function Page() {
-    const router = useRouter();
-    const { kind, name } = router.query as {
+    const { kind, name } = useParams<{
         kind: string;
         name: string;
-    };
+    }>();
 
     const found =
         kind === "tech"
@@ -23,15 +23,17 @@ export default function Page() {
     const { description, name: title } = found;
 
     return (
-        <div className="mx-auto max-w-2xl px-4">
-            <h1 className="text-3xl font-bold">{title}</h1>
-            <p>
-                {typeof description === "string"
-                    ? description
-                    : typeof description.de === "string"
-                      ? description.de
-                      : description.de()}
-            </p>
-        </div>
+        <Layout>
+            <div className="mx-auto max-w-2xl px-4">
+                <h1 className="text-3xl font-bold">{title}</h1>
+                <p>
+                    {typeof description === "string"
+                        ? description
+                        : typeof description.de === "string"
+                          ? description.de
+                          : description.de()}
+                </p>
+            </div>
+        </Layout>
     );
 }
