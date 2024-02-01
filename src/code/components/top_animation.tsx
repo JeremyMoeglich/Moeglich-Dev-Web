@@ -145,116 +145,13 @@ function Shift({
 //     );
 // }
 
-const rand = seeded_rand(123);
 export function TopAnimation() {
     const words = ["moeglich.dev", "Jeremy\nMoeglich"];
-    const simDomainRef = useRef(new RectSolid(0, 0, 0, 0));
-    const dxnoise = useConstant(makeNoise3D(seeded_rand(125)));
-    const dynoise = useConstant(makeNoise3D(seeded_rand(452)));
-    const simulation = useSimulation(
-        (curr, dt, t) => {
-            const total_points = Math.min(
-                300,
-                simDomainRef.current.area() / 100,
-            );
-
-            // // delete points outside of the domain
-            let new_points = curr.filter((point) =>
-                simDomainRef.current.contains(point.pos),
-            );
-
-            // Move points to the opposite edge if they go out of bounds
-            // let new_points = curr.map((point) =>
-            //     point.wrap(simDomainRef.current),
-            // );
-
-            const new_needed = Math.ceil(
-                (total_points - new_points.length) / 100,
-            );
-
-            new_points.push(
-                ...range(new_needed).map(() => ({
-                    pos: new Point(
-                        rand() * simDomainRef.current.width +
-                            simDomainRef.current.x,
-                        rand() * simDomainRef.current.height +
-                            simDomainRef.current.y,
-                    ),
-                    lifetime: 0,
-                })),
-            );
-            const fineness = 800;
-            new_points = new_points.map((point) => ({
-                pos: point.pos.offset(
-                    new Point(
-                        dxnoise(
-                            point.pos.x / fineness,
-                            point.pos.y / fineness,
-                            t / 1000 + point.lifetime / 1000,
-                        ),
-                        dynoise(
-                            point.pos.y / fineness,
-                            point.pos.x / fineness,
-                            t / 1000 + point.lifetime / 1000,
-                        ),
-                    ).multiply(4 * dt + point.lifetime / 150),
-                ),
-                lifetime: point.lifetime + dt,
-            }));
-
-            return new_points;
-        },
-        [] as {
-            pos: Point;
-            lifetime: number;
-        }[],
-        0.1,
-    );
-
+    
     const t = useAnimationTime();
     const i = Math.floor(t / 5000) % words.length;
     const cnoise = useConstant(makeNoise2D(seeded_rand(534)));
     const letter_parts = zip_longest(words.map((word) => word.split("")));
-
-    const rect_func = useCallback(
-        (rect: RectSolid) => {
-            simDomainRef.current = rect;
-            const rounded = rect.bevel(100);
-            return createBundle([
-                // rounded.set_setter((ctx) => {
-                //     ctx.fillStyle = "#0000004d";
-                // }),
-                createBundle(
-                    simulation
-                        .filter((p) => rounded.contains(p.pos))
-                        .map((p) => p.pos.to_circle_solid(p.lifetime / 100)),
-                ).set_setter((ctx) => {
-                    ctx.fillStyle = "#ffffff9c";
-                }),
-            ]);
-        },
-        [simulation],
-    );
-
-    // const lines = useMemo(() => {
-    //     const tree = create_kdtree(simulation.map((p) => p.pos));
-    //     const points = simulation.map((p) => p.pos);
-    //     const lines = points.map((point) => {
-    //         const neighbors = tree
-    //             .nearest(point, 5)
-    //             .filter((p) => p[0] !== point && p[0].x < point.x);
-    //         return neighbors.map((neighbor) =>
-    //             new LineSegment(point, neighbor[0])
-    //                 .to_polygon(1)
-    //                 .set_setter((ctx) => {
-    //                     ctx.fillStyle = `rgba(255, 255, 255, ${
-    //                         1 - neighbor[1] / 100
-    //                     })`;
-    //                 }),
-    //         );
-    //     });
-    //     return lines.flat();
-    // }, [simulation]);
 
     return (
         <div className="flex justify-center">
@@ -275,28 +172,6 @@ export function TopAnimation() {
                             }}
                         />
                     ))}
-
-                    <div className="absolute h-full w-full">
-                        <ShapeRender
-                            render_id="top_animation"
-                            instructions={[
-                                // {
-                                //     action: "fill",
-                                //     z_index: 5,
-                                //     obj: new Point(0, 0)
-                                //         .to_circle_solid(100)
-                                //         .set_setter((ctx) => {
-                                //             ctx.fillStyle = "#000000";
-                                //         }),
-                                // },
-                                {
-                                    action: "fill",
-                                    z_index: 4,
-                                    obj: rect_func,
-                                },
-                            ]}
-                        />
-                    </div>
                 </div>
                 <div className="text-3xl text-white">
                     <p className="max-w-[700px]">

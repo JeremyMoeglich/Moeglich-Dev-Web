@@ -8,6 +8,7 @@ import { CrossTextProvider } from "~/utils/cross_text";
 import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { NonEmptyArray } from "functional-utilities";
+import ThreeBackground from "./_components/three_background";
 
 const inter = Gabarito({
     subsets: ["latin"],
@@ -35,7 +36,10 @@ export default function RootLayout({
                 <CrossTextProvider>
                     <ShapeRenderProvider>
                         <TRPCReactProvider cookies={cookies().toString()}>
-                            <main className="w-full">{children}</main>
+                            <ThreeBackground />
+                            <main className="w-full">
+                                {children}
+                            </main>
                         </TRPCReactProvider>
                     </ShapeRenderProvider>
                 </CrossTextProvider>
