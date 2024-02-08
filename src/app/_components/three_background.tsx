@@ -1,6 +1,6 @@
 "use client";
 import { range } from "functional-utilities";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
 
 const ThreeBackground = () => {
@@ -35,17 +35,17 @@ const ThreeBackground = () => {
             x: number;
             y: number;
         }) {
-            cubes.forEach((cube) => {
+            for (const cube of cubes) {
                 scene.remove(cube);
-            });
+            }
             cubes = [];
-            const cube_count_x = Math.ceil(screen_size.x / 100)+2;
-            const cube_count_y = Math.ceil(screen_size.y / 100)+2;
+            const cube_count_x = Math.ceil(screen_size.x / 100) + 2;
+            const cube_count_y = Math.ceil(screen_size.y / 100) + 2;
             const cube_count = cube_count_x * cube_count_y;
             const cube_spacing = 1;
             const cube_offset_x = (cube_count_x * cube_spacing) / 2;
             const cube_offset_y = (cube_count_y * cube_spacing) / 2;
-            range(cube_count).forEach((i) => {
+            for (const i of range(cube_count)) {
                 const cube = new THREE.Mesh(geometry, material);
                 cube.position.x =
                     (i % cube_count_x) * cube_spacing - cube_offset_x + 0.5;
@@ -55,7 +55,7 @@ const ThreeBackground = () => {
                     0.5;
                 cubes.push(cube);
                 scene.add(cube);
-            });
+            }
         }
         generate_cubes_for_screen({
             x: window.innerWidth,
@@ -66,7 +66,7 @@ const ThreeBackground = () => {
         // scene.add(ambientLight);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(0,0,2);
+        directionalLight.position.set(0, 0, 2);
         directionalLight.castShadow = true; // Enable shadows for this light
         scene.add(directionalLight);
 
@@ -94,10 +94,10 @@ const ThreeBackground = () => {
             requestAnimationFrame(animate);
 
             // Rotate cubes according to their position
-            cubes.forEach((cube) => {
+            for (const cube of cubes) {
                 cube.rotation.x += cube.position.x * 0.001;
                 cube.rotation.y += cube.position.y * 0.001;
-            });
+            }
 
             renderer.render(scene, camera);
         };
