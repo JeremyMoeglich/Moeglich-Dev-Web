@@ -24,7 +24,7 @@ async function takeScreenshot(
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url, {
-        timeout: 15000
+        timeout: 25000
     });
     if (load_action) await load_action(page);
     await page.waitForNetworkIdle();
@@ -39,7 +39,7 @@ const browser = await puppeteer.launch({
 
 for (const data of projects) {
     if (!("site_url" in data)) continue;
-    if (!("site_image" in data)) continue;
+    if (!("image" in data)) continue;
 
     const load_action =
         "site_load_action" in data ? data.site_load_action : undefined;
@@ -47,7 +47,7 @@ for (const data of projects) {
     await takeScreenshot(
         browser,
         data.site_url,
-        `public/${data.site_image}`,
+        `public/${data.image}`,
         load_action,
     );
 }

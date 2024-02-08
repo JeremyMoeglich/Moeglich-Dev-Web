@@ -36,9 +36,11 @@ export function Header(props: { slim: boolean }) {
     const current = path_map[path as keyof typeof path_map];
 
     return (
-        <div className="relative mb-40">
+        <div className="relative mb-20">
             <div className="flex">
-                <h3 className="z-50 p-3 text-3xl text-white">moeglich.dev</h3>
+                <Link className="z-50 p-3 text-3xl text-white" href="/">
+                    moeglich.dev
+                </Link>
                 <div className="ml-auto flex">
                     {Object.entries(path_map).map(([path, name]) => (
                         <NavigationEntry

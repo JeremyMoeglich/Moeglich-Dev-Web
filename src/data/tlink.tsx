@@ -3,13 +3,17 @@ import Link from "next/link";
 import type { Page } from "puppeteer";
 import * as Icons from "~/app/_components/icons";
 
+function Para({ children }: { children: React.ReactNode }) {
+    return <div className="mb-4">{children}</div>;
+}
+
 export const projects = [
     {
         name: "Tagaro",
         summary: "Onlineshop für Sky",
         description: {
             de: () => (
-                <div>
+                <div className="article">
                     <div>
                         Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
                         mehrere Jahre Onlineshop, Bestellungs Automatisierung
@@ -64,14 +68,13 @@ export const projects = [
                                     </li>
                                 </ul>
                             </li>
-                            <li></li>
                         </ul>
                     </div>
                 </div>
             ),
         },
-        icon: "images/projects/tagaro_icon.svg",
-        site_image: "images/projects/tagaro_site.png",
+        icon: "/images/projects/tagaro_icon.svg",
+        image: "/images/projects/tagaro_site.png",
         site_url: "https://tagaro.de",
         site_load_action: async (site: Page) => {
             const el = await site.waitForSelector(
@@ -89,56 +92,67 @@ export const projects = [
             de: "",
         },
         icon: "favicon.svg",
-        site_image: "images/projects/moeglichdev_site.png",
+        image: "/images/projects/moeglichdev_site.png",
         site_url: "https://moeglich.dev",
         github_url: "https://github.com/JeremyMoeglich/Moeglich-Dev-Web",
     },
     {
         name: "ErcEsg",
+        summary: "Website für ERC Heessen",
         description: "todo",
         icon: "images/projects/ercesg_icon.png",
-        site_image: "images/projects/ercesg_site.png",
+        image: "/images/projects/ercesg_site.png",
         site_url: "https://erc-heessen.de",
         github_url: "https://github.com/JeremyMoeglich/erc-esg",
     },
     {
         name: "Japtools",
+        summary: "Eine Sprachlernwebseite",
         description: "todo",
         icon: "images/projects/japtools_icon.png",
-        site_image: "images/projects/japtools_site.png",
+        image: "/images/projects/japtools_site.png",
         site_url: "https://japtools.moeglich.dev",
         github_url: "https://github.com/JeremyMoeglich/japtools",
     },
     {
         name: "functional_utilities",
+        summary: "Ein utility NPM Package",
         description: "todo",
-        icon: "images/projects/functional_utilities_icon.png",
+        icon: "images/projects/npm_icon.svg",
+        image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/functional-utilities",
         github_url: "https://github.com/JeremyMoeglich/functional_utilities",
     },
     {
         name: "Quip",
+        summary: "Eine Programmiersprache",
         description: "todo",
         icon: "images/projects/quip_icon.png",
+        image: "/images/projects/quip_image.svg",
         github_url: "https://github.com/JeremyMoeglich/quip",
     },
     {
         name: "list_screen",
+        summary: "Ein Python Package fürs Terminal",
         description: "todo",
-        icon: "images/projects/list_screen_icon.png",
+        icon: "images/projects/pypi_icon.svg",
+        image: "/images/projects/pypi_default.svg",
         package_url: "https://pypi.org/project/list-screen/",
     },
     {
         name: "tsgridlib",
+        summary: "Ein Grid NPM Package",
         description: "todo",
-        icon: "images/projects/tsgridlib_icon.png",
+        icon: "images/projects/npm_icon.svg",
+        image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/tsgridlib",
     },
     {
-        name: "Satworld/Atelmo",
+        name: "Satworld",
+        summary: "Ein Onlineshop",
         description: "todo",
-        icon: "images/projects/satworld_icon.png",
-        site_image: "images/projects/satworld_site.png",
+        icon: "images/projects/satworld_icon.svg",
+        image: "/images/projects/satworld_site.png",
         site_url: "http://newshopware.satworldit.de/",
     },
 ] as const;

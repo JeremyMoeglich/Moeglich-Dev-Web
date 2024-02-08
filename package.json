@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "cargo run --release --bin source_gen && next build",
-    "dev": "bunx --bun next dev",
+    "dev": "bunx --bun next dev --turbo",
     "check": "tsc --noEmit && next lint",
     "start": "next start",
     "test": "vitest run",

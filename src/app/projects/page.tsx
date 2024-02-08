@@ -1,7 +1,10 @@
+"use client";
+
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { type NextPage } from "next";
 import { Layout } from "~/code/components/Layout";
 import { TLinkComponent, projects } from "~/data/tlink";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Projects: NextPage = () => {
     return (
@@ -10,14 +13,15 @@ const Projects: NextPage = () => {
                 {projects.map((p) => (
                     <div
                         key={p.name}
-                        className="flex flex-col gap-2 rounded-lg bg-slate-700 p-2"
+                        className="flex flex-col gap-2 rounded-lg bg-gradient-to-t from-[#2c2454] to-[#000334] p-2 shadow-lg"
                     >
-                        {"site_image" in p && (
+                        {"image" in p && (
                             <TLinkComponent name={p.name}>
-                                <img
-                                    src={p.site_image}
+                                <motion.img
+                                    src={p.image}
                                     alt={p.name}
-                                    className="w-full rounded-md"
+                                    className="w-full rounded-md border-[2px] border-transparent shadow-md duration-300 hover:border-gray-500"
+                                    layoutId={p.name}
                                 />
                             </TLinkComponent>
                         )}
