@@ -180,7 +180,7 @@ export function TopAnimation() {
                     </p>
                     <div className="font-bold mt-3">
                         <Link href={"https://github.com/JeremyMoeglich"}>GitHub</Link> |{" "}
-                        <Link href={"/projects"}>Projects</Link> |{" "}
+                        <Link href={"/overview"}>Projects</Link> |{" "}
                         <Link href={"/contact"}>Contact</Link>
                     </div>
                 </div>

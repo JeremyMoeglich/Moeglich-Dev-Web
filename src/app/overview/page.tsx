@@ -13,7 +13,7 @@ const Projects: NextPage = () => {
                 {projects.map((p) => (
                     <div
                         key={p.name}
-                        className="flex flex-col gap-2 rounded-lg bg-gradient-to-t from-[#2c2454] to-[#000334] p-2 shadow-lg"
+                        className="flex flex-col gap-2 rounded-lg bg-gradient-to-t from-[#2c2454bc] to-[#000334be] p-2 shadow-lg backdrop-blur-md"
                     >
                         {"image" in p && (
                             <TLinkComponent name={p.name}>

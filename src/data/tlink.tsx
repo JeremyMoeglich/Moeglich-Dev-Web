@@ -292,7 +292,7 @@ const link_map = {
 };
 
 export function TLink({ name }: { name: keyof typeof link_map }) {
-    return <Link href={`/${link_map[name].kind}/${name}`}>{name}</Link>;
+    return <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>;
 }
 
 export function TLinkComponent({
@@ -306,7 +306,7 @@ export function TLinkComponent({
 }) {
     return (
         <Link
-            href={`/projects/${link_map[name].kind}/${name}`}
+            href={`/overview/${link_map[name].kind}/${name}`}
             className={className}
         >
             {children}

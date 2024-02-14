@@ -5,17 +5,15 @@ import { useParams } from "next/navigation";
 import { Layout } from "~/code/components/Layout";
 import { projects, technologies } from "~/data/tlink";
 export default function Page() {
-    const { kind, name } = useParams<{
-        kind: string;
+    const { name, kind } = useParams<{
         name: string;
+        kind: string;
     }>();
 
     const found =
-        kind === "tech"
-            ? technologies.find((t) => t.name === name)
-            : kind === "project"
-              ? projects.find((p) => p.name === name)
-              : undefined;
+        kind === "project"
+            ? projects.find((p) => p.name === name)
+            : technologies.find((p) => p.name === name);
 
     if (!found) {
         return <div>Not found</div>;
@@ -29,7 +27,7 @@ export default function Page() {
                 <div className="flex flex-wrap gap-4">
                     <div className="flex flex-col ">
                         <button
-                            className="text-white w-fit"
+                            className="w-fit text-white"
                             onClick={() => history.back()}
                         >
                             ← Back
@@ -46,11 +44,13 @@ export default function Page() {
                         />
                     )}
                 </div>
-                {typeof description === "string"
-                    ? description
-                    : typeof description.de === "string"
-                      ? description.de
-                      : description.de()}
+                <div className="bg-slate-700 bg-opacity-50 p-4 backdrop-blur-lg">
+                    {typeof description === "string"
+                        ? description
+                        : typeof description.de === "string"
+                          ? description.de
+                          : description.de()}
+                </div>
             </div>
         </Layout>
     );

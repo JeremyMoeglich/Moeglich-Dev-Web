@@ -3,6 +3,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { maybe_global } from "functional-utilities";
+import { maybe_window } from "~/utils/maybe_window";
 
 function NavigationEntry(props: {
     name: string;
@@ -24,11 +27,23 @@ function NavigationEntry(props: {
     );
 }
 
+function useYScroll() {
+    const [y, setY] = useState(0);
+    useEffect(() => {
+        const body = maybe_global("document")?.body;
+        if (!body) return;
+        const handler = () => setY(body.scrollTop);
+        body.addEventListener("scroll", handler);
+        return () => body.removeEventListener("scroll", handler);
+    }, []);
+    return y;
+}
+
 export function Header(props: { slim: boolean }) {
     const path = usePathname();
     const path_map = {
         "/": "Home",
-        "/projects": "Projects",
+        "/overview": "Projects",
         // "/about": "About",
         // "/contact": "Contact",
     };
