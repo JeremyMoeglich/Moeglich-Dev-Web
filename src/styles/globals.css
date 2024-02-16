@@ -111,6 +111,7 @@ html {
     color: #0070f3;
     text-decoration: none;
     transition: color 0.2s;
+    display: inline-block;
 }
 
 .article a:hover {

@@ -3,10 +3,6 @@ import Link from "next/link";
 import type { Page } from "puppeteer";
 import * as Icons from "~/app/_components/icons";
 
-function Para({ children }: { children: React.ReactNode }) {
-    return <div className="mb-4">{children}</div>;
-}
-
 export const projects = [
     {
         name: "Tagaro",
@@ -14,11 +10,11 @@ export const projects = [
         description: {
             de: () => (
                 <div className="article">
-                    <div>
+                    <p>
                         Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
                         mehrere Jahre Onlineshop, Bestellungs Automatisierung
                         und allgemein alles IT mache.
-                    </div>
+                    </p>
                     <div>
                         Das Tagaro Project ist eine Monorepo mit Turborepo +
                         pnpm und enthält diese Projekte
@@ -28,6 +24,9 @@ export const projects = [
                                 Metaframework und Typescript als Sprache. <br />
                                 Weitere Technologien:
                                 <ul>
+                                    <li>
+                                        <TLink name="Turborepo" />: Monorepo
+                                    </li>
                                     <li>
                                         <TLink name="Vercel" /> +{" "}
                                         <TLink name="Strato" />: Hosting
@@ -87,9 +86,29 @@ export const projects = [
     },
     {
         name: "Moeglich.dev",
-        summary: "Meine Website",
+        summary: "Diese Website",
         description: {
-            de: "",
+            de: () => (
+                <div className="article">
+                    <p>
+                        Diese Website ist meine persönliche Website und
+                        Portfolio. Sie ist mit <TLink name="Next" /> und{" "}
+                        <TLink name="React" /> geschrieben und verwendet{" "}
+                        <TLink name="Tailwind" /> fürs Styling.
+                    </p>
+                    <div>
+                        Weitere Technologien:
+                        <ul>
+                            <li>
+                                <TLink name="Vercel" />: Hosting
+                            </li>
+                            <li>
+                                <TLink name="TRPC" />: Backend API
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            ),
         },
         icon: "favicon.svg",
         image: "/images/projects/moeglichdev_site.png",
@@ -99,7 +118,32 @@ export const projects = [
     {
         name: "ErcEsg",
         summary: "Website für ERC Heessen",
-        description: "todo",
+        description: {
+            de: () => (
+                <div className="article">
+                    <p>
+                        ErcEsg ist eine Schülerfirma des Schloss Heessen (meiner
+                        Schule), Ich habe den IT Bereich geleitet und z.B. die
+                        Website erstellt. <br />
+                        Die Website wurde nach <TLink name="Tagaro" /> erstellt
+                        und basiert auf einem ähnlichen Stack (
+                        <TLink name="Sveltekit" /> + <TLink name="Typescript" />
+                        ). <br />
+                        Das Projekt ist kleiner, aber dynamischer, da es ein
+                        Artikel und Account System enthält.
+                    </p>
+                    <p>
+                        Das Artikel System ist Custom, das Frontend interagiert
+                        mit einer Rest API welche mit <TLink name="Prisma" />{" "}
+                        auf die <TLink name="CockroachDb" /> Datenbank zugreift.
+                    </p>
+                    <p>
+                        Die Seite + API wird mit <TLink name="Vercel" /> Edge
+                        Functions gehostet
+                    </p>
+                </div>
+            ),
+        },
         icon: "images/projects/ercesg_icon.png",
         image: "/images/projects/ercesg_site.png",
         site_url: "https://erc-heessen.de",
@@ -108,7 +152,9 @@ export const projects = [
     {
         name: "Japtools",
         summary: "Eine Sprachlernwebseite",
-        description: "todo",
+        description: {
+            de: () => <div className="article"></div>,
+        },
         icon: "images/projects/japtools_icon.png",
         image: "/images/projects/japtools_site.png",
         site_url: "https://japtools.moeglich.dev",
@@ -117,7 +163,19 @@ export const projects = [
     {
         name: "functional_utilities",
         summary: "Ein utility NPM Package",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Ein NPM Package mit vielen Funktionen die ich in fast allen
+                    meiner Projekte benutze.
+                </p>
+                <p>
+                    Das Package ist in Typescript geschrieben und enthält
+                    Funktionen fürs Arbeiten mit Arrays, Objekten, Strings und
+                    mehr. Ein Fokus sind Types
+                </p>
+            </div>
+        ),
         icon: "images/projects/npm_icon.svg",
         image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/functional-utilities",
@@ -268,6 +326,16 @@ export const technologies = [
         name: "Strato",
         description: "todo",
     },
+    {
+        icon: "temp",
+        name: "Turborepo",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "TRPC",
+        description: "todo",
+    },
 ] as const;
 
 const link_map = {
@@ -292,7 +360,9 @@ const link_map = {
 };
 
 export function TLink({ name }: { name: keyof typeof link_map }) {
-    return <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>;
+    return (
+        <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>
+    );
 }
 
 export function TLinkComponent({
