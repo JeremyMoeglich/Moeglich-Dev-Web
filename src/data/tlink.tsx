@@ -165,14 +165,30 @@ export const projects = [
         summary: "Ein utility NPM Package",
         description: () => (
             <div className="article">
+                <div>
+                    Ein <TLink name="NPM" /> Package mit vielen Funktionen die
+                    ich in fast allen meiner Projekte benutze. Einige Beispiele
+                    sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" />
+                        </li>
+                        <li>
+                            <TLink name="ErcEsg" />
+                        </li>
+                        <li>
+                            <TLink name="Moeglich.dev" />
+                        </li>
+                        <li>
+                            <TLink name="Japtools" />
+                        </li>
+                    </ul>
+                </div>
                 <p>
-                    Ein NPM Package mit vielen Funktionen die ich in fast allen
-                    meiner Projekte benutze.
-                </p>
-                <p>
-                    Das Package ist in Typescript geschrieben und enthält
-                    Funktionen fürs Arbeiten mit Arrays, Objekten, Strings und
-                    mehr. Ein Fokus sind Types
+                    Das Package ist in <TLink name="Typescript" />
+                    geschrieben und enthält Funktionen fürs Arbeiten mit Arrays,
+                    Objekten, Strings und mehr. Einige Ziele sind Gute Types und
+                    Einfachheit.
                 </p>
             </div>
         ),
@@ -192,7 +208,20 @@ export const projects = [
     {
         name: "list_screen",
         summary: "Ein Python Package fürs Terminal",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Ein{" "}
+                    <li>
+                        <TLink name="Python" />
+                    </li>{" "}
+                    Package mit dem Ziel multi-line Texte im Terminal einfach
+                    darzustellen. Es funktioniert indem man eine Liste von
+                    Strings der Library gibt, diese wird dann automatisch den
+                    Aktuellen Inhalt des Terminals anpassen.
+                </p>
+            </div>
+        ),
         icon: "images/projects/pypi_icon.svg",
         image: "/images/projects/pypi_default.svg",
         package_url: "https://pypi.org/project/list-screen/",
@@ -200,7 +229,21 @@ export const projects = [
     {
         name: "tsgridlib",
         summary: "Ein Grid NPM Package",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Ein{" "}
+                    <li>
+                        <TLink name="NPM" />
+                    </li>{" "}
+                    Package welches die darstellung und manipulation von Grids
+                    in <TLink name="Typescript" /> vereinfacht. Ich nutze es in
+                    nur wenigen Projekten, aber es ist sehr nützlich wenn es
+                    gebraucht wird.
+                </p>
+                ,
+            </div>
+        ),
         icon: "images/projects/npm_icon.svg",
         image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/tsgridlib",
@@ -219,17 +262,69 @@ export const technologies = [
     {
         icon: () => <Icons.ReactIcon />,
         name: "React",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    React ist das Framework meiner Wahl für Frontend
+                    Entwicklung. Die meisten Projekte wo ich es nutzte sind
+                    aktuell Privat, aber ein beispiel ist diese Seite{" "}
+                    <TLink name="Moeglich.dev" />
+                </p>
+                <p>
+                    Der Grund warum ich React nutze ist das es sehr flexibel
+                    ist, abstraktionen wie Hooks und Higher Order Components
+                    erlauben es Probleme gut darzustellen und zu lösen.
+                </p>
+                <p>
+                    Allgemein nutze Ich React mit <TLink name="Typescript" />,{" "}
+                    <TLink name="Tailwind" /> und <TLink name="Next" /> dar es
+                    die Vorteile von React herausbringt und die Nachteile
+                    reduziert
+                </p>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.TailwindIcon />,
         name: "Tailwind",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Tailwind mach Styling einfacher, besonders wenn das CSS kein
+                    Scoping hat (wie in <TLink name="React" />/
+                    <TLink name="Next" />
+                    ). <br />
+                    Deshalb nutze Ich es in allen meiner <TLink name="Next" />{" "}
+                    Projekte.
+                </p>
+                <p>
+                    Es gibt auch Projekte wo Ich es nicht nutze, diese sind
+                    hauptzächlich in <TLink name="Sveltekit" /> geschrieben, da
+                    Sveltekit CSS auf die Dateien isoliert. Aber auch in diesen
+                    wechsle Ich langsam zu Tailwind, z.B. in{" "}
+                    <TLink name="Tagaro" />
+                </p>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.NextJsIcon />,
         name: "Next",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Next ist ein Metaframework für React welches Server Side
+                    Rendering, Static Site Generation und mehr erlaubt. Es ist
+                    das Framework meiner Wahl für Webseiten, da es sehr flexibel
+                    ist und gut mit den Technologien die Ich nutze
+                    zusammenarbeitet.
+                </p>
+                <p>
+                    Ein Beispiel Projekt ist diese Seite{" "}
+                    <TLink name="Moeglich.dev" />
+                </p>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.QwikIcon />,
@@ -239,12 +334,39 @@ export const technologies = [
     {
         icon: () => <Icons.PythonIcon />,
         name: "Python",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Python war die erste "richtige" Programmiersprache die Ich
+                    gelernt habe, aber mittlerweile nutze Ich sie nur noch für
+                    kleine Scripts.
+                </p>
+                <p>
+                    Die meisten meiner Python Projekte habe Ich zu einer Zeit
+                    geschrieben wo Ich noch nicht alle meine Projekte auf Github
+                    gepostet habe, deshalb gibt es nur wenige Beispiele wie z.B.
+                    <TLink name="list_screen" />
+                </p>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.NodeJsIcon />,
         name: "Node",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Node nutze Ich hauptzächlich für Scripts in{" "}
+                    <TLink name="Typescript" /> Projekten und wenn Ich Bots oder
+                    komplexere Scripts schreibe.
+                </p>
+                <p>
+                    Die meisten meiner <TLink name="Typescript" /> Projekte sind
+                    jedoch nicht nur für Node, sondern auch für den Browser oder
+                    andere Runtimes wie <TLink name="Vercel" /> Edge Functions.
+                </p>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.PytorchIcon />,
@@ -334,6 +456,11 @@ export const technologies = [
     {
         icon: "temp",
         name: "TRPC",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "NPM",
         description: "todo",
     },
 ] as const;
