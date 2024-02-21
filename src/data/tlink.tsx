@@ -368,45 +368,230 @@ export const technologies = [
             </div>
         ),
     },
-    {
-        icon: () => <Icons.PytorchIcon />,
-        name: "Pytorch",
-        description: "todo",
-    },
+    // {
+    //     icon: () => <Icons.PytorchIcon />,
+    //     name: "Pytorch",
+    //     description: "todo",
+    // },
     {
         icon: "temp",
         name: "Sveltekit",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    SvelteKit ist ein Metaframework für den Aufbau von
+                    Webanwendungen. Es ist das erste Webframework, das ich
+                    verwendet habe, es ist einfach und effizient.
+                </p>
+                <p>
+                    Ich nutze SvelteKit in Projekten wie <TLink name="Tagaro" />{" "}
+                    und <TLink name="ErcEsg" />, wo es mir ermöglicht, schnell
+                    interaktive und performante Webseiten zu erstellen. Durch
+                    die Kombination von SvelteKit mit anderen Technologien wie{" "}
+                    <TLink name="Typescript" />, <TLink name="Tailwind" />, und{" "}
+                    <TLink name="Postcss" /> kann Sveltekit eine relativ gute DX
+                    bieten.
+                </p>
+                <p>
+                    Sveltekit ist das was Ich für die meisten meiner aktiven
+                    Projekte genutzt habe, aber mittlerweile bevorzuge Ich{" "}
+                    <TLink name="Next" /> für neue Projekte, da es mehr Features
+                    hat und besser mit den Technologien die Ich nutze
+                    zusammenarbeitet.
+                </p>
+            </div>
+        ),
     },
+
     {
         icon: "temp",
         name: "Typescript",
-        description: "todo",
+        description: () => {
+            return (
+                <div className="article">
+                    <p>
+                        Typescript ist die Sprache meiner Wahl für Web und viele
+                        Scripts. Ich nutze fast nie Javascript ohne Typescript
+                        dar es mir viele Vorteile gibt wie bessere DX durch
+                        Types
+                    </p>
+                    <div>
+                        Einige Beispiele wo Ich Typescript nutze sind:
+                        <ul>
+                            <li>
+                                <TLink name="Tagaro" />
+                            </li>
+                            <li>
+                                <TLink name="ErcEsg" />
+                            </li>
+                            <li>
+                                <TLink name="Moeglich.dev" />
+                            </li>
+                            <li>
+                                <TLink name="Japtools" />
+                            </li>
+                        </ul>
+                    </div>
+                    <p>
+                        Typescript ist eine der Zwei Sprachen welche Ich für
+                        fast alle Projekte nutze, die andere ist{" "}
+                        <TLink name="Rust" />
+                    </p>
+                </div>
+            );
+        },
+    },
+    {
+        icon: "temp",
+        name: "Rust",
+        description: () => (
+            <div className="article">
+                <p>
+                    Rust ist die Sprache meiner Wahl für Projekte mit komplexer
+                    Logik, hoher Performance oder Systems Level Programming.
+                    Einige Beispiele sind:
+                    <ul>
+                        <li>
+                            <TLink name="Quip" /> - Rust wird für die erste
+                            Version der Sprache genutzt zum Bootstrapping
+                        </li>
+                        <li>
+                            <TLink name="Moeglich.dev" /> - Rust wird für einige
+                            Scripts genutzt z.B. für das Bundlen von Beispiel
+                            Code
+                        </li>
+                        <li>
+                            <TLink name="Japtools" /> - Rust wird für das
+                            erstellen der Daten für die Datenbank (
+                            <TLink name="CockroachDb" />) genutzt
+                        </li>
+                    </ul>
+                    Wie <TLink name="Next" /> nutze Ich Rust immer mehr und die
+                    meisten Projekte wo Ich Rust nutze sind noch nicht fertig /
+                    veröffentlicht.
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Scss",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Scss ist eine CSS Preprocessor die Ich in Projekten wie{" "}
+                    <TLink name="Tagaro" /> nutze. Ich bevorzuge es gegenüber
+                    CSS, aber <TLink name="Tailwind" /> ist in den meisten
+                    Fällen besser.
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Postcss",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Postcss ist nutze Ich selten direkt, aber es ist ein
+                    wichtiger Teil von anderen CSS Tools wie{" "}
+                    <TLink name="Tailwind" /> oder <TLink name="Scss" />
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Firebase",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Firebase ist ein Cloud Service von Google welcher viele
+                    Services anbietet. Ich nutze aber nur die Datenbank um z.B.
+                    in <TLink name="Tagaro" /> Kontaktformulare oder Logs zu
+                    speichern.
+                </p>
+                <p>
+                    Ich bevorzuge <TLink name="CockroachDb" /> +{" "}
+                    <TLink name="Prisma" /> für die meisten Projekte, aber
+                    Firebase hat den Vorteil der Echtzeit was es für Realtime
+                    Logs oder Status Updates nützlich macht.
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Google Analytics",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Google Analytics ist ein Tool um das Verhalten von Nutzern
+                    auf einer Webseite zu analysieren. Ich nutze es aktuell nur
+                    in <TLink name="Tagaro" />. Um möglicherweise verbesserungen
+                    in der SEO zu finden oder zu sehen wie Nutzer die Seite
+                    nutzen.
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Prisma",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Prisma ist meine bevorzugte möglichkeit mit Datenbanken zu
+                    interagieren. Ich nutze es meisten in Kombination mit{" "}
+                    <TLink name="CockroachDb" /> habe es aber auch schon mit
+                    anderen Datenbanken wie Postgres oder MySQL genutzt.
+                </p>
+                <div>
+                    Einige Beispiele wo Ich Prisma nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" />
+                        </li>
+                        <li>
+                            <TLink name="Japtools" />
+                        </li>
+                        <li>
+                            <TLink name="ErcEsg" />
+                        </li>
+                        <li>
+                            <TLink name="Moeglich.dev" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
+    },
+    {
+        icon: "temp",
+        name: "Pusher",
+        description: () => (
+            <div className="article">
+                <p>
+                    Pusher ist ein Service um Echtzeit Daten zu senden. Es ist
+                    das was Ich nutze wenn Ich <TLink name="CockroachDb" /> +{" "}
+                    <TLink name="Prisma" /> nutze welche keine Echtzeit Updates
+                    haben.
+                </p>
+                <div>
+                    Ich nutze Pusher in 2 Projekten:
+                    <ul>
+                        <li>
+                            <TLink name="Moeglich.dev" /> - Echtzeit Updates wie Counters
+                        </li>
+                        <li>
+                            Ein Projekt welches noch nicht veröffentlicht ist,
+                            es ist ein Online Multiplayer Spiel was Echtzeit
+                            Updates braucht
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
