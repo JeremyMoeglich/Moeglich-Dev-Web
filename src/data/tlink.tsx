@@ -256,6 +256,28 @@ export const projects = [
         image: "/images/projects/satworld_site.png",
         site_url: "http://newshopware.satworldit.de/",
     },
+    {
+        name: "Http-Websocket-Proxy",
+        summary: "Ein Node Proxy Service",
+        description: () => (
+            <div className="article">
+                <p>
+                    Ein Node Service welcher http requests empfängt und dann an
+                    listener via Websockets weiterleitet. Der Hauptzweck ist
+                    Webhooks von zu empfangen auch wenn der Server nicht
+                    öffentlich erreichbar ist oder die IP dynamisch ist.
+                </p>
+                <div>
+                    Einige Beispiele wo Ich es nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
+    },
 ] as const;
 
 export const technologies = [
@@ -578,10 +600,11 @@ export const technologies = [
                     haben.
                 </p>
                 <div>
-                    Ich nutze Pusher in 2 Projekten:
+                    Ich nutze Pusher aktuell in 2 Projekten:
                     <ul>
                         <li>
-                            <TLink name="Moeglich.dev" /> - Echtzeit Updates wie Counters
+                            <TLink name="Moeglich.dev" /> - Echtzeit Updates wie
+                            Counters
                         </li>
                         <li>
                             Ein Projekt welches noch nicht veröffentlicht ist,
@@ -596,17 +619,66 @@ export const technologies = [
     {
         icon: "temp",
         name: "CockroachDb",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    CockroachDb ist eine verteilte SQL Datenbank. Ich nutze es
+                    in fast allen Projekten welche eine Datenbank brauchen. Es
+                    hat viele Vorteile wie Echtzeit Updates und Skalierbarkeit.
+                </p>
+                <div>
+                    Einige Beispiele wo Ich CockroachDb nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" />
+                        </li>
+                        <li>
+                            <TLink name="Japtools" />
+                        </li>
+                        <li>
+                            <TLink name="ErcEsg" />
+                        </li>
+                        <li>
+                            <TLink name="Moeglich.dev" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Docker",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Docker ist ein Tool um Anwendungen in Containern zu
+                    verpacken. Ich nutze Docker für 2 Dinge: Builds und
+                    Services. Aktuell nutze Ich es nicht für Deployments dar
+                    hosting teuer ist.
+                </p>
+                <div>
+                    Einige Beispiele wo Ich Docker nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Satworld" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Nginx",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <p>
+                    Ich nutze Nginx als Reverse Proxy für Services auf meinem
+                    Server für viele Projekte.
+                </p>
+            </div>
+        ),
     },
     {
         icon: "temp",
