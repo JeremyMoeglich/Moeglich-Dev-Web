@@ -10,11 +10,11 @@ export const projects = [
         description: {
             de: () => (
                 <div className="article">
-                    <p>
+                    <div>
                         Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
                         mehrere Jahre Onlineshop, Bestellungs Automatisierung
                         und allgemein alles IT mache.
-                    </p>
+                    </div>
                     <div>
                         Das Tagaro Project ist eine Monorepo mit Turborepo +
                         pnpm und enthält diese Projekte
@@ -90,12 +90,12 @@ export const projects = [
         description: {
             de: () => (
                 <div className="article">
-                    <p>
+                    <div>
                         Diese Website ist meine persönliche Website und
                         Portfolio. Sie ist mit <TLink name="Next" /> und{" "}
                         <TLink name="React" /> geschrieben und verwendet{" "}
                         <TLink name="Tailwind" /> fürs Styling.
-                    </p>
+                    </div>
                     <div>
                         Weitere Technologien:
                         <ul>
@@ -121,7 +121,7 @@ export const projects = [
         description: {
             de: () => (
                 <div className="article">
-                    <p>
+                    <div>
                         ErcEsg ist eine Schülerfirma des Schloss Heessen (meiner
                         Schule), Ich habe den IT Bereich geleitet und z.B. die
                         Website erstellt. <br />
@@ -131,16 +131,16 @@ export const projects = [
                         ). <br />
                         Das Projekt ist kleiner, aber dynamischer, da es ein
                         Artikel und Account System enthält.
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                         Das Artikel System ist Custom, das Frontend interagiert
                         mit einer Rest API welche mit <TLink name="Prisma" />{" "}
                         auf die <TLink name="CockroachDb" /> Datenbank zugreift.
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                         Die Seite + API wird mit <TLink name="Vercel" /> Edge
                         Functions gehostet
-                    </p>
+                    </div>
                 </div>
             ),
         },
@@ -184,12 +184,12 @@ export const projects = [
                         </li>
                     </ul>
                 </div>
-                <p>
+                <div>
                     Das Package ist in <TLink name="Typescript" />
                     geschrieben und enthält Funktionen fürs Arbeiten mit Arrays,
                     Objekten, Strings und mehr. Einige Ziele sind Gute Types und
                     Einfachheit.
-                </p>
+                </div>
             </div>
         ),
         icon: "images/projects/npm_icon.svg",
@@ -200,7 +200,99 @@ export const projects = [
     {
         name: "Quip",
         summary: "Eine Programmiersprache",
-        description: "todo",
+        description: () => (
+            <div>
+                <p>
+                    Quip steht für eine neue Perspektive in der Welt der
+                    Programmiersprachen und ist derzeit aktiv in Entwicklung. Es
+                    ist mit der Vision entstanden, Programmieren einfacher und
+                    mächtiger zu gestalten und neuen Entwicklern einen enfachen
+                    Weg in die Tiefen der Programmierung zu bieten. Obwohl Quip
+                    noch in der Entwicklungsphase ist, demonstrieren seine
+                    grundlegenden Prinzipien und innovativen Funktionen einen
+                    vielversprechenden Weg in die Zukunft der Programmierung.
+                </p>
+
+                <h3>Einfachheit im Fokus</h3>
+                <p>
+                    Im Zentrum von Quip steht das Ziel, unnötige Komplexität zu
+                    reduzieren. Es legt den Fokus auf ein Design, das sowohl
+                    mächtig als auch einfach ist. Dieser Ansatz ermöglicht es
+                    Entwicklern, sich auf das Lösen von Problemen zu
+                    konzentrieren, anstatt mit der Sprache limitiert zu werden
+                </p>
+
+                <h3>Besondere Eigenschaften</h3>
+                <ul>
+                    <li>
+                        <strong>Abstrakt als Performance Vorteil</strong>: Die
+                        meisten Sprachen haben ein Tradeoff zwischen Abstraktion
+                        & Performance Quip hat das gegenteil, es nutzt
+                        Abstraktion um Performance zu verbessern indem diese dem
+                        Compiler mehr Verständnis und Freiheiten geben.
+                    </li>
+                    <li>
+                        <strong>"Everything is a value"</strong>: In Quip ist
+                        alles ein Wert, sogar der Compiler selbst ist ein Wert
+                        in der Standard Library. Dies ermöglicht es alle
+                        Konzepte mit den selben Mitteln (Funktionen) zu
+                        manipulieren.
+                    </li>
+                    <li>
+                        <strong>Environments</strong>: Quip hat ein neues
+                        Konzept namens Environments, es beschreibt die Umgebung
+                        wo der Code läuft mit Capabilities und Requirements.{" "}
+                        <br />
+                        Capabilities sind Dinge die die Umgebung kann, z.B.
+                        Filesystem, Netzwerk, etc. <br />
+                        Requirements sind Dinge die die Umgebung braucht, z.B.
+                        braucht eine Website ein User Interface. Oder eine
+                        Executable eine main Funktion.
+                    </li>
+                    <li>
+                        <strong>Dynamische Typenanpassung</strong>: Quip
+                        ermöglicht die Anpassung von Variablentypen basierend
+                        auf Laufzeitbedingungen während Compilation, das erlaubt
+                        die Performance und Sicherheit von statischen Typen mit
+                        der Flexibilität von dynamischen Typen.
+                    </li>
+                    <li>
+                        <strong>Ausrichtung auf Traits</strong>: Im Zentrum von
+                        Quips Philosophie steht die innovative Nutzung von
+                        Traits zur Verhaltensdefinition, was einen modularen und
+                        wiederverwendbaren Ansatz zur Funktionsentwicklung
+                        ermöglicht.
+                    </li>
+                    <li>
+                        <strong>Umgang mit Union-Typen</strong>: Quip behandelt
+                        fortgeschrittene Konzepte wie Union-Typen auf eine
+                        benutzerfreundliche Art und Weise, was komplexe
+                        Typoperationen zugänglich und leistungsfähig macht.
+                    </li>
+                </ul>
+
+                <h3>Zukunftsorientierte Entwicklung</h3>
+
+                <p>
+                    Die Entwicklung von Quip ist ein offener Prozess, der neue
+                    Ideen und Beiträge willkommen heißt. Die Sprache entwickelt
+                    sich ständig weiter, indem sie bestehende Konventionen
+                    hinterfragt, immer mit dem Ziel, die Erfahrung der
+                    Entwickler zu verbessern.
+                </p>
+
+                <h3>Für die Herausforderungen von morgen entwickelt</h3>
+
+                <p>
+                    Quip hat das Ziel, Entwicklern Werkzeuge an die Hand zu
+                    geben, die für die modernen Herausforderungen in der
+                    Softwareentwicklung gerüstet sind. Es geht dabei nicht nur
+                    um die Schaffung einer weiteren Programmiersprache, sondern
+                    um eine Neugestaltung der Art und Weise, wie wir Ideen und
+                    Logik im Code ausdrücken.
+                </p>
+            </div>
+        ),
         icon: "images/projects/quip_icon.png",
         image: "/images/projects/quip_image.svg",
         github_url: "https://github.com/JeremyMoeglich/quip",
@@ -210,7 +302,7 @@ export const projects = [
         summary: "Ein Python Package fürs Terminal",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Ein{" "}
                     <li>
                         <TLink name="Python" />
@@ -219,7 +311,7 @@ export const projects = [
                     darzustellen. Es funktioniert indem man eine Liste von
                     Strings der Library gibt, diese wird dann automatisch den
                     Aktuellen Inhalt des Terminals anpassen.
-                </p>
+                </div>
             </div>
         ),
         icon: "images/projects/pypi_icon.svg",
@@ -231,7 +323,7 @@ export const projects = [
         summary: "Ein Grid NPM Package",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Ein{" "}
                     <li>
                         <TLink name="NPM" />
@@ -240,7 +332,7 @@ export const projects = [
                     in <TLink name="Typescript" /> vereinfacht. Ich nutze es in
                     nur wenigen Projekten, aber es ist sehr nützlich wenn es
                     gebraucht wird.
-                </p>
+                </div>
                 ,
             </div>
         ),
@@ -261,12 +353,12 @@ export const projects = [
         summary: "Ein Node Proxy Service",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Ein Node Service welcher http requests empfängt und dann an
                     listener via Websockets weiterleitet. Der Hauptzweck ist
                     Webhooks von zu empfangen auch wenn der Server nicht
                     öffentlich erreichbar ist oder die IP dynamisch ist.
-                </p>
+                </div>
                 <div>
                     Einige Beispiele wo Ich es nutze sind:
                     <ul>
@@ -286,23 +378,23 @@ export const technologies = [
         name: "React",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     React ist das Framework meiner Wahl für Frontend
                     Entwicklung. Die meisten Projekte wo ich es nutzte sind
                     aktuell Privat, aber ein beispiel ist diese Seite{" "}
                     <TLink name="Moeglich.dev" />
-                </p>
-                <p>
+                </div>
+                <div>
                     Der Grund warum ich React nutze ist das es sehr flexibel
                     ist, abstraktionen wie Hooks und Higher Order Components
                     erlauben es Probleme gut darzustellen und zu lösen.
-                </p>
-                <p>
+                </div>
+                <div>
                     Allgemein nutze Ich React mit <TLink name="Typescript" />,{" "}
                     <TLink name="Tailwind" /> und <TLink name="Next" /> dar es
                     die Vorteile von React herausbringt und die Nachteile
                     reduziert
-                </p>
+                </div>
             </div>
         ),
     },
@@ -311,21 +403,21 @@ export const technologies = [
         name: "Tailwind",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Tailwind mach Styling einfacher, besonders wenn das CSS kein
                     Scoping hat (wie in <TLink name="React" />/
                     <TLink name="Next" />
                     ). <br />
                     Deshalb nutze Ich es in allen meiner <TLink name="Next" />{" "}
                     Projekte.
-                </p>
-                <p>
+                </div>
+                <div>
                     Es gibt auch Projekte wo Ich es nicht nutze, diese sind
                     hauptzächlich in <TLink name="Sveltekit" /> geschrieben, da
                     Sveltekit CSS auf die Dateien isoliert. Aber auch in diesen
                     wechsle Ich langsam zu Tailwind, z.B. in{" "}
                     <TLink name="Tagaro" />
-                </p>
+                </div>
             </div>
         ),
     },
@@ -334,17 +426,17 @@ export const technologies = [
         name: "Next",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Next ist ein Metaframework für React welches Server Side
                     Rendering, Static Site Generation und mehr erlaubt. Es ist
                     das Framework meiner Wahl für Webseiten, da es sehr flexibel
                     ist und gut mit den Technologien die Ich nutze
                     zusammenarbeitet.
-                </p>
-                <p>
+                </div>
+                <div>
                     Ein Beispiel Projekt ist diese Seite{" "}
                     <TLink name="Moeglich.dev" />
-                </p>
+                </div>
             </div>
         ),
     },
@@ -358,17 +450,17 @@ export const technologies = [
         name: "Python",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Python war die erste "richtige" Programmiersprache die Ich
                     gelernt habe, aber mittlerweile nutze Ich sie nur noch für
                     kleine Scripts.
-                </p>
-                <p>
+                </div>
+                <div>
                     Die meisten meiner Python Projekte habe Ich zu einer Zeit
                     geschrieben wo Ich noch nicht alle meine Projekte auf Github
                     gepostet habe, deshalb gibt es nur wenige Beispiele wie z.B.
                     <TLink name="list_screen" />
-                </p>
+                </div>
             </div>
         ),
     },
@@ -377,16 +469,16 @@ export const technologies = [
         name: "Node",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Node nutze Ich hauptzächlich für Scripts in{" "}
                     <TLink name="Typescript" /> Projekten und wenn Ich Bots oder
                     komplexere Scripts schreibe.
-                </p>
-                <p>
+                </div>
+                <div>
                     Die meisten meiner <TLink name="Typescript" /> Projekte sind
                     jedoch nicht nur für Node, sondern auch für den Browser oder
                     andere Runtimes wie <TLink name="Vercel" /> Edge Functions.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -400,12 +492,12 @@ export const technologies = [
         name: "Sveltekit",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     SvelteKit ist ein Metaframework für den Aufbau von
                     Webanwendungen. Es ist das erste Webframework, das ich
                     verwendet habe, es ist einfach und effizient.
-                </p>
-                <p>
+                </div>
+                <div>
                     Ich nutze SvelteKit in Projekten wie <TLink name="Tagaro" />{" "}
                     und <TLink name="ErcEsg" />, wo es mir ermöglicht, schnell
                     interaktive und performante Webseiten zu erstellen. Durch
@@ -413,14 +505,14 @@ export const technologies = [
                     <TLink name="Typescript" />, <TLink name="Tailwind" />, und{" "}
                     <TLink name="Postcss" /> kann Sveltekit eine relativ gute DX
                     bieten.
-                </p>
-                <p>
+                </div>
+                <div>
                     Sveltekit ist das was Ich für die meisten meiner aktiven
                     Projekte genutzt habe, aber mittlerweile bevorzuge Ich{" "}
                     <TLink name="Next" /> für neue Projekte, da es mehr Features
                     hat und besser mit den Technologien die Ich nutze
                     zusammenarbeitet.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -431,12 +523,12 @@ export const technologies = [
         description: () => {
             return (
                 <div className="article">
-                    <p>
+                    <div>
                         Typescript ist die Sprache meiner Wahl für Web und viele
                         Scripts. Ich nutze fast nie Javascript ohne Typescript
                         dar es mir viele Vorteile gibt wie bessere DX durch
                         Types
-                    </p>
+                    </div>
                     <div>
                         Einige Beispiele wo Ich Typescript nutze sind:
                         <ul>
@@ -454,11 +546,11 @@ export const technologies = [
                             </li>
                         </ul>
                     </div>
-                    <p>
+                    <div>
                         Typescript ist eine der Zwei Sprachen welche Ich für
                         fast alle Projekte nutze, die andere ist{" "}
                         <TLink name="Rust" />
-                    </p>
+                    </div>
                 </div>
             );
         },
@@ -468,7 +560,7 @@ export const technologies = [
         name: "Rust",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Rust ist die Sprache meiner Wahl für Projekte mit komplexer
                     Logik, hoher Performance oder Systems Level Programming.
                     Einige Beispiele sind:
@@ -491,7 +583,7 @@ export const technologies = [
                     Wie <TLink name="Next" /> nutze Ich Rust immer mehr und die
                     meisten Projekte wo Ich Rust nutze sind noch nicht fertig /
                     veröffentlicht.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -500,12 +592,12 @@ export const technologies = [
         name: "Scss",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Scss ist eine CSS Preprocessor die Ich in Projekten wie{" "}
                     <TLink name="Tagaro" /> nutze. Ich bevorzuge es gegenüber
                     CSS, aber <TLink name="Tailwind" /> ist in den meisten
                     Fällen besser.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -514,11 +606,11 @@ export const technologies = [
         name: "Postcss",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Postcss ist nutze Ich selten direkt, aber es ist ein
                     wichtiger Teil von anderen CSS Tools wie{" "}
                     <TLink name="Tailwind" /> oder <TLink name="Scss" />
-                </p>
+                </div>
             </div>
         ),
     },
@@ -527,18 +619,18 @@ export const technologies = [
         name: "Firebase",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Firebase ist ein Cloud Service von Google welcher viele
                     Services anbietet. Ich nutze aber nur die Datenbank um z.B.
                     in <TLink name="Tagaro" /> Kontaktformulare oder Logs zu
                     speichern.
-                </p>
-                <p>
+                </div>
+                <div>
                     Ich bevorzuge <TLink name="CockroachDb" /> +{" "}
                     <TLink name="Prisma" /> für die meisten Projekte, aber
                     Firebase hat den Vorteil der Echtzeit was es für Realtime
                     Logs oder Status Updates nützlich macht.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -547,13 +639,13 @@ export const technologies = [
         name: "Google Analytics",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Google Analytics ist ein Tool um das Verhalten von Nutzern
                     auf einer Webseite zu analysieren. Ich nutze es aktuell nur
                     in <TLink name="Tagaro" />. Um möglicherweise verbesserungen
                     in der SEO zu finden oder zu sehen wie Nutzer die Seite
                     nutzen.
-                </p>
+                </div>
             </div>
         ),
     },
@@ -562,12 +654,12 @@ export const technologies = [
         name: "Prisma",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Prisma ist meine bevorzugte möglichkeit mit Datenbanken zu
                     interagieren. Ich nutze es meisten in Kombination mit{" "}
                     <TLink name="CockroachDb" /> habe es aber auch schon mit
                     anderen Datenbanken wie Postgres oder MySQL genutzt.
-                </p>
+                </div>
                 <div>
                     Einige Beispiele wo Ich Prisma nutze sind:
                     <ul>
@@ -593,12 +685,12 @@ export const technologies = [
         name: "Pusher",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Pusher ist ein Service um Echtzeit Daten zu senden. Es ist
                     das was Ich nutze wenn Ich <TLink name="CockroachDb" /> +{" "}
                     <TLink name="Prisma" /> nutze welche keine Echtzeit Updates
                     haben.
-                </p>
+                </div>
                 <div>
                     Ich nutze Pusher aktuell in 2 Projekten:
                     <ul>
@@ -621,11 +713,11 @@ export const technologies = [
         name: "CockroachDb",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     CockroachDb ist eine verteilte SQL Datenbank. Ich nutze es
                     in fast allen Projekten welche eine Datenbank brauchen. Es
                     hat viele Vorteile wie Echtzeit Updates und Skalierbarkeit.
-                </p>
+                </div>
                 <div>
                     Einige Beispiele wo Ich CockroachDb nutze sind:
                     <ul>
@@ -651,12 +743,12 @@ export const technologies = [
         name: "Docker",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Docker ist ein Tool um Anwendungen in Containern zu
                     verpacken. Ich nutze Docker für 2 Dinge: Builds und
                     Services. Aktuell nutze Ich es nicht für Deployments dar
                     hosting teuer ist.
-                </p>
+                </div>
                 <div>
                     Einige Beispiele wo Ich Docker nutze sind:
                     <ul>
@@ -673,10 +765,10 @@ export const technologies = [
         name: "Nginx",
         description: () => (
             <div className="article">
-                <p>
+                <div>
                     Ich nutze Nginx als Reverse Proxy für Services auf meinem
                     Server für viele Projekte.
-                </p>
+                </div>
             </div>
         ),
     },

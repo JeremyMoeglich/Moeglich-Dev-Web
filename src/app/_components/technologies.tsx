@@ -48,7 +48,9 @@ export function Technologies() {
                                     className="rounded-xl p-4 backdrop-blur"
                                     onClick={() => api?.scrollTo(i)}
                                 >
-                                    {card.icon === "temp" ? card.name : card.icon()}
+                                    {card.icon === "temp"
+                                        ? card.name
+                                        : card.icon()}
                                 </div>
                             </CarouselItem>
                         ))}
@@ -64,7 +66,16 @@ export function Technologies() {
                         {technologies[current]?.name}
                     </span>
                 </h3>
-                <p>{technologies[current]?.description}</p>
+                <div>
+                    {(() => {
+                        const t = technologies[current]?.description;
+                        if (typeof t === "function") {
+                            return t();
+                        } else {
+                            return t;
+                        }
+                    })()}
+                </div>
             </div>
         </div>
     );
