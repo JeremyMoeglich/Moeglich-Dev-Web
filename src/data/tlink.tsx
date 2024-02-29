@@ -451,8 +451,8 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Python war die erste "richtige" Programmiersprache die Ich
-                    gelernt habe, aber mittlerweile nutze Ich sie nur noch für
+                    Python war die erste richtige Programmiersprache die Ich
+                    gelernt habe, aber mittlerweile nutze Ich Python nur noch für
                     kleine Scripts.
                 </div>
                 <div>
@@ -488,7 +488,7 @@ export const technologies = [
     //     description: "todo",
     // },
     {
-        icon: "temp",
+        icon: () => <Icons.SvelteIcon />,
         name: "Sveltekit",
         description: () => (
             <div className="article">
@@ -518,7 +518,7 @@ export const technologies = [
     },
 
     {
-        icon: "temp",
+        icon: () => <Icons.TypescriptIcon />,
         name: "Typescript",
         description: () => {
             return (
@@ -775,17 +775,65 @@ export const technologies = [
     {
         icon: "temp",
         name: "Git",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Ich nutze Git für den größten Teil meiner Projekte. Es gibt
+                    mir die Möglichkeit an Projekten von überall zu arbeiten und
+                    diese zu versionieren.
+                </div>
+                <div>
+                    Meistens nutze Ich Github (
+                    <Link href="https://github.com/JeremyMoeglich">
+                        Github - JeremyMoeglich
+                    </Link>
+                    ) als Hosting und <TLink name="Github Actions" /> für CI/CD
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Github Actions",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Wenn Ich CI/CD brauche nutze Ich Github Actions. Es ist
+                    kostenlos und dar Ich Github für fast alle meiner Projekte
+                    nutze ist es einfach zu Integrieren.
+                </div>
+                <div>
+                    Einige Beispiele wo Ich Github Actions nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" /> - Deployments (
+                            <TLink name="Strato" />)
+                        </li>
+                        <li>
+                            <TLink name="functional_utilities" /> - Tests +{" "}
+                            <TLink name="NPM" /> Publish
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Linux",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Ich nutze Linux als Betriebssystem auf meinem Laptop,
+                    Desktop und Servern. <br />
+                    Für meine Systeme nutze Ich Arch Linux, da es mir zugriff zu
+                    den neusten Paketen gibt, Linux allgemein ist oft besser für
+                    Development dar Tools oft stabiler und besser sind. <br />
+                    Auf Servern nutze Ich meistens Ubuntu, da es stabil ist und
+                    trotzdem alles für Deployment hat.
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
