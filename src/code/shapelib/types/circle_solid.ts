@@ -152,15 +152,14 @@ export class CircleSolid implements SolidShape, Interpolate {
             distanceBetweenCenters >= radiiDiff
         ) {
             return "outline_intersect";
-        } else if (distanceBetweenCenters < radiiDiff) {
+        }
+        if (distanceBetweenCenters < radiiDiff) {
             if (this.radius > other.radius) {
                 return "this_inside_other";
-            } else {
-                return "other_inside_this";
             }
-        } else {
-            return "disjoint";
+            return "other_inside_this";
         }
+        return "disjoint";
     }
 
     triangulate(quality: number): TriangleSolid[] {
@@ -183,21 +182,20 @@ export class CircleSolid implements SolidShape, Interpolate {
                 );
             }
             return points;
-        } else {
-            const points: Point[] = [];
-            const amount = sample_amount_default(
-                outline_length,
-                min_per_unit,
-                "rng",
-            );
-            for (let i = 0; i < amount; i++) {
-                const angle = Math.random() * 2 * Math.PI;
-                const x = this.position.x + this.radius * Math.cos(angle);
-                const y = this.position.y + this.radius * Math.sin(angle);
-                points.push(new Point(x, y));
-            }
-            return points;
         }
+        const points: Point[] = [];
+        const amount = sample_amount_default(
+            outline_length,
+            min_per_unit,
+            "rng",
+        );
+        for (let i = 0; i < amount; i++) {
+            const angle = Math.random() * 2 * Math.PI;
+            const x = this.position.x + this.radius * Math.cos(angle);
+            const y = this.position.y + this.radius * Math.sin(angle);
+            points.push(new Point(x, y));
+        }
+        return points;
     }
 
     sample_on_area(min_per_unit: number, variant: "min" | "rng"): Point[] {
@@ -222,15 +220,15 @@ export class CircleSolid implements SolidShape, Interpolate {
 
         if (discriminant < 0) {
             return 0; // no intersections
-        } else if (discriminant === 0) {
-            return dx > 0 ? 1 : 0; // one intersection if the point is to the right of the center
-        } else {
-            // two intersections if the point is to the right of the leftmost intersection point
-            const sqrtDiscriminant = Math.sqrt(discriminant);
-            const x1 = this.position.x + dx - sqrtDiscriminant;
-            const x2 = this.position.x + dx + sqrtDiscriminant;
-            return x1 > p.x || x2 > p.x ? 2 : 1;
         }
+        if (discriminant === 0) {
+            return dx > 0 ? 1 : 0; // one intersection if the point is to the right of the center
+        }
+        // two intersections if the point is to the right of the leftmost intersection point
+        const sqrtDiscriminant = Math.sqrt(discriminant);
+        const x1 = this.position.x + dx - sqrtDiscriminant;
+        const x2 = this.position.x + dx + sqrtDiscriminant;
+        return x1 > p.x || x2 > p.x ? 2 : 1;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {

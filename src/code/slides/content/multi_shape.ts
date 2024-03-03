@@ -34,35 +34,32 @@ export function multi_shape_visual(
         const label_offset = new Point(0, 20);
         const shapes: (Renderable & Interpolate & Transformable)[] = [
             PolygonSolid.make_ngon(3, size)
-                .set_setter(
-                    (ctx) =>
-                        (ctx.fillStyle =
-                            colors === "none"
-                                ? default_shape_color
-                                : color_gen(0).getHex()),
-                )
+                .set_setter((ctx) => {
+                    ctx.fillStyle =
+                        colors === "none"
+                            ? default_shape_color
+                            : color_gen(0).getHex();
+                })
                 .translate(gap_offset(-gap))
                 .translate(shape_offset)
                 .rotate(angle),
             new CircleSolid(new Point(0, 0), size)
-                .set_setter(
-                    (ctx) =>
-                        (ctx.fillStyle =
-                            colors === "none"
-                                ? default_shape_color
-                                : color_gen(1).getHex()),
-                )
+                .set_setter((ctx) => {
+                    ctx.fillStyle =
+                        colors === "none"
+                            ? default_shape_color
+                            : color_gen(1).getHex();
+                })
                 .translate(shape_offset),
             syncTextToShapes("Test")
                 .scale(0.03)
                 .recenter("both")
-                .set_setter(
-                    (ctx) =>
-                        (ctx.fillStyle =
-                            colors === "none"
-                                ? default_shape_color
-                                : color_gen(2).getHex()),
-                )
+                .set_setter((ctx) => {
+                    ctx.fillStyle =
+                        colors === "none"
+                            ? default_shape_color
+                            : color_gen(2).getHex();
+                })
                 .translate(gap_offset(gap).translate(shape_offset))
                 .rotate(interpolate_between(t / 3000, -0.2, 0.2)),
         ];

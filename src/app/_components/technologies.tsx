@@ -2,7 +2,7 @@
 
 import {
     Carousel,
-    CarouselApi,
+    type CarouselApi,
     CarouselContent,
     CarouselItem,
     CarouselNext,
@@ -37,16 +37,17 @@ export function Technologies() {
                 >
                     <CarouselContent>
                         {technologies.map((card, i) => (
-                            <CarouselItem key={i} className="basis-1/5">
+                            <CarouselItem key={card.name} className="basis-1/5">
                                 <div
                                     style={{
                                         backgroundColor:
-                                            i == current
+                                            i === current
                                                 ? "#3d547e67"
                                                 : "#0000002c",
                                     }}
                                     className="rounded-xl p-4 backdrop-blur"
                                     onClick={() => api?.scrollTo(i)}
+                                    onKeyDown={() => api?.scrollTo(i)}
                                 >
                                     {card.icon === "temp"
                                         ? card.name
@@ -71,9 +72,8 @@ export function Technologies() {
                         const t = technologies[current]?.description;
                         if (typeof t === "function") {
                             return t();
-                        } else {
-                            return t;
                         }
+                        return t;
                     })()}
                 </div>
             </div>

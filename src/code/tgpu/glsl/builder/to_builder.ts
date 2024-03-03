@@ -9,27 +9,53 @@ import { GlslVec2 } from "./glsl_vec2";
 import { GlslVec3 } from "./glsl_vec3";
 import { GlslVec4 } from "./glsl_vec4";
 
-// prettier-ignore
-export type MapGlslToBuilder<T extends GlslFullType> =
-    T extends { type: "void" } ? never :
-    T extends { type: "bool" } ? GlslBoolean :
-    T extends { type: "int" } ? GlslInteger :
-    T extends { type: "bvec2" } ? GlslBVec2 :
-    T extends { type: "bvec3" } ? GlslBVec3 :
-    T extends { type: "bvec4" } ? GlslBVec4 :
-    T extends { type: "ivec2" } ? never :
-    T extends { type: "ivec3" } ? never :
-    T extends { type: "ivec4" } ? never :
-    T extends { type: "float" } ? GlslFloat :
-    T extends { type: "vec2" } ? GlslVec2 :
-    T extends { type: "vec3" } ? GlslVec3 :
-    T extends { type: "vec4" } ? GlslVec4 :
-    T extends { type: "mat2" } ? never :
-    T extends { type: "mat3" } ? never :
-    T extends { type: "mat4" } ? never :
-    T extends { type: "sampler2D" } ? never :
-    T extends { type: "samplerCube" } ? never :
-    never;
+export type MapGlslToBuilder<T extends GlslFullType> = T extends {
+    type: "void";
+}
+    ? never
+    : T extends { type: "bool" }
+      ? GlslBoolean
+      : T extends { type: "int" }
+          ? GlslInteger
+          : T extends { type: "bvec2" }
+              ? GlslBVec2
+              : T extends { type: "bvec3" }
+                  ? GlslBVec3
+                  : T extends { type: "bvec4" }
+                      ? GlslBVec4
+                      : T extends { type: "ivec2" }
+                          ? never
+                          : T extends { type: "ivec3" }
+                              ? never
+                              : T extends { type: "ivec4" }
+                                  ? never
+                                  : T extends { type: "float" }
+                                      ? GlslFloat
+                                      : T extends { type: "vec2" }
+                                          ? GlslVec2
+                                          : T extends { type: "vec3" }
+                                              ? GlslVec3
+                                              : T extends { type: "vec4" }
+                                                  ? GlslVec4
+                                                  : T extends { type: "mat2" }
+                                                      ? never
+                                                      : T extends {
+                                                                  type: "mat3";
+                                                              }
+                                                          ? never
+                                                          : T extends {
+                                                                      type: "mat4";
+                                                                  }
+                                                              ? never
+                                                              : T extends {
+                                                                          type: "sampler2D";
+                                                                      }
+                                                                  ? never
+                                                                  : T extends {
+                                                                              type: "samplerCube";
+                                                                          }
+                                                                      ? never
+                                                                      : never;
 
 export type GlslBuilder =
     | GlslBoolean

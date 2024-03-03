@@ -9,7 +9,9 @@ const Example: NextPage = () => {
 
     return (
         <div>
-            <button onClick={() => setToggle(!toggle)}>Toggle</button>
+            <button onClick={() => setToggle(!toggle)} type="button">
+                Toggle
+            </button>
             <div className="flex w-screen justify-evenly">
                 <div className="w-32">
                     <h2>Box 1</h2>

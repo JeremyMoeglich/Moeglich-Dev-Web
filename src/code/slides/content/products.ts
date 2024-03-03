@@ -24,7 +24,7 @@ export function product_visual(opt: { name: boolean; price: boolean }) {
                 }),
                 opt.name ? new Text(ename, zerozero, 40) : RectSolid.empty(),
                 opt.price
-                    ? new Text(eprice.toFixed(0) + "€", zerozero, 40)
+                    ? new Text(`${eprice.toFixed(0)}€`, zerozero, 40)
                     : RectSolid.empty(),
             ]),
             [300, 100, 50],

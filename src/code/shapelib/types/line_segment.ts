@@ -95,11 +95,8 @@ export class LineSegment
         if (variant === "evenly") {
             const step = length / num_points;
             return range(num_points).map((i) => this.lerp(i * step));
-        } else {
-            return range(num_points).map((_) =>
-                this.lerp(Math.random() * length),
-            );
         }
+        return range(num_points).map((_) => this.lerp(Math.random() * length));
     }
 
     lerp(t: number): Point {
@@ -125,9 +122,8 @@ export class LineSegment
     sample_points(n: number, variant: "evenly" | "rng") {
         if (variant === "evenly") {
             return range(0, n).map((i) => this.lerp(i / (n - 1)));
-        } else {
-            return range(0, n).map((_) => this.lerp(Math.random()));
         }
+        return range(0, n).map((_) => this.lerp(Math.random()));
     }
 
     bbox(): RectSolid {

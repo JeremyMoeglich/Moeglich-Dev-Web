@@ -9,27 +9,21 @@ import useLocalStorage from "use-local-storage";
 function FullScreenApp() {
     const handle = useFullScreenHandle();
     const [is_fullscreen, set_is_fullscreen] = useState(false);
-    useKeydown(
-        maybe_window(),
-        "f",
-        () =>
-            void (async () => {
-                if (is_fullscreen) {
-                    await handle.exit();
-                } else {
-                    await handle.enter();
-                }
-                set_is_fullscreen((prev) => !prev);
-            })(),
-    );
-    useKeydown(
-        maybe_window(),
-        "Escape",
-        () =>
-            void (async () => {
+    useKeydown(maybe_window(), "f", () =>
+        (async () => {
+            if (is_fullscreen) {
                 await handle.exit();
-                set_is_fullscreen(false);
-            })(),
+            } else {
+                await handle.enter();
+            }
+            set_is_fullscreen((prev) => !prev);
+        })(),
+    );
+    useKeydown(maybe_window(), "Escape", () =>
+        (async () => {
+            await handle.exit();
+            set_is_fullscreen(false);
+        })(),
     );
     return (
         <FullScreen handle={handle}>

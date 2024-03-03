@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ThisReturn, type UnMarkThis } from "~/code/bundle";
 import { type Interpolate } from "~/code/funcs/interpolator";
 import { type Point } from "./point";
@@ -36,9 +35,7 @@ export class Point3d implements Interpolate, Transformable3d {
 
     distance(to: UnMarkThis<this>): number {
         return Math.sqrt(
-            Math.pow(this.x - to.x, 2) +
-                Math.pow(this.y - to.y, 2) +
-                Math.pow(this.z - to.z, 2),
+            (this.x - to.x) ** 2 + (this.y - to.y) ** 2 + (this.z - to.z) ** 2,
         );
     }
 

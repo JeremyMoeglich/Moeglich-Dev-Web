@@ -62,12 +62,9 @@ function generate_point(seed: number, t: number) {
         .map(([point, influence]) => {
             return [point, influence / total_influence] as [Point, number];
         })
-        .reduce(
-            (acc, [point, influence]) => {
-                return acc.translate(point.multiply(influence));
-            },
-            new Point(0, 0),
-        );
+        .reduce((acc, [point, influence]) => {
+            return acc.translate(point.multiply(influence));
+        }, new Point(0, 0));
 }
 
 export function rand_points(t: number) {

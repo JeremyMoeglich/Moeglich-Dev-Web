@@ -25,8 +25,9 @@ export function init_shader_program(
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         alert(
-            "Unable to initialize the shader program: " +
-                gl.getProgramInfoLog(program),
+            `Unable to initialize the shader program: ${gl.getProgramInfoLog(
+                program,
+            )}`,
         );
         throw new Error("Shader program initialization failed");
     }
@@ -46,8 +47,9 @@ function load_shader(
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         alert(
-            "An error occurred compiling the shaders: " +
-                gl.getShaderInfoLog(shader),
+            `An error occurred compiling the shaders: ${gl.getShaderInfoLog(
+                shader,
+            )}`,
         );
         gl.deleteShader(shader);
         throw new Error("Failed to compile shader");
@@ -124,7 +126,7 @@ export class ShaderInstance<
             "fragment",
             fragment_func,
         );
-        
+
         this.program = init_shader_program(gl, vertex, fragment);
         this.uniform_locations = new Map();
         for (const u of uniform) {

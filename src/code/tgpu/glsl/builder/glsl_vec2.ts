@@ -34,7 +34,8 @@ const GlslVec2Proto = build_proto([
                     name: "vec4",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (Array.isArray(other)) {
+            }
+            if (Array.isArray(other)) {
                 if (other.length === 1) {
                     return new GlslVec3({
                         type: "function_call",
@@ -48,26 +49,26 @@ const GlslVec2Proto = build_proto([
                             },
                         ],
                     });
-                } else {
-                    return new GlslVec4({
-                        type: "function_call",
-                        name: "vec4",
-                        arguments: [
-                            this.origin,
-                            {
-                                type: "literal",
-                                value: other[0],
-                                literal_type: "float",
-                            },
-                            {
-                                type: "literal",
-                                value: other[1],
-                                literal_type: "float",
-                            },
-                        ],
-                    });
                 }
-            } else if (typeof other === "number") {
+                return new GlslVec4({
+                    type: "function_call",
+                    name: "vec4",
+                    arguments: [
+                        this.origin,
+                        {
+                            type: "literal",
+                            value: other[0],
+                            literal_type: "float",
+                        },
+                        {
+                            type: "literal",
+                            value: other[1],
+                            literal_type: "float",
+                        },
+                    ],
+                });
+            }
+            if (typeof other === "number") {
                 return new GlslVec3({
                     type: "function_call",
                     name: "vec3",
@@ -80,13 +81,12 @@ const GlslVec2Proto = build_proto([
                         },
                     ],
                 });
-            } else {
-                return new GlslVec3({
-                    type: "function_call",
-                    name: "vec3",
-                    arguments: [this.origin, other.origin],
-                });
             }
+            return new GlslVec3({
+                type: "function_call",
+                name: "vec3",
+                arguments: [this.origin, other.origin],
+            });
         } as ((
             this: GlslVec2,
             other: GlslVec2 | [number, number],
@@ -148,7 +148,9 @@ export const GlslVec2 = function (
         this.origin = value;
     }
     this.glsl_name = "vec2";
-} as unknown as new (value: GlslExpression | ToGlslVec2) => GlslVec2;
+} as unknown as new (
+    value: GlslExpression | ToGlslVec2,
+) => GlslVec2;
 Object.assign(GlslVec2.prototype, GlslVec2Proto);
 export type GlslVec2 = Trackable<"vec2"> & {
     eq: (other: GlslVec2 | ToGlslVec2) => GlslBoolean;

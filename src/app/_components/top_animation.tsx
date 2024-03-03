@@ -1,17 +1,16 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
 import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
 import { range, zip_longest } from "functional-utilities";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSimpleSpring } from "~/utils/spring";
 import { useConstant } from "~/utils/use_persist";
 import { useAnimationTime } from "~/utils/use_update";
-import { Color } from "../funcs/color";
-import { ShapeRender } from "../shapelib/funcs/shape_render";
-import { Point, RectSolid } from "../shapelib";
+import { Color } from "../../code/funcs/color";
+import { ShapeRender } from "../../code/shapelib/funcs/shape_render";
+import { Point, RectSolid } from "../../code/shapelib";
 import { seeded_rand } from "~/utils/seeded_random";
-import { createBundle } from "../bundle";
+import { createBundle } from "../../code/bundle";
 import { useSimulation } from "~/utils/use_simulation";
 import Link from "next/link";
 // import { useContainerSize } from "../funcs/use_event";
@@ -45,6 +44,7 @@ function Shift({
         { width: 0, height: 0 },
     );
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: a change in parts will always cause a change in sizes
     useEffect(() => {
         const spans = parent_ref.current?.children;
         if (spans === undefined) {
@@ -147,7 +147,7 @@ function Shift({
 
 export function TopAnimation() {
     const words = ["moeglich.dev", "Jeremy\nMoeglich"];
-    
+
     const t = useAnimationTime();
     const i = Math.floor(t / 5000) % words.length;
     const cnoise = useConstant(makeNoise2D(seeded_rand(534)));
@@ -179,8 +179,10 @@ export function TopAnimation() {
                         languages and technologies
                     </p>
                     <div className="font-bold mt-3">
-                        <Link href={"https://github.com/JeremyMoeglich"}>GitHub</Link> |{" "}
-                        <Link href={"/overview"}>Projects</Link> |{" "}
+                        <Link href={"https://github.com/JeremyMoeglich"}>
+                            GitHub
+                        </Link>{" "}
+                        | <Link href={"/overview"}>Projects</Link> |{" "}
                         <Link href={"/contact"}>Contact</Link>
                     </div>
                 </div>

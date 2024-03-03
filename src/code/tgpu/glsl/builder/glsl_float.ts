@@ -59,13 +59,15 @@ const GlslFloatProto = build_proto([
                     name: "vec3",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (is_trackable(other, "vec3")) {
+            }
+            if (is_trackable(other, "vec3")) {
                 return new GlslVec4({
                     type: "function_call",
                     name: "vec4",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (typeof other === "number") {
+            }
+            if (typeof other === "number") {
                 return new GlslVec2({
                     type: "function_call",
                     name: "vec2",
@@ -78,7 +80,8 @@ const GlslFloatProto = build_proto([
                         },
                     ],
                 });
-            } else if (Array.isArray(other)) {
+            }
+            if (Array.isArray(other)) {
                 if (other.length === 1) {
                     return new GlslVec2({
                         type: "function_call",
@@ -92,7 +95,8 @@ const GlslFloatProto = build_proto([
                             },
                         ],
                     });
-                } else if (other.length === 2) {
+                }
+                if (other.length === 2) {
                     return new GlslVec3({
                         type: "function_call",
                         name: "vec3",
@@ -133,13 +137,12 @@ const GlslFloatProto = build_proto([
                         },
                     ],
                 });
-            } else {
-                return new GlslVec2({
-                    type: "function_call",
-                    name: "vec2",
-                    arguments: [this.origin, other.origin],
-                });
             }
+            return new GlslVec2({
+                type: "function_call",
+                name: "vec2",
+                arguments: [this.origin, other.origin],
+            });
         } as ((
             this: GlslFloat,
             other: GlslFloat | number | [number],
@@ -170,7 +173,9 @@ export const GlslFloat = function (
         this.origin = value;
     }
     this.glsl_name = "float";
-} as unknown as new (value: GlslExpression | ToGlslFloat) => GlslFloat;
+} as unknown as new (
+    value: GlslExpression | ToGlslFloat,
+) => GlslFloat;
 Object.assign(GlslFloat.prototype, GlslFloatProto);
 export type GlslFloat = Trackable<"float"> & {
     eq: (other: GlslFloat | number) => GlslBoolean;

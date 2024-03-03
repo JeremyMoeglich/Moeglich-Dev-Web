@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 type Primitives =
     | "u64"
     | "i64"
@@ -37,10 +36,9 @@ type MapToStructure<T, P extends Primitives> = T extends (number | "dyn")[]
     : T extends number
       ? Value<P>
       : T extends boolean
-        ? Value<"bool">
-        : never;
+          ? Value<"bool">
+          : never;
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function gpufunction<T extends any[], D extends Devices[]>(
     devices: [...D],
     args: [...T],

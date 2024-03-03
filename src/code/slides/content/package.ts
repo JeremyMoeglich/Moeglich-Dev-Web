@@ -118,12 +118,10 @@ export function package_visual<
     ]);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TupleMap<T extends any[], F extends (arg: any) => any> = {
     [P in keyof T]: F extends (arg: T[P]) => infer R ? R : never;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapTuple<T extends any[], F extends (arg: T[number]) => any>(
     tuple: T,
     fn: F,
@@ -134,32 +132,24 @@ function mapTuple<T extends any[], F extends (arg: T[number]) => any>(
 export function default_camera(variant: "isometric" | "perspective") {
     if (variant === "isometric") {
         return new IsometricCamera(new Point3d(0, 0, 0), new Point3d(0, 0, 0));
-    } else {
-        const loc = new Point3d(10, 10, 5);
-        const center = new Point3d(0, 0, 50);
-
-        const pitch = Math.atan2(
-            center.z - loc.z,
-            Math.sqrt((loc.x - center.x) ** 2 + (loc.y - center.y) ** 2),
-        );
-        const yaw = Math.atan2(loc.y - center.y, loc.x - center.x);
-        const rotation = new Point3d(pitch, yaw, 0);
-        const aspect_ratio = 16 / 9;
-
-        const near = 0.1;
-        const far = 3000;
-
-        const fov = 60;
-
-        return new PerspectiveCamera(
-            loc,
-            rotation,
-            aspect_ratio,
-            near,
-            far,
-            fov,
-        );
     }
+    const loc = new Point3d(10, 10, 5);
+    const center = new Point3d(0, 0, 50);
+
+    const pitch = Math.atan2(
+        center.z - loc.z,
+        Math.sqrt((loc.x - center.x) ** 2 + (loc.y - center.y) ** 2),
+    );
+    const yaw = Math.atan2(loc.y - center.y, loc.x - center.x);
+    const rotation = new Point3d(pitch, yaw, 0);
+    const aspect_ratio = 16 / 9;
+
+    const near = 0.1;
+    const far = 3000;
+
+    const fov = 60;
+
+    return new PerspectiveCamera(loc, rotation, aspect_ratio, near, far, fov);
 }
 
 export function package_visual3d(t: number) {

@@ -1,8 +1,8 @@
 import type { GlslFullType } from ".";
 
-
-// prettier-ignore
+// biome-ignore format:
 export type MapGlslToLiteral<T extends GlslFullType<1 | 2>> = 
+        // biome-ignore lint/suspicious/noConfusingVoidType:
         T extends { type: "void" } ? void :
         T extends { type: "bool" } ? boolean :
         T extends { type: "int" } ? number :
@@ -22,4 +22,3 @@ export type MapGlslToLiteral<T extends GlslFullType<1 | 2>> =
         T extends { type: "sampler2D" } ? WebGLTexture :
         T extends { type: "samplerCube" } ? WebGLTexture :
     never;
-

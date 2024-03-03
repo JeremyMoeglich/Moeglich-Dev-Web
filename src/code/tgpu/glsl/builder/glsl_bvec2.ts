@@ -38,7 +38,8 @@ const GlslBVec2Proto = build_proto([
                     name: "bvec4",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (Array.isArray(other)) {
+            }
+            if (Array.isArray(other)) {
                 if (other.length === 1) {
                     return new GlslBVec3({
                         type: "function_call",
@@ -52,26 +53,26 @@ const GlslBVec2Proto = build_proto([
                             },
                         ],
                     });
-                } else {
-                    return new GlslBVec4({
-                        type: "function_call",
-                        name: "vec4",
-                        arguments: [
-                            this.origin,
-                            {
-                                type: "literal",
-                                value: other[0],
-                                literal_type: "boolean",
-                            },
-                            {
-                                type: "literal",
-                                value: other[1],
-                                literal_type: "boolean",
-                            },
-                        ],
-                    });
                 }
-            } else if (typeof other === "boolean") {
+                return new GlslBVec4({
+                    type: "function_call",
+                    name: "vec4",
+                    arguments: [
+                        this.origin,
+                        {
+                            type: "literal",
+                            value: other[0],
+                            literal_type: "boolean",
+                        },
+                        {
+                            type: "literal",
+                            value: other[1],
+                            literal_type: "boolean",
+                        },
+                    ],
+                });
+            }
+            if (typeof other === "boolean") {
                 return new GlslBVec3({
                     type: "function_call",
                     name: "bvec3",
@@ -84,13 +85,12 @@ const GlslBVec2Proto = build_proto([
                         },
                     ],
                 });
-            } else {
-                return new GlslBVec3({
-                    type: "function_call",
-                    name: "bvec3",
-                    arguments: [this.origin, other.origin],
-                });
             }
+            return new GlslBVec3({
+                type: "function_call",
+                name: "bvec3",
+                arguments: [this.origin, other.origin],
+            });
         } as ((
             this: GlslBVec2,
             other: GlslBVec2 | [boolean, boolean],
@@ -152,7 +152,9 @@ export const GlslBVec2 = function (
         this.origin = value;
     }
     this.glsl_name = "bvec2";
-} as unknown as new (value: GlslExpression | ToGlslBVec2) => GlslBVec2;
+} as unknown as new (
+    value: GlslExpression | ToGlslBVec2,
+) => GlslBVec2;
 Object.assign(GlslBVec2.prototype, GlslBVec2Proto);
 export type GlslBVec2 = Trackable<"bvec2"> & {
     eq: (other: GlslBVec2 | ToGlslBVec2) => GlslBoolean;

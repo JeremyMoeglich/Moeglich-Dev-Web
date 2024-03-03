@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
     GlslBinaryOperation,
     GlslExpression,
@@ -124,7 +121,6 @@ export function equality_proto<
         ne: this_op_binary(literal, "!=", wrap_bool),
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EqualityProtoType<T> = {
     eq: (other: T) => GlslBoolean;
     ne: (other: T) => GlslBoolean;
@@ -141,7 +137,6 @@ export function relation_proto<
         ge: this_op_binary(literal, ">=", wrap_bool),
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RelationProtoType<T> = {
     lt: (other: T) => GlslBoolean;
     le: (other: T) => GlslBoolean;
@@ -164,7 +159,6 @@ export function arithmetic_proto<
         neg: this_op_unary("-", wrap),
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ArithmeticProtoType<T> = {
     add: (other: T) => T;
     sub: (other: T) => T;
@@ -183,7 +177,6 @@ export function boolean_proto<
         not: this_op_unary("!", wrap_bool),
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type BooleanProtoType<T> = {
     and: (other: T) => T;
     or: (other: T) => T;
@@ -339,7 +332,6 @@ export function gentype_proto<
         },
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type GentypeProtoType<T> = {
     sin: () => T;
     cos: () => T;

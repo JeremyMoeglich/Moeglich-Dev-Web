@@ -1,22 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export type Data<T> = T | Data<T>[] | { [k: string]: Data<T> };
 
 export function map_data<T, O>(data: Data<T>, func: (v: T) => O): Data<O> {
     if (Array.isArray(data)) {
         return data.map((v) => map_data(v, func));
-    } else if (typeof data === "object") {
+    }
+    if (typeof data === "object") {
         const obj: { [k: string]: Data<O> } = {};
         for (const k in data) {
             const d = (data as Record<string, Data<T>>)[k] as Data<T>;
             obj[k] = map_data<T, O>(d, func);
         }
         return obj;
-    } else {
-        return func(data);
     }
+    return func(data);
 }
 
 type UnwrapData<T> = T extends Data<infer R>

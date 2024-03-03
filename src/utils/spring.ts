@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useAnimationTime } from "./use_update";
 import { type Data, compare_data } from "./datacomp";
@@ -14,6 +13,7 @@ export function useSimpleSpring<T extends Data<number>>(
 
     const t = useAnimationTime();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         const dt = (t - lastTime) / 1000;
         if (dt > 1) {
@@ -33,7 +33,7 @@ export function useSimpleSpring<T extends Data<number>>(
         const newValue =
             compare_data(
                 [currentValue, lastValue, acceleration],
-                ([c, l, a]) => 2 * c - l + a * Math.pow(dt, 2),
+                ([c, l, a]) => 2 * c - l + a * dt ** 2,
             ) ?? panic("The structure of the data is not the same");
 
         setLastValue(currentValue);

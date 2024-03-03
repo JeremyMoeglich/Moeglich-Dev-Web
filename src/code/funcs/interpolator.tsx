@@ -74,9 +74,8 @@ export const interpolate_bundler: Bundler<Interpolate, Interpolate> = {
         can_interpolate: (_, value): value is Bundle<Interpolate> => {
             if (is_bundle(value, is_Interpolate)) {
                 return true;
-            } else {
-                return false;
             }
+            return false;
         },
         similarity: (from, to) => {
             if (!is_bundle(to, is_Interpolate)) return Infinity;
@@ -101,9 +100,11 @@ export function interpolateProps<T>(
 ): T {
     if (progress === 1) {
         return endProps;
-    } else if (progress === 0) {
+    }
+    if (progress === 0) {
         return startProps;
-    } else if (
+    }
+    if (
         startProps === endProps ||
         startProps === undefined ||
         startProps === null ||
@@ -111,22 +112,24 @@ export function interpolateProps<T>(
         endProps === null
     ) {
         return endProps;
-    } else if (
+    }
+    if (
         is_Interpolate(startProps) &&
         is_Interpolate(endProps) &&
         startProps.can_interpolate(endProps)
     ) {
         return startProps.interpolate(progress, endProps);
-    } else if (
+    }
+    if (
         Array.isArray(startProps) &&
         Array.isArray(endProps) &&
         startProps.length === endProps.length
     ) {
         return startProps.map((prop, index) =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             interpolateProps(prop, endProps[index], progress),
         ) as T;
-    } else if (
+    }
+    if (
         typeof startProps === "object" &&
         typeof endProps === "object" &&
         startProps &&
@@ -135,8 +138,8 @@ export function interpolateProps<T>(
         const result = {} as T;
         for (const key in startProps) {
             if (
-                startProps.hasOwnProperty(key) &&
-                endProps.hasOwnProperty(key)
+                Object.hasOwn(startProps, key) &&
+                Object.hasOwn(endProps, key)
             ) {
                 if (!disable || !disable.includes(key as keyof T)) {
                     result[key] = interpolateProps(
@@ -150,7 +153,8 @@ export function interpolateProps<T>(
             }
         }
         return result;
-    } else if (
+    }
+    if (
         (typeof startProps === "number" && typeof endProps === "number") ||
         (typeof startProps === "bigint" && typeof endProps === "bigint")
     ) {
@@ -159,16 +163,15 @@ export function interpolateProps<T>(
             (Number(endProps) - Number(startProps)) * progress;
         if (typeof startProps === "bigint") {
             return BigInt(Math.round(num)) as T;
-        } else {
-            return num as T;
         }
-    } else if (startProps instanceof Date && endProps instanceof Date) {
+        return num as T;
+    }
+    if (startProps instanceof Date && endProps instanceof Date) {
         const startTime = startProps.getTime();
         const endTime = endProps.getTime();
         return new Date(startTime + (endTime - startTime) * progress) as T;
-    } else {
-        return endProps;
     }
+    return endProps;
 }
 
 // Define the prop types
@@ -183,7 +186,7 @@ type Props<T> = {
 
 export const Interpolator = <T,>({
     props_list,
-    Component: Component,
+    Component,
     current,
     switch_duration,
     ease = "easeOutCubic",
@@ -204,6 +207,7 @@ export const Interpolator = <T,>({
 
     const MemoizedComponent = useMemo(() => React.memo(Component), [Component]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
         const startTime = Date.now();
 
@@ -241,7 +245,6 @@ export const Interpolator = <T,>({
                 requestRef.current = undefined;
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props_list, Component, current, switch_duration]);
 
     return (

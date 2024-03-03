@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import { Layout } from "~/code/components/Layout";
+import { Layout } from "~/app/_components/Layout";
 import { projects, technologies } from "~/data/tlink";
 export default function Page() {
     const { name, kind } = useParams<{
@@ -28,6 +28,7 @@ export default function Page() {
                     <div className="flex flex-col ">
                         <button
                             className="w-fit text-white"
+                            type="button"
                             onClick={() => history.back()}
                         >
                             ← Back

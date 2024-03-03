@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 

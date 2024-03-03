@@ -2,7 +2,7 @@ import { cached } from "functional-utilities";
 import { textToShapes } from "../shapelib/funcs/text_to_shape";
 
 export async function moeglichdev_text() {
-    return await cached(() => textToShapes(`moeglich.dev`), "moeglichdev_text");
+    return await cached(() => textToShapes("moeglich.dev"), "moeglichdev_text");
 }
 
 export async function moeglichdev_triangles() {

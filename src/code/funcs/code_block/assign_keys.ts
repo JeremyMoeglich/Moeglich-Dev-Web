@@ -45,7 +45,7 @@ export function assignKeys(
     while (sequencesCanBeExtended) {
         sequencesCanBeExtended = false;
         for (const id in identicalTokenMap) {
-            (identicalTokenMap[id] ?? panic()).forEach((sequence) => {
+            for (const sequence of identicalTokenMap[id] ?? panic()) {
                 const lastIndexOfPrev =
                     sequence.previous[sequence.previous.length - 1] ?? panic();
                 const lastIndexOfNew =
@@ -66,30 +66,29 @@ export function assignKeys(
                         nextIdPrev === nextIdNew &&
                         startIndexMap[nextIdPrev]
                     ) {
-                        (startIndexMap[nextIdPrev] ?? panic()).forEach(
-                            (nextSequence) => {
-                                if (
-                                    nextSequence.previous[0] ===
-                                        lastIndexOfPrev + 1 &&
-                                    nextSequence.new[0] === lastIndexOfNew + 1
-                                ) {
-                                    // Extend the sequence
-                                    sequence.previous.push(lastIndexOfPrev + 1);
-                                    sequence.new.push(lastIndexOfNew + 1);
-                                    // Remove the extended sequence from the startIndexMap
-                                    startIndexMap[nextIdPrev] = (
-                                        startIndexMap[nextIdPrev] ?? panic()
-                                    ).filter((seq) => seq !== nextSequence);
-                                    // Mark the tokens as used
-                                    usedPrevTokens[lastIndexOfPrev + 1] = true;
-                                    usedNewTokens[lastIndexOfNew + 1] = true;
-                                    sequencesCanBeExtended = true;
-                                }
-                            },
-                        );
+                        for (const nextSequence of startIndexMap[nextIdPrev] ??
+                            panic()) {
+                            if (
+                                nextSequence.previous[0] ===
+                                    lastIndexOfPrev + 1 &&
+                                nextSequence.new[0] === lastIndexOfNew + 1
+                            ) {
+                                // Extend the sequence
+                                sequence.previous.push(lastIndexOfPrev + 1);
+                                sequence.new.push(lastIndexOfNew + 1);
+                                // Remove the extended sequence from the startIndexMap
+                                startIndexMap[nextIdPrev] = (
+                                    startIndexMap[nextIdPrev] ?? panic()
+                                ).filter((seq) => seq !== nextSequence);
+                                // Mark the tokens as used
+                                usedPrevTokens[lastIndexOfPrev + 1] = true;
+                                usedNewTokens[lastIndexOfNew + 1] = true;
+                                sequencesCanBeExtended = true;
+                            }
+                        }
                     }
                 }
-            });
+            }
         }
     }
 
@@ -99,13 +98,14 @@ export function assignKeys(
         key: uuidv4(),
     }));
     for (const id in identicalTokenMap) {
-        (identicalTokenMap[id] ?? panic()).forEach((sequence) => {
-            sequence.new.forEach((index, i) => {
+        for (const sequence of identicalTokenMap[id] ?? panic()) {
+            for (let i = 0; i < sequence.new.length; i++) {
+                const index = sequence.new[i] ?? panic();
                 (keyedNewTokens[index] ?? panic()).key = (
                     previous_tokens[sequence.previous[i] ?? panic()] ?? panic()
                 ).key;
-            });
-        });
+            }
+        }
     }
 
     return keyedNewTokens;

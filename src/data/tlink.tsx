@@ -153,7 +153,7 @@ export const projects = [
         name: "Japtools",
         summary: "Eine Sprachlernwebseite",
         description: {
-            de: () => <div className="article"></div>,
+            de: () => <div className="article" />,
         },
         icon: "images/projects/japtools_icon.png",
         image: "/images/projects/japtools_site.png",
@@ -232,10 +232,10 @@ export const projects = [
                         Compiler mehr Verständnis und Freiheiten geben.
                     </li>
                     <li>
-                        <strong>"Everything is a value"</strong>: In Quip ist
-                        alles ein Wert, sogar der Compiler selbst ist ein Wert
-                        in der Standard Library. Dies ermöglicht es alle
-                        Konzepte mit den selben Mitteln (Funktionen) zu
+                        <strong>&quot;Everything is a value&quot;</strong>: In
+                        Quip ist alles ein Wert, sogar der Compiler selbst ist
+                        ein Wert in der Standard Library. Dies ermöglicht es
+                        alle Konzepte mit den selben Mitteln (Funktionen) zu
                         manipulieren.
                     </li>
                     <li>
@@ -452,8 +452,8 @@ export const technologies = [
             <div className="article">
                 <div>
                     Python war die erste richtige Programmiersprache die Ich
-                    gelernt habe, aber mittlerweile nutze Ich Python nur noch für
-                    kleine Scripts.
+                    gelernt habe, aber mittlerweile nutze Ich Python nur noch
+                    für kleine Scripts.
                 </div>
                 <div>
                     Die meisten meiner Python Projekte habe Ich zu einer Zeit

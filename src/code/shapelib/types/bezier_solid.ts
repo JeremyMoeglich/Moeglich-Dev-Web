@@ -308,13 +308,13 @@ export class BezierSolid implements SolidShape, Interpolate, Id {
         ctx.save();
         debug_context(ctx, (ctx) => {
             const points_with_handles = this.to_points_with_handles();
-            points_with_handles.forEach((p) => {
+            for (const p of points_with_handles) {
                 p.start_handle.to_circle_solid(2).render(ctx, "fill");
                 p.end_handle.to_circle_solid(2).render(ctx, "fill");
                 p.point.to_circle_solid(2).render(ctx, "fill");
                 p.start_handle.to_line(p.point).render(ctx);
                 p.end_handle.to_line(p.point).render(ctx);
-            });
+            }
 
             // mark [0] as red
             ctx.fillStyle = "red";

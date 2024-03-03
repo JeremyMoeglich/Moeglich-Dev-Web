@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { panic } from "functional-utilities";
 import type { GlslExpression } from "..";
 import { GlslFloat } from "./glsl_float";
@@ -22,10 +20,10 @@ export type InferVecLength<
     : N extends [T, T]
       ? GlslVec2
       : N extends [T, T, T]
-        ? GlslVec3
-        : N extends [T, T, T, T]
-          ? GlslVec4
-          : never;
+          ? GlslVec3
+          : N extends [T, T, T, T]
+              ? GlslVec4
+              : never;
 
 export function swizzle_from_index<T extends number, N extends VecInferable<T>>(
     expression: GlslExpression,
@@ -52,13 +50,17 @@ export function swizzle_from_index<T extends number, N extends VecInferable<T>>(
     };
     if (typeof index === "number") {
         return new GlslFloat(expr) as any;
-    } else if (index.length === 1) {
+    }
+    if (index.length === 1) {
         return new GlslFloat(expr) as any;
-    } else if (index.length === 2) {
+    }
+    if (index.length === 2) {
         return new GlslVec2(expr) as any;
-    } else if (index.length === 3) {
+    }
+    if (index.length === 3) {
         return new GlslVec3(expr) as any;
-    } else if (index.length === 4) {
+    }
+    if (index.length === 4) {
         return new GlslVec4(expr) as any;
     }
 

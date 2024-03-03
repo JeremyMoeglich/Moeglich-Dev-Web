@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
 // https://registry.khronos.org/OpenGL/specs/es/2.0/GLSL_ES_Specification_1.00.pdf
 // https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf
 
@@ -508,9 +506,8 @@ export function build_glsl_identifier(identifier: string): string {
     if (new_string.startsWith("__")) {
         if (["__LINE__", "__FILE__", "__VERSION__"].includes(new_string)) {
             return new_string;
-        } else {
-            return `var${new_string}`;
         }
+        return `var${new_string}`;
     }
 
     return new_string;
@@ -616,17 +613,17 @@ export type GlslFloatingPointType<V extends 1 | 2> =
               | "mat3"
               | "mat4"
               | (V extends 2
-                    ?
-                          | "mat2x2"
-                          | "mat2x3"
-                          | "mat2x4"
-                          | "mat3x2"
-                          | "mat3x3"
-                          | "mat3x4"
-                          | "mat4x2"
-                          | "mat4x3"
-                          | "mat4x4"
-                    : never);
+                      ?
+                              | "mat2x2"
+                              | "mat2x3"
+                              | "mat2x4"
+                              | "mat3x2"
+                              | "mat3x3"
+                              | "mat3x4"
+                              | "mat4x2"
+                              | "mat4x3"
+                              | "mat4x4"
+                      : never);
           precision: "lowp" | "mediump" | "highp" | "default";
       }
     | GlslBasicFloatingPointType;
@@ -662,21 +659,21 @@ export type GlslOpaqueType<V extends 1 | 2> = {
         | "samplerCube"
         | (V extends 2
               ?
-                    | "sampler3D"
-                    | "samplerCubeShadow"
-                    | "sampler2DShadow"
-                    | "sampler2DArray"
-                    | "sampler2DArrayShadow"
-                    // integers
-                    | "isampler2D"
-                    | "isampler3D"
-                    | "isamplerCube"
-                    | "isampler2DArray"
-                    // unsigned integers
-                    | "usampler2D"
-                    | "usampler3D"
-                    | "usamplerCube"
-                    | "usampler2DArray"
+                      | "sampler3D"
+                      | "samplerCubeShadow"
+                      | "sampler2DShadow"
+                      | "sampler2DArray"
+                      | "sampler2DArrayShadow"
+                      // integers
+                      | "isampler2D"
+                      | "isampler3D"
+                      | "isamplerCube"
+                      | "isampler2DArray"
+                      // unsigned integers
+                      | "usampler2D"
+                      | "usampler3D"
+                      | "usamplerCube"
+                      | "usampler2DArray"
               : never);
 };
 
@@ -729,9 +726,9 @@ export type Glsl2OutDeclaration<N extends string, K extends GlslShaderKind> = {
               | GlslIntegralType<2>
               | GlslBasicFloatingPointType // matrix are not allowed
               | GlslArrayType<
-                    2,
-                    GlslIntegralType<2> | GlslBasicFloatingPointType
-                >;
+                      2,
+                      GlslIntegralType<2> | GlslBasicFloatingPointType
+                  >;
     name: N;
     invariant?: boolean;
     interpolation?: "smooth" | "flat";
@@ -756,19 +753,19 @@ export type GlslVariableDeclaration<
       })
     | (V extends 1
           ?
-                | (Glsl1AttributeDeclaration<N> & {
-                      qualifier: "attribute";
-                  })
-                | (Glsl1VaryingDeclaration<N> & {
-                      qualifier: "varying";
-                  })
+                  | (Glsl1AttributeDeclaration<N> & {
+                          qualifier: "attribute";
+                      })
+                  | (Glsl1VaryingDeclaration<N> & {
+                          qualifier: "varying";
+                      })
           :
-                | (Glsl2InDeclaration<N, K> & {
-                      qualifier: "in";
-                  })
-                | (Glsl2OutDeclaration<N, K> & {
-                      qualifier: "out";
-                  }))
+                  | (Glsl2InDeclaration<N, K> & {
+                          qualifier: "in";
+                      })
+                  | (Glsl2OutDeclaration<N, K> & {
+                          qualifier: "out";
+                      }))
 ) & {
     name: N;
     invariant?: boolean;
@@ -800,11 +797,10 @@ function build_glsl_variable_declaration(
             )} ${build_glsl_identifier(declaration.name)}[${
                 declaration.variable_type.size
             }]`;
-        } else {
-            return `${build_glsl_type(
-                declaration.variable_type,
-            )} ${build_glsl_identifier(declaration.name)}`;
         }
+        return `${build_glsl_type(
+            declaration.variable_type,
+        )} ${build_glsl_identifier(declaration.name)}`;
     })();
     return `${declaration.invariant ? "invariant " : ""}${
         declaration.qualifier ?? ""
@@ -831,9 +827,8 @@ function build_glsl_variable_assign(assignment: GlslVariableAssign): string {
         return `${assignment.name} ${
             assignment.operator
         } ${build_glsl_expression(assignment.value)};`;
-    } else {
-        return `${assignment.name}${assignment.operator};`;
     }
+    return `${assignment.name}${assignment.operator};`;
 }
 
 export type GlslFunctionDeclaration<
@@ -923,11 +918,10 @@ function build_glsl_while<V extends 1 | 2, K extends GlslShaderKind>(
         return `do ${build_glsl_scope({
             statements: while_statement.body,
         })} while (${build_glsl_expression(while_statement.condition)});`;
-    } else {
-        return `while (${build_glsl_expression(
-            while_statement.condition,
-        )}) ${build_glsl_scope({ statements: while_statement.body })}`;
     }
+    return `while (${build_glsl_expression(
+        while_statement.condition,
+    )}) ${build_glsl_scope({ statements: while_statement.body })}`;
 }
 
 export type GlslPrecisionDeclaration<V extends 1 | 2> = {

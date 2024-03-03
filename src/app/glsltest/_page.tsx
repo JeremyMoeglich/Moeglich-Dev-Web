@@ -89,7 +89,12 @@ function Page() {
 
     return (
         <div>
-            <canvas ref={canvasRef} className="w-screen h-screen" width={1920} height={1080}/>
+            <canvas
+                ref={canvasRef}
+                className="w-screen h-screen"
+                width={1920}
+                height={1080}
+            />
         </div>
     );
 }

@@ -27,23 +27,25 @@ export function infer_glsl_type<V extends 1 | 2>(
                 case "float":
                     return { type: "float", precision: "default" };
             }
+            throw new Error("Unreachable");
         case "variable":
             return (
                 vars.get(expr.name) ?? panic(`Variable ${expr.name} not found`)
             );
-        case "array_access":
+        case "array_access": {
             const inner = infer_glsl_type(vars, expr.array);
             if (inner.type !== "array") {
                 throw new Error("Not an array");
             }
             return inner.inner_type;
+        }
         case "function_call":
             return infer_function_call(vars, expr);
         case "unary_operation":
             return infer_unary_operation(vars, expr);
         case "binary_operation":
             return infer_binary_operation(vars, expr);
-        case "swizzle":
+        case "swizzle": {
             const expr_type = infer_glsl_type(vars, expr.vector);
             if (
                 expr_type.type !== "vec2" &&
@@ -64,6 +66,7 @@ export function infer_glsl_type<V extends 1 | 2>(
                 default:
                     throw new Error("Invalid swizzle length");
             }
+        }
     }
 }
 
@@ -127,13 +130,37 @@ const glsl1_functions: Record<
     string,
     (...args: GlslFullType<1>[]) => GlslFullType<1>
 > = {
-    // prettier-ignore
     ...same_as_first_argument([
-        "radians", "degrees", "sin", "cos", "tan", "asin", "acos", "atan",
-        "pow", "exp", "log", "exp2", "log2", "sqrt", "inversesqrt",
-        "abs", "sign", "floor", "ceil", "fract", "mod", "min", "max", "clamp", "mix",
-        "normalize", "faceforward", "reflect", "refract",
-        "matrixCompMult"
+        "radians",
+        "degrees",
+        "sin",
+        "cos",
+        "tan",
+        "asin",
+        "acos",
+        "atan",
+        "pow",
+        "exp",
+        "log",
+        "exp2",
+        "log2",
+        "sqrt",
+        "inversesqrt",
+        "abs",
+        "sign",
+        "floor",
+        "ceil",
+        "fract",
+        "mod",
+        "min",
+        "max",
+        "clamp",
+        "mix",
+        "normalize",
+        "faceforward",
+        "reflect",
+        "refract",
+        "matrixCompMult",
     ]),
     step: (_, b) => b,
     smoothstep: (_a, _b, c) => c,
@@ -238,5 +265,5 @@ function infer_binary_operation<V extends 1 | 2>(
     }
     const a = infer_glsl_type(vars, expr.left);
     const b = infer_glsl_type(vars, expr.right);
-    return f(a, b);s
+    return f(a, b);
 }

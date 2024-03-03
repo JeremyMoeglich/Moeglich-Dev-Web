@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BuildScope } from "./scope";
 import type { GlslBuilder } from "./to_builder";
 import { extract_common_expressions } from "../extract_common";
@@ -42,7 +38,8 @@ export const GlslVariable = function <T extends GlslBuilder>(
                         value: extracted.output_expr,
                     });
                 };
-            } else if (prop === "add_set") {
+            }
+            if (prop === "add_set") {
                 return (other: T) => {
                     const extracted = extract_common_expressions(
                         scope.vars,
@@ -56,7 +53,8 @@ export const GlslVariable = function <T extends GlslBuilder>(
                         value: extracted.output_expr,
                     });
                 };
-            } else if (prop === "sub_set") {
+            }
+            if (prop === "sub_set") {
                 return (other: T) => {
                     const extracted = extract_common_expressions(
                         scope.vars,
@@ -70,7 +68,8 @@ export const GlslVariable = function <T extends GlslBuilder>(
                         value: extracted.output_expr,
                     });
                 };
-            } else if (prop === "div_set") {
+            }
+            if (prop === "div_set") {
                 return (other: T) => {
                     const extracted = extract_common_expressions(
                         scope.vars,
@@ -84,7 +83,8 @@ export const GlslVariable = function <T extends GlslBuilder>(
                         value: extracted.output_expr,
                     });
                 };
-            } else if (prop === "mul_set") {
+            }
+            if (prop === "mul_set") {
                 return (other: T) => {
                     const extracted = extract_common_expressions(
                         scope.vars,
@@ -98,12 +98,12 @@ export const GlslVariable = function <T extends GlslBuilder>(
                         value: extracted.output_expr,
                     });
                 };
-            } else if (prop === "get") {
-                return () => target.value;
-            } else {
-                const v = target.value[prop as keyof T];
-                return v;
             }
+            if (prop === "get") {
+                return () => target.value;
+            }
+            const v = target.value[prop as keyof T];
+            return v;
         },
         set: (target, prop, value) => {
             target.value[prop as keyof T] = value;

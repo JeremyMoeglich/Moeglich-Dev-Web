@@ -28,13 +28,15 @@ const GlslBooleanProto = build_proto([
                     name: "bvec3",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (is_trackable(other, "bvec3")) {
+            }
+            if (is_trackable(other, "bvec3")) {
                 return new GlslBVec4({
                     type: "function_call",
                     name: "bvec4",
                     arguments: [this.origin, other.origin],
                 });
-            } else if (typeof other === "boolean") {
+            }
+            if (typeof other === "boolean") {
                 return new GlslBVec2({
                     type: "function_call",
                     name: "bvec2",
@@ -47,13 +49,12 @@ const GlslBooleanProto = build_proto([
                         },
                     ],
                 });
-            } else {
-                return new GlslBVec2({
-                    type: "function_call",
-                    name: "bvec2",
-                    arguments: [this.origin, other.origin],
-                });
             }
+            return new GlslBVec2({
+                type: "function_call",
+                name: "bvec2",
+                arguments: [this.origin, other.origin],
+            });
         } as ((this: GlslBoolean, other: GlslBoolean | boolean) => GlslBVec2) &
             ((this: GlslBoolean, other: GlslBVec2) => GlslBVec3) &
             ((this: GlslBoolean, other: GlslBVec3) => GlslBVec4),
@@ -75,7 +76,9 @@ export const GlslBoolean = function (
         this.origin = value;
     }
     this.glsl_name = "bool";
-} as unknown as new (origin: GlslExpression | ToGlslBoolean) => GlslBoolean;
+} as unknown as new (
+    origin: GlslExpression | ToGlslBoolean,
+) => GlslBoolean;
 Object.assign(GlslBoolean.prototype, GlslBooleanProto);
 export type GlslBoolean = Trackable<"bool"> & {
     eq: (other: GlslBoolean | boolean) => GlslBoolean;

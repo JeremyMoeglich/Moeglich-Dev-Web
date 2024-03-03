@@ -99,7 +99,9 @@ export const GlslVec3 = function (
         this.origin = value;
     }
     this.glsl_name = "vec3";
-} as unknown as new (value: GlslExpression | ToGlslVec3) => GlslVec3;
+} as unknown as new (
+    value: GlslExpression | ToGlslVec3,
+) => GlslVec3;
 Object.assign(GlslVec3.prototype, GlslVec3Proto);
 export type GlslVec3 = Trackable<"vec3"> & {
     eq: (other: GlslVec3 | ToGlslVec3) => GlslBoolean;

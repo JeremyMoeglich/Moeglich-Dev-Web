@@ -38,7 +38,7 @@ function generate_code(): string {
             code += `Loading ${block.web_path}...\n`;
             fetchFileContent(block);
         } else {
-            code += entry + "\n\n";
+            code += `${entry}\n\n`;
         }
     }
     return code;

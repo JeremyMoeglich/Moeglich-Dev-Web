@@ -37,6 +37,7 @@ export const CodeBlock: React.FC<{
     const fontRef = useRef<HTMLDivElement>(null);
     const font = `"Fira Code", monospace`;
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: font changes size
     useEffect(() => {
         const lines = code.split("\n");
         const new_tokens = lines.flatMap((line, y) => {

@@ -95,7 +95,6 @@ function Page() {
         return () => {
             window.removeEventListener("resize", handleResize);
             ref.removeEventListener("click", onCanvasClick);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
             ref.removeChild(renderer.domElement);
         };
     }, []);

@@ -238,12 +238,11 @@ export class RectSolid
                     panic("No line to sample from, (this should never happen)");
                 return line.sample_points(1, "rng");
             });
-        } else {
-            const n_per_line = Math.ceil(n / lines.length);
-            return lines.flatMap((line) =>
-                line.sample_points(n_per_line, "evenly"),
-            );
         }
+        const n_per_line = Math.ceil(n / lines.length);
+        return lines.flatMap((line) =>
+            line.sample_points(n_per_line, "evenly"),
+        );
     }
 
     triangulate(): TriangleSolid[] {
@@ -296,23 +295,24 @@ export class RectSolid
             this.y + this.height <= other.y + other.height
         ) {
             return "this_inside_other";
-        } else if (
+        }
+        if (
             other.x >= this.x &&
             other.x + other.width <= this.x + this.width &&
             other.y >= this.y &&
             other.y + other.height <= this.y + this.height
         ) {
             return "other_inside_this";
-        } else if (
+        }
+        if (
             this.x + this.width < other.x ||
             this.x > other.x + other.width ||
             this.y + this.height < other.y ||
             this.y > other.y + other.height
         ) {
             return "disjoint";
-        } else {
-            return "outline_intersect";
         }
+        return "outline_intersect";
     }
 
     intersects(other: this): boolean {
@@ -332,11 +332,11 @@ export class RectSolid
     right_point_intersections(p: Point): number {
         if (p.x < this.x) {
             return 2;
-        } else if (p.x > this.x + this.width) {
-            return 0;
-        } else {
-            return 1;
         }
+        if (p.x > this.x + this.width) {
+            return 0;
+        }
+        return 1;
     }
 
     select_shape(ctx: CanvasRenderingContext2D): void {
@@ -365,12 +365,12 @@ export class RectSolid
         const dy = this.height / (n_y + 1); // Adjusted to have n_y + 1 gaps
 
         // Wrap alignment values using modulo operation
-        x_align = x_align % 1;
-        y_align = y_align % 1;
+        const mod_x_align = x_align % 1;
+        const mod_y_align = y_align % 1;
 
         // Calculate x and y offsets based on alignment parameters
-        const x_offset = (this.width - dx * (n_x - 1)) * x_align;
-        const y_offset = (this.height - dy * (n_y - 1)) * y_align;
+        const x_offset = (this.width - dx * (n_x - 1)) * mod_x_align;
+        const y_offset = (this.height - dy * (n_y - 1)) * mod_y_align;
 
         return range(1, n_x + 1).flatMap(
             (

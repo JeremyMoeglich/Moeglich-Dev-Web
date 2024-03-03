@@ -2,7 +2,7 @@
 
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { type NextPage } from "next";
-import { Layout } from "~/code/components/Layout";
+import { Layout } from "~/app/_components/Layout";
 import { TLinkComponent, projects } from "~/data/tlink";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -48,6 +48,7 @@ const Projects: NextPage = () => {
                                         href={p.site_url}
                                         className="flex items-center gap-1"
                                         target="_blank"
+                                        rel="noreferrer"
                                     >
                                         Site
                                         {"icon" in p && (
@@ -67,6 +68,7 @@ const Projects: NextPage = () => {
                                         href={p.package_url}
                                         className="flex items-center gap-1"
                                         target="_blank"
+                                        rel="noreferrer"
                                     >
                                         {p.package_url.includes("npmjs.com")
                                             ? "NPM"

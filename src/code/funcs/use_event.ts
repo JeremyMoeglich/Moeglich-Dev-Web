@@ -39,10 +39,9 @@ export function useMousePosition(
         (e) => {
             if (anchor === "global") {
                 return new Point(e.clientX, e.clientY);
-            } else {
-                const rect = (element ?? panic()).getBoundingClientRect();
-                return new Point(e.clientX - rect.left, e.clientY - rect.top);
             }
+            const rect = (element ?? panic()).getBoundingClientRect();
+            return new Point(e.clientX - rect.left, e.clientY - rect.top);
         },
         zerozero,
     );

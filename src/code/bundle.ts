@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { point_map_bundler } from "./shapelib/types/interfaces/pointmap";
 import { renderable_bundler } from "./shapelib/types/interfaces/renderable";
 import { bounding_box_bundler } from "./shapelib/types/interfaces/boundingbox";

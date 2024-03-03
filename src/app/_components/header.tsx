@@ -1,11 +1,9 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { maybe_global } from "functional-utilities";
-import { maybe_window } from "~/utils/maybe_window";
 
 function NavigationEntry(props: {
     name: string;
@@ -63,7 +61,7 @@ export function Header(props: { slim: boolean }) {
                             name={name}
                             current={current === name}
                             path={path}
-                        ></NavigationEntry>
+                        />
                     ))}
                 </div>
             </div>

@@ -186,7 +186,9 @@ export class HollowShape<T extends SolidShape & Interpolate>
 
     select_shape(ctx: CanvasRenderingContext2D): void {
         this.exterior.select_shape(ctx);
-        this.holes.forEach((h) => h.select_shape(ctx));
+        for (const h of this.holes) {
+            h.select_shape(ctx);
+        }
     }
 
     render(ctx: CanvasRenderingContext2D, action: "fill" | "stroke"): void {
@@ -198,7 +200,9 @@ export class HollowShape<T extends SolidShape & Interpolate>
 
     render_debug(ctx: CanvasRenderingContext2D): void {
         this.exterior.render_debug(ctx);
-        this.holes.forEach((h) => h.render_debug(ctx));
+        for (const h of this.holes) {
+            h.render_debug(ctx);
+        }
     }
 
     map_points(

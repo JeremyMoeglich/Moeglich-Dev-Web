@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 type Cache<T> = Map<string, T>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const cache: Cache<any> = new Map();
 
 export function useAsyncValue<T>(
@@ -19,10 +18,9 @@ export function useAsyncValue<T>(
                 if (cachedValue !== undefined) {
                     setValue(() => cachedValue);
                     return;
-                } else {
-                    result = await asyncFunction();
-                    cache.set(cache_key, result);
                 }
+                result = await asyncFunction();
+                cache.set(cache_key, result);
             } else {
                 result = await asyncFunction();
             }

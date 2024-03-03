@@ -44,7 +44,7 @@ export const languages = {
             }),
             createToken({
                 name: "MultilineComment",
-                pattern: /\/\*[^]*?\*\//, // Matches multiline comments enclosed in "/* */"
+                pattern: /\/\*[\s\S]*?\*\//, // Matches multiline comments enclosed in "/* */"
             }),
 
             // Define token for strings
@@ -151,7 +151,7 @@ export const languages = {
             }),
             createToken({
                 name: "MultilineComment",
-                pattern: /\/\*[^]*?\*\//, // Matches multiline comments enclosed in "/* */"
+                pattern: /\/\*[\s\S]*?\*\//, // Matches multiline comments enclosed in "/* */"
             }),
 
             // Define token for strings
@@ -296,7 +296,7 @@ export const languages = {
             }),
             createToken({
                 name: "Comment",
-                pattern: /\/\/.*|#[^]*\n/,
+                pattern: /\/\/.*|#[\s\S]*\n/,
             }),
             createToken({
                 name: "Boolean",

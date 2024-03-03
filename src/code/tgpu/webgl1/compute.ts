@@ -50,22 +50,21 @@ function getSharedWebGLContext<V extends 1 | 2>(
         return sharedWebGLContext as V extends 1
             ? WebGLRenderingContext
             : WebGL2RenderingContext;
-    } else {
-        if (!sharedWebGL2Context) {
-            const gl =
-                sharedCanvas.getContext("webgl2") ??
-                sharedCanvas.getContext("experimental-webgl2");
-            if (!gl) {
-                return null;
-            }
-
-            sharedWebGL2Context = gl as WebGL2RenderingContext;
+    }
+    if (!sharedWebGL2Context) {
+        const gl =
+            sharedCanvas.getContext("webgl2") ??
+            sharedCanvas.getContext("experimental-webgl2");
+        if (!gl) {
+            return null;
         }
 
-        return sharedWebGL2Context as V extends 1
-            ? WebGLRenderingContext
-            : WebGL2RenderingContext;
+        sharedWebGL2Context = gl as WebGL2RenderingContext;
     }
+
+    return sharedWebGL2Context as V extends 1
+        ? WebGLRenderingContext
+        : WebGL2RenderingContext;
 }
 export function fragment_only_shader<
     N extends string,

@@ -12,6 +12,7 @@ export function useCustomEffect(
     const componentStillMounted = useRef(true);
     const destructor = callback();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         return () => {
             if (componentStillMounted.current) {
@@ -22,7 +23,6 @@ export function useCustomEffect(
                 destructor.destroy();
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 
     useEffect(() => {

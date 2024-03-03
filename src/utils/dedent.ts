@@ -2,7 +2,6 @@ export function dedent(
     strings: TemplateStringsArray,
     ...values: unknown[]
 ): string {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const output = strings.reduce(
         (acc, str, idx) => `${acc}${(values[idx - 1] ?? "") as string}${str}`,
     );

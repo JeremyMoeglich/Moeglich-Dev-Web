@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 
 export function useSimulation<S>(
@@ -11,6 +10,7 @@ export function useSimulation<S>(
     const [state, setState] = useState(initial);
     const last_t = useRef(performance.now()); // Initialize to current time
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         let animationFrameId: number;
 

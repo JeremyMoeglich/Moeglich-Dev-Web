@@ -37,12 +37,16 @@ export function generics_visual(step: 0 | 1 | 2) {
         return align([
             local_package(
                 PolygonSolid.make_ngon(6, 50)
-                    .set_setter((ctx) => (ctx.fillStyle = default_shape_color))
+                    .set_setter((ctx) => {
+                        ctx.fillStyle = default_shape_color;
+                    })
                     .rotate(t / 1000, zerozero),
             ),
             local_package(
                 PolygonSolid.make_ngon(4, 50)
-                    .set_setter((ctx) => (ctx.fillStyle = default_shape_color))
+                    .set_setter((ctx) => {
+                        ctx.fillStyle = default_shape_color;
+                    })
                     .rotate(deg_to_rad(45)),
             ),
         ]);

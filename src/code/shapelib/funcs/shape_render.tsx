@@ -38,7 +38,9 @@ function rerender(ctx: CanvasRenderingContext2D) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     const shapes = Array.from(rendered_shapes.values());
     shapes.sort((a, b) => a.z_index - b.z_index);
-    shapes.forEach((shape) => shape.redraw(ctx));
+    for (const shape of shapes) {
+        shape.redraw(ctx);
+    }
 }
 
 let rerenderScheduled = false;
@@ -103,7 +105,6 @@ const SingleShapeRender: React.FC<DrawParams & { shape_id: string }> = ({
         }
 
         return () => {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
             const canvas = canvasRef.current;
             if (canvas) {
                 rendered_shapes.delete(shape_id);
@@ -182,7 +183,7 @@ export const ShapeRender: React.FC<
             return inst;
         }
         return [];
-    }, [shapeRef, instructions]);
+    }, [instructions]);
     // We use an invisible div to get the position of the ShapeRender component
     return (
         <div
@@ -230,6 +231,7 @@ export const ShapeRenderProvider: React.FC<ShapeRenderProviderProps> = ({
     }
 
     useEvent(maybe_window(), "resize", resize, undefined);
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
         resize();
     }, [canvasRef]);

@@ -102,7 +102,7 @@ export const BulletPointSlide: StageGen<{
             </h1>
             <ul>
                 {props.points.map((point, index) => (
-                    <li key={index}>{point}</li>
+                    <li key={point + index}>{point}</li>
                 ))}
             </ul>
         </div>

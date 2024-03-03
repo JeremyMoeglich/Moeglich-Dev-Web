@@ -55,31 +55,31 @@ export function intersect_visual(
         const cross_center_label = show_cross
             ? new Text(
                   impl === "func"
-                      ? dedent`
+                      ? `${dedent`
             const point: Point = {
                 x: ${cross_center.x.toFixed(2)},
                 y: ${cross_center.y.toFixed(2)},
             };
-            ` +
-                        "\n\n" +
-                        (!intersect
-                            ? ""
-                            : dedent`
+            `}\n\n${
+                              !intersect
+                                  ? ""
+                                  : dedent`
             const inside = is_inside_circle(circle, point);
             console.log(inside); // ${contained}
-            `)
-                      : dedent`
+            `
+                          }`
+                      : `${dedent`
             const point = new Point(${cross_center.x.toFixed(
                 2,
             )}, ${cross_center.y.toFixed(2)});
-            ` +
-                        "\n\n" +
-                        (!intersect
-                            ? ""
-                            : dedent`
+            `}\n\n${
+                              !intersect
+                                  ? ""
+                                  : dedent`
             const inside = circle.contains(point);
             console.log(inside); // ${contained}
-            `),
+            `
+                          }`,
                   cross_center
                       .subtract(cross_center_around)
                       .multiply(0.2)

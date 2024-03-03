@@ -1,8 +1,4 @@
 export class ArrayMap<K, V> extends Map<K, Array<V>> {
-    constructor() {
-        super();
-    }
-
     push(key: K, value: V): void {
         const arr = this.get(key);
         if (arr) {

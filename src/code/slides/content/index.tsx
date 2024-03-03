@@ -783,7 +783,7 @@ export const stages: Stage[] = [
                 xgap: 0,
             },
             {
-                code: ``,
+                code: "",
                 language: "ts",
                 offsety: -60,
                 scale: 1.6,

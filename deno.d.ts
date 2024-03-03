@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /** The global namespace where Deno specific, non-standard APIs are located. */
 declare namespace Deno {
     /** A set of error constructors that are raised by Deno APIs.

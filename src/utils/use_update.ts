@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 export function useUpdate<T>(
-    f: (callback: (value: T) => (() => void) | void) => void,
+    f: (callback: (value: T) => void) => (() => void) | undefined,
     initial: T,
 ): T {
     const [value, setValue] = useState<T>(() => initial);

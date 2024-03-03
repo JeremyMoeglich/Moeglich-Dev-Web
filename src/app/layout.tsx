@@ -35,9 +35,7 @@ export default function RootLayout({
                 <CrossTextProvider>
                     <ShapeRenderProvider>
                         <TRPCReactProvider cookies={cookies().toString()}>
-                            <main className="w-full">
-                                {children}
-                            </main>
+                            <main className="w-full">{children}</main>
                         </TRPCReactProvider>
                     </ShapeRenderProvider>
                 </CrossTextProvider>

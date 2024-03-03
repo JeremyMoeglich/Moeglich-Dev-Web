@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createBundle } from "~/code/bundle";
 import { rad_to_deg } from "~/code/funcs/angle";
 import { Color } from "~/code/funcs/color";

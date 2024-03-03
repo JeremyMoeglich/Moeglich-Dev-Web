@@ -45,7 +45,7 @@ const units = {
 } satisfies Record<string, UnitConverter>;
 
 const getUnitConverter = (unit: keyof typeof units): UnitConverter => {
-    return units[unit] ?? units["px"];
+    return units[unit] ?? units.px;
 };
 
 export const measureTextSize = (
@@ -289,26 +289,25 @@ export class Text implements Interpolate, Renderable, Transformable {
         const texts = split_include(this.text, sep).flatMap((text) => {
             if (text === " ") {
                 return [];
-            } else {
-                let remaining = text;
-                const chunks: Text[] = [];
-                while (remaining.includes("\n")) {
-                    const index = remaining.indexOf("\n");
-                    chunks.push(
-                        new Text(
-                            remaining.slice(0, index),
-                            new Point(x, y),
-                            this.size,
-                            this.line_height_factor,
-                            this.font,
-                        ),
-                    );
-                    x = 0;
-                    y += line_height;
-                    remaining = remaining.slice(index + 1);
-                }
-                return chunks;
             }
+            let remaining = text;
+            const chunks: Text[] = [];
+            while (remaining.includes("\n")) {
+                const index = remaining.indexOf("\n");
+                chunks.push(
+                    new Text(
+                        remaining.slice(0, index),
+                        new Point(x, y),
+                        this.size,
+                        this.line_height_factor,
+                        this.font,
+                    ),
+                );
+                x = 0;
+                y += line_height;
+                remaining = remaining.slice(index + 1);
+            }
+            return chunks;
         });
         return createBundle(texts)
             .scale(new Point(this.scalex, this.scaley))

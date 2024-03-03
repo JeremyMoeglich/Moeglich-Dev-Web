@@ -17,7 +17,7 @@ export function measureText(
     fontFamily: string,
     skipFontCheck = false,
 ): { width: number; height: number } | undefined {
-    if (!skipFontCheck && !isFontLoaded(fontFamily)) {
+    if (!(skipFontCheck || isFontLoaded(fontFamily))) {
         return undefined;
     }
 
@@ -50,7 +50,7 @@ export function getLargestCharSize(
     fontFamily: string,
     skipFontCheck = false,
 ): { char: string; width: number; height: number } | undefined {
-    if (!skipFontCheck && !isFontLoaded(fontFamily)) {
+    if (!(skipFontCheck || isFontLoaded(fontFamily))) {
         return undefined;
     }
 

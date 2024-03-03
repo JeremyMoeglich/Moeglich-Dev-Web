@@ -18,6 +18,7 @@ export function useLifecycle(
     const componentStillMounted = useRef(true);
 
     // Use effect for creation and update actions
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         let destructor: Destructor | undefined;
 
@@ -39,7 +40,6 @@ export function useLifecycle(
                 actions.destroy && actions.destroy();
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 
     // Use effect for tracking the mounted status

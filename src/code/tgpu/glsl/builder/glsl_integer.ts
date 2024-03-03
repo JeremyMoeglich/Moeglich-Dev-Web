@@ -32,7 +32,9 @@ export const GlslInteger = function (
         this.origin = value;
     }
     this.glsl_name = "int";
-} as unknown as new (value: GlslExpression | ToGlslInteger) => GlslInteger;
+} as unknown as new (
+    value: GlslExpression | ToGlslInteger,
+) => GlslInteger;
 Object.assign(GlslInteger.prototype, GlslIntegerProto);
 export type GlslInteger = Trackable<"int"> & {
     eq: (other: GlslInteger | number) => GlslBoolean;

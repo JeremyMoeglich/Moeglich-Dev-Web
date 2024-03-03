@@ -268,9 +268,9 @@ export class PolygonSolid
 
     sample_on_area(avr_per_unit: number, variant: "min" | "rng"): Point[] {
         const triangles = this.triangulate();
-        return triangles
-            .map((t) => t.sample_on_area(avr_per_unit, variant))
-            .flat();
+        return triangles.flatMap((t) =>
+            t.sample_on_area(avr_per_unit, variant),
+        );
     }
 
     vertices(): Point[] {

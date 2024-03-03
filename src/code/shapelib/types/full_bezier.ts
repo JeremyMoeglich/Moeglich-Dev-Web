@@ -335,19 +335,19 @@ export class FullBezier
 
     sample_t_x(t: number): number {
         return (
-            Math.pow(1 - t, 3) * this.start_point.x +
-            3 * Math.pow(1 - t, 2) * t * this.bezier.handle1.x +
-            3 * (1 - t) * Math.pow(t, 2) * this.bezier.handle2.x +
-            Math.pow(t, 3) * this.bezier.end_point.x
+            (1 - t) ** 3 * this.start_point.x +
+            3 * (1 - t) ** 2 * t * this.bezier.handle1.x +
+            3 * (1 - t) * t ** 2 * this.bezier.handle2.x +
+            t ** 3 * this.bezier.end_point.x
         );
     }
 
     sample_t_y(t: number): number {
         return (
-            Math.pow(1 - t, 3) * this.start_point.y +
-            3 * Math.pow(1 - t, 2) * t * this.bezier.handle1.y +
-            3 * (1 - t) * Math.pow(t, 2) * this.bezier.handle2.y +
-            Math.pow(t, 3) * this.bezier.end_point.y
+            (1 - t) ** 3 * this.start_point.y +
+            3 * (1 - t) ** 2 * t * this.bezier.handle1.y +
+            3 * (1 - t) * t ** 2 * this.bezier.handle2.y +
+            t ** 3 * this.bezier.end_point.y
         );
     }
 
