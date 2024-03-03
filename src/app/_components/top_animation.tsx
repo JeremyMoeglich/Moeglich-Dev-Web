@@ -26,7 +26,7 @@ function Shift({
 }) {
     const parent_ref = useRef<null | HTMLSpanElement>(null);
     const [sizes, setSizes] = useState(
-        parts.map((_) => ({ width: 0, height: 0 })),
+        parts.map((_) => ({ width: 0, height: 180 })),
     );
     const size_x = useSimpleSpring(sizes[i]?.width ?? 0, {
         damping: 26,
