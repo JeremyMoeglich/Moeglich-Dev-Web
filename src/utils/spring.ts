@@ -13,7 +13,7 @@ export function useSimpleSpring<T extends Data<number>>(
 
     const t = useAnimationTime();
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
         const dt = (t - lastTime) / 1000;
         if (dt > 1) {
@@ -38,7 +38,7 @@ export function useSimpleSpring<T extends Data<number>>(
 
         setLastValue(currentValue);
         setCurrentValue(newValue as T);
-    }, [t]);
+    }, [t, stiffness, damping]);
 
     return currentValue as T;
 }

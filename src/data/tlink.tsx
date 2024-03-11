@@ -1,6 +1,13 @@
 import { typed_from_entries } from "functional-utilities";
 import Link from "next/link";
 import type { Page } from "puppeteer";
+import {
+    PropsWithChildren,
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import * as Icons from "~/app/_components/icons";
 
 export const projects = [
@@ -196,6 +203,28 @@ export const projects = [
         image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/functional-utilities",
         github_url: "https://github.com/JeremyMoeglich/functional_utilities",
+    },
+    {
+        name: "tgpu",
+        summary: "Eine Library für einfache und sichere GPU Programmierung",
+        description: () => (
+            <div className="article">
+                <div>
+                    Eine Library für einfache und sichere GPU Programmierung in
+                    Typescript. Aktuell unterstützt diese nur WebGl1 aber
+                    WebGl2, WebGPU und Vulkan sind geplant.
+                </div>
+                <div>
+                    Die Library ermöglicht es ohne jemals Shader, Buffer oder
+                    ähnliches zu schreiben, komplexe Grafiken zu erstellen oder
+                    Berechnungen auf der GPU auszuführen.
+                </div>
+            </div>
+        ),
+        icon: "/images/projects/tgpu_icon.svg",
+        image: "/images/projects/tgpu_image.svg",
+        github_url:
+            "https://github.com/JeremyMoeglich/Moeglich-Dev-Web/tree/main/src/code/tgpu",
     },
     {
         name: "Quip",
@@ -883,11 +912,52 @@ const link_map = {
     ),
 };
 
-export function TLink({ name }: { name: keyof typeof link_map }) {
+const TLinkNameContext = createContext<{
+    addName?: (name: string) => void;
+    removeName?: (name: string) => void;
+}>({});
+
+// Component to collect TLink names, making context usage optional
+export const TLinkNameCollector: React.FC<
+    PropsWithChildren<{
+        onNameChange: (names: string[]) => unknown;
+    }>
+> = ({ children, onNameChange }) => {
+    const [names, setNames] = useState<string[]>([]);
+
+    const addName = (name: string) =>
+        setNames((prev) => {
+            const v = [...prev, name];
+            onNameChange(v);
+            return v;
+        });
+    const removeName = (name: string) =>
+        setNames((prev) => {
+            const v = prev.filter((n) => n !== name);
+            onNameChange(v);
+            return v;
+        });
+
+    return (
+        <TLinkNameContext.Provider value={{ addName, removeName }}>
+            {children}
+        </TLinkNameContext.Provider>
+    );
+};
+
+// TLink component modified to optionally use the context
+export const TLink: React.FC<{ name: keyof typeof link_map }> = ({ name }) => {
+    const { addName, removeName } = useContext(TLinkNameContext);
+
+    useEffect(() => {
+        addName?.(name);
+        return () => removeName?.(name);
+    }, [name, addName, removeName]);
+
     return (
         <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>
     );
-}
+};
 
 export function TLinkComponent({
     name,

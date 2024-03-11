@@ -15,7 +15,8 @@
             ".next/**",
             ".vercel/**",
             ".swc/**",
-            "target/**"
+            "target/**",
+            "src/code/sources.ts"
         ]
     },
     "linter": {
@@ -50,7 +51,8 @@
             ".next/**",
             ".vercel/**",
             ".swc/**",
-            "target/**"
+            "target/**",
+            "src/code/sources.ts"
         ]
     }
 }

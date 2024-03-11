@@ -2,9 +2,12 @@
 
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { Layout } from "~/app/_components/Layout";
-import { projects, technologies } from "~/data/tlink";
+import { TLinkNameCollector, projects, technologies } from "~/data/tlink";
+
 export default function Page() {
+    const [names, setNames] = useState<string[]>([]);
     const { name, kind } = useParams<{
         name: string;
         kind: string;
@@ -25,7 +28,7 @@ export default function Page() {
         <Layout>
             <div className="mx-auto flex w-3/4 max-w-[2000px] flex-col gap-8 px-4 text-white">
                 <div className="flex flex-wrap gap-4">
-                    <div className="flex flex-col ">
+                    <div className="flex flex-col">
                         <button
                             className="w-fit text-white"
                             type="button"
@@ -46,11 +49,14 @@ export default function Page() {
                     )}
                 </div>
                 <div className="bg-slate-700 bg-opacity-50 p-4 backdrop-blur-lg">
-                    {typeof description === "string"
-                        ? description
-                        : typeof description.de === "string"
-                          ? description.de
-                          : description.de()}
+                    {names}
+                    <TLinkNameCollector onNameChange={(new_names) => {}}>
+                        {typeof description === "string"
+                            ? description
+                            : typeof description.de === "string"
+                              ? description.de
+                              : description.de()}
+                    </TLinkNameCollector>
                 </div>
             </div>
         </Layout>

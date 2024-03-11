@@ -2,11 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { maybe_global } from "functional-utilities";
-
+import { CgHome, CgList } from "react-icons/cg";
 function NavigationEntry(props: {
-    name: string;
+    name: () => ReactNode;
     current: boolean;
     path: string;
 }) {
@@ -20,7 +20,7 @@ function NavigationEntry(props: {
                 textDecoration: props.current ? "underline" : "none",
             }}
         >
-            <div className="z-50 text-3xl">{props.name}</div>
+            <div className="z-50 text-3xl">{props.name()}</div>
         </Link>
     );
 }
@@ -40,8 +40,16 @@ function useYScroll() {
 export function Header(props: { slim: boolean }) {
     const path = usePathname();
     const path_map = {
-        "/": "Home",
-        "/overview": "Projects",
+        "/": () => (
+            <span className="flex items-center gap-2">
+                <CgHome /> Home
+            </span>
+        ),
+        "/overview": () => (
+            <span className="flex items-center gap-2">
+                <CgList /> Overview
+            </span>
+        ),
         // "/about": "About",
         // "/contact": "Contact",
     };
@@ -49,12 +57,12 @@ export function Header(props: { slim: boolean }) {
     const current = path_map[path as keyof typeof path_map];
 
     return (
-        <div className="relative mb-20">
-            <div className="flex">
+        <div className="relative">
+            <div className="flex flex-wrap justify-between">
                 <Link className="z-50 p-3 text-3xl text-white" href="/">
                     moeglich.dev
                 </Link>
-                <div className="ml-auto flex">
+                <div className="flex">
                     {Object.entries(path_map).map(([path, name]) => (
                         <NavigationEntry
                             key={path}

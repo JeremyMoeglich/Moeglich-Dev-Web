@@ -24,7 +24,7 @@ export function Technologies() {
         });
     }, [api]);
     return (
-        <div className="mt-8 bg-white bg-opacity-10 p-8 text-white">
+        <div className="mt-8 bg-white bg-opacity-10 p-8 text-white backdrop-blur-md">
             <h2 className="text-5xl font-bold">Technologies</h2>
             <div className="flex justify-center">
                 <Carousel

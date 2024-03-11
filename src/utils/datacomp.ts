@@ -94,4 +94,3 @@ export function compare_data<D extends Data<any>[], O>(
 
     return undefined;
 }
-compare_data([1, 2, 3], ([a, b, c]) => a + b + c);

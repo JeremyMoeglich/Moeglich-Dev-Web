@@ -1,19 +1,14 @@
 "use client";
 
-import { makeNoise2D, makeNoise3D } from "fast-simplex-noise";
-import { range, zip_longest } from "functional-utilities";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { makeNoise2D } from "fast-simplex-noise";
+import { zip_longest } from "functional-utilities";
+import { useEffect, useRef, useState } from "react";
 import { useSimpleSpring } from "~/utils/spring";
 import { useConstant } from "~/utils/use_persist";
 import { useAnimationTime } from "~/utils/use_update";
 import { Color } from "../../code/funcs/color";
-import { ShapeRender } from "../../code/shapelib/funcs/shape_render";
-import { Point, RectSolid } from "../../code/shapelib";
 import { seeded_rand } from "~/utils/seeded_random";
-import { createBundle } from "../../code/bundle";
-import { useSimulation } from "~/utils/use_simulation";
 import Link from "next/link";
-// import { useContainerSize } from "../funcs/use_event";
 
 function Shift({
     parts,

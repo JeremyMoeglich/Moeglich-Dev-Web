@@ -6,8 +6,12 @@ import { Technologies } from "./_components/technologies";
 const Home: NextPage = () => {
     return (
         <Layout>
-            <TopAnimation />
-            <Technologies />
+            <div className="mt-32">
+                <div className="mb-32">
+                    <TopAnimation />
+                </div>
+                <Technologies />
+            </div>
         </Layout>
     );
 };
