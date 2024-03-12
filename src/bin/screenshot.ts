@@ -33,7 +33,7 @@ async function takeScreenshot(
 }
 
 const browser = await puppeteer.launch({
-    headless: "new",
+    headless: true,
 });
 
 for (const data of projects) {
