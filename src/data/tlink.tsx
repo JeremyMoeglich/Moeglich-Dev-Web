@@ -98,19 +98,42 @@ export const projects = [
             de: () => (
                 <div className="article">
                     <div>
-                        Diese Website ist meine persönliche Website und
+                        moeglich.dev ist meine persönliche Website und
                         Portfolio. Sie ist mit <TLink name="Next" /> und{" "}
                         <TLink name="React" /> geschrieben und verwendet{" "}
                         <TLink name="Tailwind" /> fürs Styling.
                     </div>
                     <div>
-                        Weitere Technologien:
+                        Die Seite enthält auch einige von mir geschriebene
+                        Libraries:
+                        <div>
+                            <ul>
+                                <li>
+                                    <TLink name="functional_utilities" /> - Eine
+                                    Utility Library für Typescript
+                                </li>
+                                <li>
+                                    <TLink name="tgpu" /> - Eine Library für
+                                    einfache und sichere GPU Programmierung
+                                </li>
+                                <li>
+                                    <TLink name="tshapes" /> - Eine Library fürs
+                                    Arbeiten mit Formen und Rendering
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        Weitere genutzte Technologien:
                         <ul>
                             <li>
-                                <TLink name="Vercel" />: Hosting
+                                <TLink name="Vercel" />: Hosting, CI Builds
                             </li>
                             <li>
                                 <TLink name="TRPC" />: Backend API
+                            </li>
+                            <li>
+                                <TLink name="Biome"/>: Lint, Format
                             </li>
                         </ul>
                     </div>
@@ -867,12 +890,47 @@ export const technologies = [
     {
         icon: "temp",
         name: "Vercel",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Vercel ist ein Hosting Service für Webseiten. Ich nutze es
+                    für fast alle meiner Webseiten, da es einfach zu nutzen ist
+                    und viele Features wie Edge Functions hat.
+                </div>
+                <div>
+                    Einige Beispiele wo Ich Vercel nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Tagaro" />
+                        </li>
+                        <li>
+                            <TLink name="Moeglich.dev" />
+                        </li>
+                        <li>
+                            <TLink name="ErcEsg" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
         name: "Strato",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Strato ist ein CDN / Hosting Service. Der Grund warum Ich es
+                    nutze ist das die alte Version von <TLink name="Tagaro" />{" "}
+                    dort gehostet war und eine änderung zu Problemen geführt
+                    hätte.
+                </div>
+                <div>
+                    Das einzige Projekt wo Ich Strato nutze ist{" "}
+                    <TLink name="Tagaro" />
+                </div>
+            </div>
+        ),
     },
     {
         icon: "temp",
