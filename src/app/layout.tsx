@@ -8,6 +8,7 @@ import { CrossTextProvider } from "~/utils/cross_text";
 import { ShapeRenderProvider } from "~/code/shapelib/funcs/shape_render";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { NonEmptyArray } from "functional-utilities";
+import { CookiesProvider } from "next-client-cookies/server";
 
 const inter = Gabarito({
     subsets: ["latin"],
@@ -32,13 +33,15 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`font-sans ${inter.variable} overflow-x-hidden`}>
-                <CrossTextProvider>
-                    <ShapeRenderProvider>
-                        <TRPCReactProvider cookies={cookies().toString()}>
-                            <main className="w-full">{children}</main>
-                        </TRPCReactProvider>
-                    </ShapeRenderProvider>
-                </CrossTextProvider>
+                <CookiesProvider>
+                    <CrossTextProvider>
+                        <ShapeRenderProvider>
+                            <TRPCReactProvider cookies={cookies().toString()}>
+                                <main className="w-full">{children}</main>
+                            </TRPCReactProvider>
+                        </ShapeRenderProvider>
+                    </CrossTextProvider>
+                </CookiesProvider>
             </body>
         </html>
     );

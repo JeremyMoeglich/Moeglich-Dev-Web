@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Layout } from "~/app/_components/Layout";
+import { I18 } from "~/app/_components/i18";
 import { TLinkNameCollector, projects, technologies } from "~/data/tlink";
 
 export default function Page() {
@@ -51,11 +52,7 @@ export default function Page() {
                 <div className="bg-slate-700 bg-opacity-50 p-4 backdrop-blur-lg">
                     {names}
                     <TLinkNameCollector onNameChange={(new_names) => {}}>
-                        {typeof description === "string"
-                            ? description
-                            : typeof description.de === "string"
-                              ? description.de
-                              : description.de()}
+                        <I18 content={description} />
                     </TLinkNameCollector>
                 </div>
             </div>

@@ -90,6 +90,23 @@ export const projects = [
             await el.click();
         },
         github_url: "https://github.com/JeremyMoeglich/Tagaro-Monorepo",
+        tags: [
+            "Tagaro",
+            "Sveltekit",
+            "Typescript",
+            "Turborepo",
+            "Vercel",
+            "Strato",
+            "Website",
+            "Admin Panel",
+            "Firebase",
+            "Google Analytics",
+            "Github Actions",
+            "Prisma",
+            "CockroachDb",
+            "Node",
+            "Scss",
+        ],
     },
     {
         name: "Moeglich.dev",
@@ -133,7 +150,7 @@ export const projects = [
                                 <TLink name="TRPC" />: Backend API
                             </li>
                             <li>
-                                <TLink name="Biome"/>: Lint, Format
+                                <TLink name="Biome" />: Lint, Format
                             </li>
                         </ul>
                     </div>
@@ -144,6 +161,18 @@ export const projects = [
         image: "/images/projects/moeglichdev_site.png",
         site_url: "https://moeglich.dev",
         github_url: "https://github.com/JeremyMoeglich/Moeglich-Dev-Web",
+        tags: [
+            "Moeglich.dev",
+            "Next",
+            "React",
+            "Tailwind",
+            "Vercel",
+            "TRPC",
+            "Biome",
+            "functional_utilities",
+            "tgpu",
+            "tshapes",
+        ],
     },
     {
         name: "ErcEsg",
@@ -178,6 +207,15 @@ export const projects = [
         image: "/images/projects/ercesg_site.png",
         site_url: "https://erc-heessen.de",
         github_url: "https://github.com/JeremyMoeglich/erc-esg",
+        tags: [
+            "ErcEsg",
+            "Sveltekit",
+            "Typescript",
+            "Vercel",
+            "Prisma",
+            "CockroachDb",
+            "Node",
+        ],
     },
     {
         name: "Japtools",
@@ -189,6 +227,7 @@ export const projects = [
         image: "/images/projects/japtools_site.png",
         site_url: "https://japtools.moeglich.dev",
         github_url: "https://github.com/JeremyMoeglich/japtools",
+        tags: ["Japtools", "Sveltekit", "Typescript", "Vercel"],
     },
     {
         name: "functional_utilities",
@@ -226,6 +265,7 @@ export const projects = [
         image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/functional-utilities",
         github_url: "https://github.com/JeremyMoeglich/functional_utilities",
+        tags: ["functional_utilities", "NPM", "Typescript"],
     },
     {
         name: "tgpu",
@@ -248,6 +288,15 @@ export const projects = [
         image: "/images/projects/tgpu_image.svg",
         github_url:
             "https://github.com/JeremyMoeglich/Moeglich-Dev-Web/tree/main/src/code/tgpu",
+        tags: [
+            "tgpu",
+            "Typescript",
+            "WebGl",
+            "WebGPU",
+            "Vulkan",
+            "functional_utilities",
+            "tshapes",
+        ],
     },
     {
         name: "Quip",
@@ -348,6 +397,7 @@ export const projects = [
         icon: "images/projects/quip_icon.png",
         image: "/images/projects/quip_image.svg",
         github_url: "https://github.com/JeremyMoeglich/quip",
+        tags: ["Quip", "Rust", "Programming Language"],
     },
     {
         name: "list_screen",
@@ -369,6 +419,7 @@ export const projects = [
         icon: "images/projects/pypi_icon.svg",
         image: "/images/projects/pypi_default.svg",
         package_url: "https://pypi.org/project/list-screen/",
+        tags: ["list_screen", "Python", "Pypi"],
     },
     {
         name: "tsgridlib",
@@ -391,6 +442,7 @@ export const projects = [
         icon: "images/projects/npm_icon.svg",
         image: "/images/projects/npm_default.svg",
         package_url: "https://www.npmjs.com/package/tsgridlib",
+        tags: ["tsgridlib", "NPM", "Typescript"],
     },
     {
         name: "Satworld",
@@ -399,6 +451,15 @@ export const projects = [
         icon: "images/projects/satworld_icon.svg",
         image: "/images/projects/satworld_site.png",
         site_url: "http://newshopware.satworldit.de/",
+        tags: [
+            "Satworld",
+            "Rust",
+            "Shopware",
+            "Python",
+            "Company",
+            "Shop",
+            "Website",
+        ],
     },
     {
         name: "Http-Websocket-Proxy",
@@ -421,6 +482,34 @@ export const projects = [
                 </div>
             </div>
         ),
+        tags: ["Http-Websocket-Proxy", "Node", "Websockets"],
+    },
+    {
+        name: "tshapes",
+        summary: "Eine Library fürs Arbeiten mit Formen",
+        description: () => (
+            <div className="article">
+                <div>
+                    Tshapes ist eine Library fürs Arbeiten mit Formen in
+                    Typescript. Das enthält vieles wie z.B. rendering,
+                    collision, transformation, triangulation und vieles mehr.
+                </div>
+                <div>
+                    Aktuell ist die Library in purem Typescript geschrieben aber
+                    beschleunigung mit <TLink name="tgpu" /> und{" "}
+                    <TLink name="Webassembly" /> via Rust ist in der Zukunft
+                    geplant
+                </div>
+                <div>
+                    Aktuell ist die Library Teil von{" "}
+                    <TLink name="Moeglich.dev" />, aber Ich werde diese
+                    vermutlich auf <TLink name="NPM" /> veröffentlichen
+                </div>
+            </div>
+        ),
+        icon: "/images/projects/tshapes_icon.svg",
+        image: "/images/projects/tshapes_image.svg",
+        tags: ["tshapes", "Typescript", "WebGl", "WebGPU", "Vulkan"],
     },
 ] as const;
 
@@ -945,6 +1034,11 @@ export const technologies = [
     {
         icon: "temp",
         name: "NPM",
+        description: "todo",
+    },
+    {
+        icon: "temp",
+        name: "Biome",
         description: "todo",
     },
 ] as const;

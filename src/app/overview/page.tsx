@@ -29,14 +29,23 @@ const Projects: NextPage = () => {
                 <div>
                     <div className="grid max-w-[2000px] grid-cols-1 gap-4 px-4 shadow text-white sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                         {projects
-                            .filter((p) =>
-                                p.name
-                                    .toLowerCase()
-                                    .includes(search.toLowerCase()),
-                            )
+                            .map((p) => {
+                                let score = 0;
+                                if (p.name.toLowerCase().includes(search))
+                                    score += 1;
+                                if (p.summary.toLowerCase().includes(search))
+                                    score += 1;
+                                if (p.tags.some((t) => t.includes(search)))
+                                    score += 1;
+                                return { p, score };
+                            })
+                            .sort((a, b) => b.score - a.score)
+                            .filter((p) => p.score > 0)
+                            .map((p) => p.p)
                             .map((p) => (
-                                <div
+                                <motion.div
                                     key={p.name}
+                                    layoutId={`${p.name}-box`}
                                     className="flex flex-col gap-2 rounded-lg bg-gradient-to-t from-[#2c2454bc] to-[#000334be] p-2 shadow-lg backdrop-blur-md"
                                 >
                                     {"image" in p && (
@@ -116,7 +125,7 @@ const Projects: NextPage = () => {
                                             </>
                                         )}
                                     </span>
-                                </div>
+                                </motion.div>
                             ))}
                     </div>
                 </div>
