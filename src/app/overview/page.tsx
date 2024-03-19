@@ -4,10 +4,9 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { type NextPage } from "next";
 import { Layout } from "~/app/_components/Layout";
 import { TLinkComponent, projects } from "~/data/tlink";
-import { AnimatePresence, motion } from "framer-motion";
-import { Input } from "~/@/components/ui/input";
-import { CgSearch } from "react-icons/cg";
 import { useState } from "react";
+import jaro from "jaro-winkler";
+import { SearchBar } from "../_components/search_bar";
 
 const Projects: NextPage = () => {
     const [search, setSearch] = useState("");
@@ -15,32 +14,37 @@ const Projects: NextPage = () => {
         <Layout>
             <div className="flex flex-col rounded gap-4">
                 <div className="flex justify-center">
-                    <div className="flex p-1 gap-4 items-center bg-blue-800 shadow-lg rounded-full backdrop-blur-sm bg-opacity-40 border-[1px] border-black border-opacity-20">
-                        <CgSearch size={32} color="white" />
-                        <Input
-                            type="search"
-                            placeholder="Search"
-                            className="bg-slate-200 rounded-full border-none"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
+                    <SearchBar search={search} onChange={setSearch} />
                 </div>
                 <div>
                     <div className="grid max-w-[2000px] grid-cols-1 gap-4 px-4 shadow text-white sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                         {projects
                             .map((p) => {
-                                let score = 0;
-                                if (p.name.toLowerCase().includes(search))
-                                    score += 1;
-                                if (p.summary.toLowerCase().includes(search))
-                                    score += 1;
-                                if (p.tags.some((t) => t.includes(search)))
-                                    score += 1;
-                                return { p, score };
+                                const t1 = p.name.toLowerCase();
+                                const t2 = p.summary.toLowerCase();
+
+                                const s = search.toLowerCase();
+
+                                const s1 =
+                                    jaro(t1, s) * 1.5 + Number(t1.includes(s));
+                                const s2 =
+                                    jaro(t2, s) * 1.3 + Number(t2.includes(s));
+                                const s3 =
+                                    Math.max(
+                                        ...p.tags.map(
+                                            (t) =>
+                                                jaro(t.toLowerCase(), s) +
+                                                Number(t.includes(s)),
+                                        ),
+                                    ) * 1.2;
+
+                                return {
+                                    p,
+                                    score: Math.max(s1, s2, s3),
+                                };
                             })
+                            .filter((p) => p.score > 0.8)
                             .sort((a, b) => b.score - a.score)
-                            .filter((p) => p.score > 0)
                             .map((p) => p.p)
                             .map((p) => (
                                 <motion.div

@@ -119,3 +119,7 @@ html {
 .article ul {
     padding-left: 1.5rem;
 }
+
+.flat {
+    filter: brightness(0.0) invert(1.0);
+}

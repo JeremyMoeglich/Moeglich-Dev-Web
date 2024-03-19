@@ -24,8 +24,8 @@ export function Technologies() {
         });
     }, [api]);
     return (
-        <div className="mt-8 bg-white bg-opacity-10 p-8 text-white backdrop-blur-md">
-            <h2 className="text-5xl font-bold">Technologies</h2>
+        <div className="mt-8 bg-purple-800 bg-opacity-40 p-4 text-white backdrop-blur-sm">
+            <h2 className="text-4xl font-bold">Technologies</h2>
             <div className="flex justify-center">
                 <Carousel
                     setApi={setApi}
@@ -37,37 +37,45 @@ export function Technologies() {
                 >
                     <CarouselContent>
                         {technologies.map((card, i) => (
-                            <CarouselItem key={card.name} className="basis-1/5">
+                            <CarouselItem
+                                key={card.name}
+                                className="basis-1/5"
+                            >
                                 <div
                                     style={{
                                         backgroundColor:
                                             i === current
-                                                ? "#3d547e67"
+                                                ? "#467adb67"
                                                 : "#0000002c",
                                     }}
-                                    className="rounded-xl p-4 backdrop-blur"
+                                    className="flex rounded-xl p-2 backdrop-blur aspect-square items-center justify-center"
                                     onClick={() => api?.scrollTo(i)}
                                     onKeyDown={() => api?.scrollTo(i)}
                                 >
-                                    {card.icon === "temp"
-                                        ? card.name
-                                        : card.icon()}
+                                    <div className="flex w-full h-full relative flex-col justify-between items-center">
+                                        <div className="w-full h-full">
+                                            {card.icon()}
+                                        </div>
+                                        <div className="flex text-center justify-center items-center p-2 bg-black font-bold drop-shadow-md shadow-black backdrop-blur-sm bg-opacity-55">
+                                            {card.name}
+                                        </div>
+                                    </div>
                                 </div>
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="text-gray-400" />
-                    <CarouselNext className="text-gray-400" />
+                    <CarouselPrevious className="text-black w-10 h-10 hover:bg-blue-300" />
+                    <CarouselNext className="text-black w-10 h-10 hover:bg-blue-300" />
                 </Carousel>
             </div>
-            <div>
+            <div className="mt-4">
                 <h3 className="text-3xl">
-                    My Experience with{" "}
+                    Meine Erfahrungen mit{" "}
                     <span className="font-bold text-green-400">
                         {technologies[current]?.name}
                     </span>
                 </h3>
-                <div>
+                <div className="">
                     {(() => {
                         const t = technologies[current]?.description;
                         if (typeof t === "function") {

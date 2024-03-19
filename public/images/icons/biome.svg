@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="344.57999"
+   height="298.4032"
+   version="1.0"
+   id="svg1"
+   sodipodi:docname="biome.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#cccccc"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="1"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.41442569"
+     inkscape:cx="627.37424"
+     inkscape:cy="149.60463"
+     inkscape:window-width="1536"
+     inkscape:window-height="796"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <rect
+     id="background"
+     width="100%"
+     height="100%"
+     fill="none"
+     x="-2.415"
+     y="0" />
+  <g
+     transform="translate(-53.512,-92.304)"
+     stroke-linecap="square"
+     id="g1">
+    <path
+       id="emblem"
+       d="m 225.8,92.304 -76.751,132.93 c 29.122,-8.9782 60.452,-10.309 90.821,-3.146 l 25.939,6.1226 -24.404,103.48 -25.976,-6.1224 c -19.954,-4.7072 -40.754,-0.043 -56.841,12.674 -8.0467,6.3645 -14.386,14.355 -18.731,23.319 l -24.01,-11.616 c 6.0744,-12.545 14.955,-23.736 26.172,-32.616 22.439,-17.761 51.695,-24.284 79.549,-17.712 l 12.165,-51.574 c -43.577,-10.273 -89.504,-0.0432 -124.61,27.744 -35.106,27.785 -55.611,70.142 -55.611,114.91 l 344.58,0.01 z"
+       fill="#60a5fa"
+       stroke-width="26.257"
+       style="paint-order:markers fill stroke" />
+  </g>
+</svg>

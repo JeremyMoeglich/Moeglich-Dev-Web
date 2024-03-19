@@ -170,15 +170,17 @@ export function TopAnimation() {
                 </div>
                 <div className="text-3xl text-white">
                     <p className="max-w-[700px]">
-                        Full-stack developer experienced in a wide range of
-                        languages and technologies
+                        {/* Full-stack developer experienced in a wide range of
+                        languages and technologies */}
+                        Full-Stack entwickler mit Erfahrung in einer Vielzahl
+                        von Sprachen und Technologien
                     </p>
                     <div className="font-bold mt-3">
                         <Link href={"https://github.com/JeremyMoeglich"}>
                             GitHub
                         </Link>{" "}
-                        | <Link href={"/overview"}>Projects</Link> |{" "}
-                        <Link href={"/contact"}>Contact</Link>
+                        | <Link href={"/overview"}>Projekte</Link> |{" "}
+                        <Link href={"/contact"}>Kontakt</Link>
                     </div>
                 </div>
             </div>

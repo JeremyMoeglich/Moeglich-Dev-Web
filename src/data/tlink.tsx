@@ -697,7 +697,7 @@ export const technologies = [
         },
     },
     {
-        icon: "temp",
+        icon: () => <Icons.RustIcon />,
         name: "Rust",
         description: () => (
             <div className="article">
@@ -729,7 +729,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.ScssIcon />,
         name: "Scss",
         description: () => (
             <div className="article">
@@ -743,7 +743,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.PostcssIcon />,
         name: "Postcss",
         description: () => (
             <div className="article">
@@ -756,7 +756,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.FirebaseIcon />,
         name: "Firebase",
         description: () => (
             <div className="article">
@@ -776,7 +776,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.GoogleAnalyticsIcon />,
         name: "Google Analytics",
         description: () => (
             <div className="article">
@@ -791,7 +791,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.PrismaIcon />,
         name: "Prisma",
         description: () => (
             <div className="article">
@@ -822,7 +822,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.PusherIcon />,
         name: "Pusher",
         description: () => (
             <div className="article">
@@ -850,7 +850,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.CockroachDBIcon />,
         name: "CockroachDb",
         description: () => (
             <div className="article">
@@ -880,7 +880,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.DockerIcon />,
         name: "Docker",
         description: () => (
             <div className="article">
@@ -902,7 +902,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.NginxIcon />,
         name: "Nginx",
         description: () => (
             <div className="article">
@@ -914,7 +914,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.GitIcon />,
         name: "Git",
         description: () => (
             <div className="article">
@@ -934,7 +934,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.GithubActionsIcon />,
         name: "Github Actions",
         description: () => (
             <div className="article">
@@ -960,7 +960,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.LinuxIcon />,
         name: "Linux",
         description: () => (
             <div className="article">
@@ -977,7 +977,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.VercelIcon />,
         name: "Vercel",
         description: () => (
             <div className="article">
@@ -1004,7 +1004,7 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.StratoIcon />,
         name: "Strato",
         description: () => (
             <div className="article">
@@ -1022,23 +1022,28 @@ export const technologies = [
         ),
     },
     {
-        icon: "temp",
+        icon: () => <Icons.TurborepoIcon />,
         name: "Turborepo",
         description: "todo",
     },
     {
-        icon: "temp",
+        icon: () => <Icons.TrpcIcon />,
         name: "TRPC",
         description: "todo",
     },
     {
-        icon: "temp",
+        icon: () => <Icons.NpmIcon />,
         name: "NPM",
         description: "todo",
     },
     {
-        icon: "temp",
+        icon: () => <Icons.BiomeIcon />,
         name: "Biome",
+        description: "todo",
+    },
+    {
+        icon: () => <Icons.WebassemblyIcon />,
+        name: "Webassembly",
         description: "todo",
     },
 ] as const;
