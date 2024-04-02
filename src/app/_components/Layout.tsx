@@ -9,7 +9,7 @@ export function Layout({
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#161229] to-[#04074b]">
             <Header slim={slim} />
-            <div className="z-10">{children}</div>
+            <div className="z-10 flex-grow flex flex-col">{children}</div>
         </div>
     );
 }

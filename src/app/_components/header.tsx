@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import { maybe_global } from "functional-utilities";
-import { CgHome, CgList } from "react-icons/cg";
+import { CgHome, CgList, CgMail } from "react-icons/cg";
 function NavigationEntry(props: {
     name: () => ReactNode;
     current: boolean;
@@ -47,11 +47,15 @@ export function Header(props: { slim: boolean }) {
         ),
         "/overview": () => (
             <span className="flex items-center gap-2">
-                <CgList /> Overview
+                <CgList /> Projekte
             </span>
         ),
         // "/about": "About",
-        // "/contact": "Contact",
+        "/contact": () => (
+            <span className="flex items-center gap-2">
+                <CgMail /> Kontakt
+            </span>
+        )
     };
 
     const current = path_map[path as keyof typeof path_map];

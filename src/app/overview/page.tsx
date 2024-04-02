@@ -7,6 +7,7 @@ import { TLinkComponent, projects } from "~/data/tlink";
 import { useState } from "react";
 import jaro from "jaro-winkler";
 import { SearchBar } from "../_components/search_bar";
+import { motion } from "framer-motion";
 
 const Projects: NextPage = () => {
     const [search, setSearch] = useState("");

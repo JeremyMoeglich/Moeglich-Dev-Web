@@ -447,7 +447,17 @@ export const projects = [
     {
         name: "Satworld",
         summary: "Ein Onlineshop",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Bei SatWorld und Atelmo, Anbietern im Satellitenbereich habe
+                    Ich im Team in einer Migration zu einem Shopsystem, hierbei
+                    habe Ich ein Migrationssystem in <TLink name="Rust" />{" "}
+                    geschrieben und vieles mehr wie z.B. automatische Backups
+                </div>
+                
+            </div>
+        ),
         icon: "images/projects/satworld_icon.svg",
         image: "/images/projects/satworld_site.png",
         site_url: "http://newshopware.satworldit.de/",
@@ -482,6 +492,8 @@ export const projects = [
                 </div>
             </div>
         ),
+        icon: "images/projects/http_proxy_icon.svg",
+        image: "/images/projects/http_proxy_image.svg",
         tags: ["Http-Websocket-Proxy", "Node", "Websockets"],
     },
     {
@@ -581,11 +593,11 @@ export const technologies = [
             </div>
         ),
     },
-    {
-        icon: () => <Icons.QwikIcon />,
-        name: "Qwik",
-        description: "todo",
-    },
+    // {
+    //     icon: () => <Icons.QwikIcon />,
+    //     name: "Qwik",
+    //     description: "todo",
+    // },
     {
         icon: () => <Icons.PythonIcon />,
         name: "Python",
