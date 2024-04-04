@@ -1,13 +1,16 @@
+"use client";
+
 import { Layout } from "../_components/Layout";
+import FormComponent from "./form";
 
 const Page = () => {
     return (
         <Layout>
             <div className="flex justify-center items-center flex-grow">
-                <div className="w-[550px] h-[350px] max-w-full text-white bg-slate-900 backdrop-blur-sm bg-opacity-60 p-4 rounded-md border-[1px] border-white border-opacity-30 flex flex-col gap-4">
+                <div className="w-[550px] max-w-full text-white bg-slate-900 backdrop-blur-sm bg-opacity-60 p-4 rounded-md border-[1px] border-white border-opacity-30 flex flex-col gap-4">
                     <h1 className="text-4xl font-bold">Kontakt</h1>
                     <div className="flex gap-2">
-                        Email:
+                        Email: <br /> (bevorzugt)
                         <div>
                             <a
                                 href="mailto:jeremy@moeglich.dev"
@@ -43,6 +46,9 @@ const Page = () => {
                         >
                             https://github.com/JeremyMoeglich
                         </a>
+                    </div>
+                    <div>
+                        <FormComponent />
                     </div>
                 </div>
             </div>

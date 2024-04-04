@@ -8,6 +8,7 @@ import {
     useEffect,
     useState,
 } from "react";
+import { CgArrowRight } from "react-icons/cg";
 import * as Icons from "~/app/_components/icons";
 
 export const projects = [
@@ -455,7 +456,6 @@ export const projects = [
                     habe Ich ein Migrationssystem in <TLink name="Rust" />{" "}
                     geschrieben und vieles mehr wie z.B. automatische Backups
                 </div>
-                
             </div>
         ),
         icon: "images/projects/satworld_icon.svg",
@@ -848,8 +848,9 @@ export const technologies = [
                     Ich nutze Pusher aktuell in 2 Projekten:
                     <ul>
                         <li>
-                            <TLink name="Moeglich.dev" /> - Echtzeit Updates wie
-                            Counters
+                            <TLink name="Moeglich.dev" /> - Echtzeit Updates
+                            aktuell nur auf einer Privaten Unterseite für
+                            geteilte Counter
                         </li>
                         <li>
                             Ein Projekt welches noch nicht veröffentlicht ist,
@@ -920,7 +921,23 @@ export const technologies = [
             <div className="article">
                 <div>
                     Ich nutze Nginx als Reverse Proxy für Services auf meinem
-                    Server für viele Projekte.
+                    Server für viele Projekte. <br />
+                    Das ermöglicht es mir mehrere Webseiten (in verschiedenen
+                    Sprachen) auf einem Server zu hosten und https zu nutzen.
+                </div>
+                <div>
+                    Einige Beispiele wo Ich Nginx nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Http-Websocket-Proxy" />
+                        </li>
+                        <li>
+                            <TLink name="ErcEsg" />
+                        </li>
+                        <li>
+                            <TLink name="Satworld" />
+                        </li>
+                    </ul>
                 </div>
             </div>
         ),
@@ -1036,27 +1053,108 @@ export const technologies = [
     {
         icon: () => <Icons.TurborepoIcon />,
         name: "Turborepo",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    Turborepo ist ein Tool für Monorepos. Ich nutze es in meinen
+                    größeren Projekten wie <TLink name="Tagaro" /> und{" "}
+                    <TLink name="Japtools" /> um einfach Packages zwischen
+                    Teilen des Projekts zu teilen.
+                </div>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.TrpcIcon />,
         name: "TRPC",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                <div>
+                    TRPC ist meine bevorzugte Möglichkeit um mit dem Backend
+                    Service zu kommunizieren. Es ermöglicht Type-Safety in der
+                    API was ohne RPC nicht möglich wäre. TRPC ist die einfachste
+                    möglichkeit RPC im Frontend zu nutzen.
+                </div>
+                <div>
+                    Einige Beispiele wo Ich TRPC nutze sind:
+                    <ul>
+                        <li>
+                            <TLink name="Moeglich.dev" /> - Aktuell nur für eine
+                            Private Unterseite, aber das Kontaktformular wird
+                            bald auch TRPC nutzen
+                        </li>
+                        <li>
+                            Ein Projekt welches noch nicht veröffentlicht ist,
+                            es ist ein Online Multiplayer Spiel jegliche
+                            Frontend{" "}
+                            <span className="inline-block translate-y-[3px]">
+                                <CgArrowRight />
+                            </span>{" "}
+                            Backend Kommunikation läuft über TRPC
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.NpmIcon />,
-        name: "NPM",
-        description: "todo",
+        name: "npm",
+        description: () => (
+            <div className="article">
+                <div>
+                    Alle meine Projekte welche in Typescript geschrieben sind
+                    nutzen npm Packages. <br />
+                    Aber den npm Package Manager nutze Ich eher selten direkt,
+                    da Ich meistens <TLink name="Bun" /> oder{" "}
+                    <TLink name="Pnpm" /> nutze.
+                </div>
+            </div>
+        ),
+    },
+    {
+        icon: () => <Icons.BunIcon />,
+        name: "Bun",
+        description: () => (
+            <div className="article">
+                <div>
+                    Bun ist ein Package Manager welcher schneller ist als npm und
+                    pnpm. Ich nutze es in Projekten wo Ich npm oder pnpm nutzen
+                    würde.
+                </div>
+            </div>
+        ),
+    },
+    {
+        icon: () => <Icons.PnpmIcon />,
+        name: "Pnpm",
+        description: () => (
+            <div className="article">
+                <div>
+                    Pnpm ist ein Package Manager welcher schneller ist als npm
+                    und npm. Ich nutze es in Projekten wo Ich npm oder bun
+                    nutzen würde.
+                </div>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.BiomeIcon />,
         name: "Biome",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                
+            </div>
+        ),
     },
     {
         icon: () => <Icons.WebassemblyIcon />,
         name: "Webassembly",
-        description: "todo",
+        description: () => (
+            <div className="article">
+                
+            </div>
+        ),
     },
 ] as const;
 

@@ -408,3 +408,11 @@ export function GoogleAnalyticsIcon() {
 export function WebassemblyIcon() {
     return <img src="/images/icons/wasm.svg" alt="WebAssembly" />;
 }
+
+export function PnpmIcon() {
+    return <img src="/images/icons/pnpm.svg" alt="pnpm" />;
+}
+
+export function BunIcon() {
+    return <img src="/images/icons/bun.svg" alt="Bun" />;
+}
