@@ -33,7 +33,7 @@ export function Technologies() {
                         loop: true,
                         skipSnaps: true,
                     }}
-                    className="w-full max-w-[800px] mx-16"
+                    className="w-full max-w-[800px] mx-10"
                 >
                     <CarouselContent>
                         {technologies.map((card, i) => (

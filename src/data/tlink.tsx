@@ -236,7 +236,7 @@ export const projects = [
         description: () => (
             <div className="article">
                 <div>
-                    Ein <TLink name="NPM" /> Package mit vielen Funktionen die
+                    Ein <TLink name="npm" /> Package mit vielen Funktionen die
                     ich in fast allen meiner Projekte benutze. Einige Beispiele
                     sind:
                     <ul>
@@ -279,9 +279,9 @@ export const projects = [
                     WebGl2, WebGPU und Vulkan sind geplant.
                 </div>
                 <div>
-                    Die Library ermöglicht es ohne jemals Shader, Buffer oder
-                    ähnliches zu schreiben, komplexe Grafiken zu erstellen oder
-                    Berechnungen auf der GPU auszuführen.
+                    Die Library ermöglicht es ohne jemals Shader, Buffer,
+                    Uniforms oder ähnliches zu schreiben, komplexe Grafiken zu
+                    erstellen oder Berechnungen auf der GPU auszuführen.
                 </div>
             </div>
         ),
@@ -430,7 +430,7 @@ export const projects = [
                 <div>
                     Ein{" "}
                     <li>
-                        <TLink name="NPM" />
+                        <TLink name="npm" />
                     </li>{" "}
                     Package welches die darstellung und manipulation von Grids
                     in <TLink name="Typescript" /> vereinfacht. Ich nutze es in
@@ -515,7 +515,7 @@ export const projects = [
                 <div>
                     Aktuell ist die Library Teil von{" "}
                     <TLink name="Moeglich.dev" />, aber Ich werde diese
-                    vermutlich auf <TLink name="NPM" /> veröffentlichen
+                    vermutlich auf <TLink name="npm" /> veröffentlichen
                 </div>
             </div>
         ),
@@ -981,7 +981,7 @@ export const technologies = [
                         </li>
                         <li>
                             <TLink name="functional_utilities" /> - Tests +{" "}
-                            <TLink name="NPM" /> Publish
+                            <TLink name="npm" /> Publish
                         </li>
                     </ul>
                 </div>

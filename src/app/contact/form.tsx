@@ -8,10 +8,10 @@ import { Textarea } from "~/@/components/ui/textarea";
 
 // Define the form schema using Zod
 const formSchema = z.object({
-    name_or_company: z.string(),
-    email_or_tel: z.string(),
-    subject: z.string().optional(),
-    message: z.string(),
+    name_or_company: z.string().min(1),
+    email_or_tel: z.string().min(1),
+    subject: z.string(),
+    message: z.string().min(1),
 });
 
 // TypeScript: Type for the form input based on the schema
@@ -31,8 +31,9 @@ const FormComponent = () => {
         message?: string;
     }>({});
 
-    const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    const onSubmit: SubmitHandler<FormInput> = async (data) => {        
         try {
+            if (isSubmitting) return;
             const result = await submit_form_mutation.mutateAsync(data);
             setSubmissionStatus({
                 success: result.success,
@@ -52,7 +53,15 @@ const FormComponent = () => {
     return (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div>
-                <label className="block mb-2">Name oder Firma</label>
+                <label className="block mb-2">Betreff (Optional)</label>
+                <Input className="border p-2 w-full" {...register("subject")} />
+                {errors.subject && (
+                    <p className="text-red-500">{errors.subject.message}</p>
+                )}
+            </div>
+
+            <div>
+                <label className="block mb-2">Name oder Firma*</label>
                 <Input
                     className="border p-2 w-full"
                     {...register("name_or_company")}
@@ -65,7 +74,7 @@ const FormComponent = () => {
             </div>
 
             <div>
-                <label className="block mb-2">E-Mail oder Telefon</label>
+                <label className="block mb-2">E-Mail oder Telefon*</label>
                 <Input
                     className="border p-2 w-full"
                     {...register("email_or_tel")}
@@ -78,15 +87,7 @@ const FormComponent = () => {
             </div>
 
             <div>
-                <label className="block mb-2">Betreff (Optional)</label>
-                <Input className="border p-2 w-full" {...register("subject")} />
-                {errors.subject && (
-                    <p className="text-red-500">{errors.subject.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label className="block mb-2">Nachricht</label>
+                <label className="block mb-2">Nachricht*</label>
                 <Textarea
                     className="border p-2 w-full"
                     {...register("message")}
