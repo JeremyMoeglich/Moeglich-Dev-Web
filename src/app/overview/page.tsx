@@ -55,11 +55,10 @@ const Projects: NextPage = () => {
                                 >
                                     {"image" in p && (
                                         <TLinkComponent name={p.name}>
-                                            <motion.img
+                                            <img
                                                 src={p.image}
                                                 alt={p.name}
                                                 className="w-full rounded-md border-[2px] border-transparent shadow-md duration-300 hover:border-gray-500"
-                                                layoutId={p.name}
                                             />
                                         </TLinkComponent>
                                     )}

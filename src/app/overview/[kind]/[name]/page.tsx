@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Layout } from "~/app/_components/Layout";
@@ -41,11 +40,10 @@ export default function Page() {
                         {"summary" in found && <p>{found.summary}</p>}
                     </div>
                     {"image" in found && (
-                        <motion.img
+                        <img
                             src={found.image}
                             alt={title}
                             className="mx-auto w-[1000px] max-w-full rounded-md border-[1px] border-gray-500 shadow-md"
-                            layoutId={title}
                         />
                     )}
                 </div>
