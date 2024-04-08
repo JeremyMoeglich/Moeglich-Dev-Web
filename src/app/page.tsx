@@ -6,8 +6,10 @@ import { Technologies } from "./_components/technologies";
 const Home: NextPage = () => {
     return (
         <Layout>
-            <div className="mt-32">
-                <div className="mb-32">
+            <div style={{
+                marginTop: "7vw"
+            }}>
+                <div className="mb-8 px-3 pb-[8vw]">
                     <TopAnimation />
                 </div>
                 <Technologies />

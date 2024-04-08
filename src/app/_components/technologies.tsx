@@ -33,13 +33,13 @@ export function Technologies() {
                         loop: true,
                         skipSnaps: true,
                     }}
-                    className="w-full max-w-[800px]"
+                    className="w-full max-w-[800px] mx-16"
                 >
                     <CarouselContent>
                         {technologies.map((card, i) => (
                             <CarouselItem
                                 key={card.name}
-                                className="basis-1/5"
+                                className="basis-1/2 sm:basis-1/4 md:basis-1/5"
                             >
                                 <div
                                     style={{

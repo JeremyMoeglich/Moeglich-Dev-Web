@@ -20,7 +20,7 @@ function NavigationEntry(props: {
                 textDecoration: props.current ? "underline" : "none",
             }}
         >
-            <div className="z-50 text-3xl">{props.name()}</div>
+            <div className="z-50 text-2xl sm:text-3xl">{props.name()}</div>
         </Link>
     );
 }
@@ -63,10 +63,10 @@ export function Header(props: { slim: boolean }) {
     return (
         <div className="relative">
             <div className="flex flex-wrap justify-between">
-                <Link className="z-50 p-3 text-3xl text-white" href="/">
+                <Link className="z-50 p-3 text-3xl text-white hidden md:flex" href="/">
                     moeglich.dev
                 </Link>
-                <div className="flex">
+                <div className="flex justify-evenly w-full md:w-auto md:justify-start">
                     {Object.entries(path_map).map(([path, name]) => (
                         <NavigationEntry
                             key={path}

@@ -14,10 +14,12 @@ function Shift({
     parts,
     i,
     style,
+    factor,
 }: {
     parts: (string | undefined)[];
     i: number;
     style?: React.CSSProperties;
+    factor: number;
 }) {
     const parent_ref = useRef<null | HTMLSpanElement>(null);
     const [sizes, setSizes] = useState(
@@ -66,7 +68,7 @@ function Shift({
                 overflow: "hidden",
                 width: size_x,
                 height: size_y,
-                fontSize: "120px",
+                fontSize: `${120 * factor}px`,
                 fontWeight: "600",
                 ...style,
             }}
@@ -140,7 +142,86 @@ function Shift({
 //     );
 // }
 
+function createInterpolator(
+    data: Record<number, number>,
+): (v: number) => number {
+    // Convert the Record into a sorted array of [key, value] pairs (points)
+    const sortedPoints = Object.entries(data)
+        .map(([k, v]) => [Number(k), v] as [number, number])
+        .sort((a, b) => a[0] - b[0]);
+
+    if (sortedPoints.length === 0) {
+        throw new Error("No data points provided");
+    }
+
+    if (sortedPoints.length === 1) {
+        const [_, y] = sortedPoints[0]!;
+        return () => y;
+    }
+
+    return (v: number): number => {
+        if (v <= sortedPoints[0]![0]) return sortedPoints[0]![1];
+        if (v >= sortedPoints[sortedPoints.length - 1]![0])
+            return sortedPoints[sortedPoints.length - 1]![1];
+
+        let low = 0;
+        let high = sortedPoints.length - 1;
+
+        // Perform binary search to find the right interval
+        while (low <= high) {
+            const mid = Math.floor((low + high) / 2);
+            if (sortedPoints[mid]![0] < v && sortedPoints[mid + 1]![0] > v) {
+                const [x1, y1] = sortedPoints[mid]!;
+                const [x2, y2] = sortedPoints[mid + 1]!;
+                // Linear interpolation formula: y = y1 + (y2 - y1) * (v - x1) / (x2 - x1)
+                return y1 + ((y2 - y1) * (v - x1)) / (x2 - x1);
+            }
+            if (sortedPoints[mid]![0] < v) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        // Fallback, should not be reached due to the initial range checks and binary search
+        return 0;
+    };
+}
+
+const animation_interpolator = createInterpolator({
+    0: 0,
+    932: 1,
+});
+const text_interpolator = createInterpolator({
+    0: 0.4,
+    932: 1,
+});
+
 export function TopAnimation() {
+    const parent_ref = useRef<null | HTMLDivElement>(null);
+    const [factors, setFactors] = useState({
+        animation: 1,
+        text: 1,
+    });
+
+    useEffect(() => {
+        if (parent_ref.current === null) {
+            return;
+        }
+
+        const updateWidth = () => {
+            const width = parent_ref.current!.getBoundingClientRect().width;
+            setFactors({
+                animation: animation_interpolator(width),
+                text: text_interpolator(width),
+            });
+        };
+
+        updateWidth();
+        window.addEventListener("resize", updateWidth);
+        return () => window.removeEventListener("resize", updateWidth);
+    }, []);
+
     const words = ["moeglich.dev", "Jeremy\nMoeglich"];
 
     const t = useAnimationTime();
@@ -149,7 +230,7 @@ export function TopAnimation() {
     const letter_parts = zip_longest(words.map((word) => word.split("")));
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center" ref={parent_ref}>
             <div className="w-fit">
                 <div className="relative flex flex-row w-[900px]">
                     {letter_parts.map((parts, index) => (
@@ -157,18 +238,21 @@ export function TopAnimation() {
                             key={index}
                             parts={parts}
                             i={i}
+                            factor={factors.animation}
                             style={{
-                                color: Color.fromHex("#cfcfcf")
+                                color: Color.fromHex("#ebeaff")
                                     .interpolate(
                                         cnoise(index / 10, t / 4000),
-                                        Color.fromHex("#f2f55a"),
+                                        Color.fromHex("#ff4f4f"),
                                     )
                                     .getHex(),
                             }}
                         />
                     ))}
                 </div>
-                <div className="text-3xl text-white">
+                <div className="text-white" style={{
+                    fontSize: `${30 * factors.text}px`,
+                }}>
                     <p className="max-w-[700px]">
                         {/* Full-stack developer experienced in a wide range of
                         languages and technologies */}
