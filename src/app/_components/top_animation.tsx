@@ -240,19 +240,25 @@ export function TopAnimation() {
                             i={i}
                             factor={factors.animation}
                             style={{
-                                color: Color.fromHex("#ebeaff")
+                                color: Color.fromHex("#ffffff")
                                     .interpolate(
-                                        cnoise(index / 10, t / 4000),
-                                        Color.fromHex("#ff4f4f"),
+                                        cnoise(
+                                            index / 5 - t / 4000,
+                                            t / 1000000,
+                                        ),
+                                        Color.fromHex("#917eff"),
                                     )
                                     .getHex(),
                             }}
                         />
                     ))}
                 </div>
-                <div className="text-white" style={{
-                    fontSize: `${30 * factors.text}px`,
-                }}>
+                <div
+                    className="text-white"
+                    style={{
+                        fontSize: `${30 * factors.text}px`,
+                    }}
+                >
                     <p className="max-w-[700px]">
                         {/* Full-stack developer experienced in a wide range of
                         languages and technologies */}

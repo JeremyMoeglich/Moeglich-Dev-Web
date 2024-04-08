@@ -37,7 +37,7 @@ function useYScroll() {
     return y;
 }
 
-export function Header(props: { slim: boolean }) {
+export function Header() {
     const path = usePathname();
     const path_map = {
         "/": () => (
@@ -77,24 +77,6 @@ export function Header(props: { slim: boolean }) {
                     ))}
                 </div>
             </div>
-            {!props.slim ? (
-                <>
-                    <div className="pointer-events-none absolute left-0 top-0">
-                        <img
-                            src="/images/home/top_left_grad.svg"
-                            alt=""
-                            className="origin-top-left scale-[1.68]"
-                        />
-                    </div>
-                    <div className="pointer-events-none absolute right-0 top-0">
-                        <img
-                            src="/images/home/top_right_grad.svg"
-                            alt=""
-                            className="origin-top-right scale-[1.68]"
-                        />
-                    </div>
-                </>
-            ) : null}
         </div>
     );
 }
