@@ -1118,9 +1118,9 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Bun ist ein Package Manager welcher schneller ist als npm und
-                    pnpm. Ich nutze es in Projekten wo Ich npm oder pnpm nutzen
-                    würde.
+                    Bun ist ein Package Manager welcher schneller ist als npm
+                    und pnpm. Ich nutze es in Projekten wo Ich npm oder pnpm
+                    nutzen würde.
                 </div>
             </div>
         ),
@@ -1141,20 +1141,12 @@ export const technologies = [
     {
         icon: () => <Icons.BiomeIcon />,
         name: "Biome",
-        description: () => (
-            <div className="article">
-                
-            </div>
-        ),
+        description: () => <div className="article"></div>,
     },
     {
         icon: () => <Icons.WebassemblyIcon />,
         name: "Webassembly",
-        description: () => (
-            <div className="article">
-                
-            </div>
-        ),
+        description: () => <div className="article"></div>,
     },
 ] as const;
 
@@ -1216,10 +1208,11 @@ export const TLinkNameCollector: React.FC<
 export const TLink: React.FC<{ name: keyof typeof link_map }> = ({ name }) => {
     const { addName, removeName } = useContext(TLinkNameContext);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: addName and removeName are mutated within the effect causing a loop if their a dependency
     useEffect(() => {
         addName?.(name);
         return () => removeName?.(name);
-    }, [name, addName, removeName]);
+    }, [name]);
 
     return (
         <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>

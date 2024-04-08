@@ -1,4 +1,5 @@
 import { Cookies, useCookies } from "next-client-cookies";
+import { ReactNode } from "react";
 import { z } from "zod";
 import { create } from "zustand";
 import { maybe_window } from "~/utils/maybe_window";
@@ -32,11 +33,11 @@ export const useLanguage = create<{
 
 export type I18T =
     | Readonly<{
-          de?: string | (() => string);
-          en?: string | (() => string);
+          de?: string | (() => ReactNode);
+          en?: string | (() => ReactNode);
       }>
     | string
-    | (() => string);
+    | (() => ReactNode);
 
 export function I18({ content }: { content: I18T }) {
     const cookies = useCookies();

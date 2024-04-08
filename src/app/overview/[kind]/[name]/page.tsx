@@ -26,7 +26,7 @@ export default function Page() {
 
     return (
         <Layout>
-            <div className="mx-auto flex w-3/4 max-w-[2000px] flex-col gap-8 px-4 text-white">
+            <div className="mx-auto flex sm:w-3/4 max-w-[2000px] flex-col gap-8 px-4 text-white">
                 <div className="flex flex-wrap gap-4">
                     <div className="flex flex-col">
                         <button
