@@ -265,7 +265,7 @@ export function TopAnimation() {
                         filter: "drop-shadow(0px 0px 18px black)",
                     }}
                 >
-                    <p className="max-w-[700px] text-center">
+                    <p className="max-w-[700px] text-center mb-8">
                         {/* Full-stack developer experienced in a wide range of
                         languages and technologies */}
                         Full-Stack entwickler mit Erfahrung in einer Vielzahl

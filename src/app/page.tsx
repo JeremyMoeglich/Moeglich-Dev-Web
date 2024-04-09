@@ -6,7 +6,7 @@ import { Technologies } from "./_components/technologies";
 const Home: NextPage = () => {
     return (
         <Layout>
-            <div style={{
+            <div className="mb-[200px]" style={{
                 marginTop: "7vw"
             }}>
                 <div className="mb-8 px-3 pb-[8vw]">

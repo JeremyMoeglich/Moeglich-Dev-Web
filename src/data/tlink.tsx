@@ -669,7 +669,6 @@ export const technologies = [
             </div>
         ),
     },
-
     {
         icon: () => <Icons.TypescriptIcon />,
         name: "Typescript",
@@ -907,7 +906,8 @@ export const technologies = [
                     Einige Beispiele wo Ich Docker nutze sind:
                     <ul>
                         <li>
-                            <TLink name="Satworld" />
+                            <TLink name="Satworld" /> - Um Shopware lokal
+                            isoliert zum testen zu hosten.
                         </li>
                     </ul>
                 </div>
@@ -1141,12 +1141,26 @@ export const technologies = [
     {
         icon: () => <Icons.BiomeIcon />,
         name: "Biome",
-        description: () => <div className="article"></div>,
+        description: () => (
+            <div className="article">
+                <div>
+                    Biome ist ein ersatzt für andere Tools wie Prettier und
+                    ESLint, es ist in <TLink name="Rust" /> geschrieben und ist
+                    schneller und ist somit schneller. <br />
+                    Der Hauptgrund warum Ich es nutze ist jedoch das es mehr
+                    Funktionen hat und besser sich in Projekte integriert.
+                </div>
+            </div>
+        ),
     },
     {
         icon: () => <Icons.WebassemblyIcon />,
         name: "Webassembly",
-        description: () => <div className="article"></div>,
+        description: () => <div className="article">
+            <div>
+                Webassembly ist eine
+            </div>
+        </div>,
     },
 ] as const;
 
