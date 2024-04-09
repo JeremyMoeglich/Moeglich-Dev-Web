@@ -15,9 +15,9 @@ function NavigationEntry(props: {
             href={props.path}
             className="relative flex items-center justify-center p-3"
             style={{
-                color: props.current ? "white" : "gray",
-                fontWeight: props.current ? "bold" : "normal",
-                textDecoration: props.current ? "underline" : "none",
+                color: props.current ? "white" : "#dadada",
+                fontWeight: props.current ? "bold" : "100",
+                filter: "drop-shadow(0px 0px 25px black)",
             }}
         >
             <div className="z-50 text-2xl sm:text-3xl">{props.name()}</div>
@@ -63,7 +63,9 @@ export function Header() {
     return (
         <div className="relative">
             <div className="flex flex-wrap justify-between">
-                <Link className="z-50 p-3 text-3xl text-white hidden md:flex" href="/">
+                <Link className="z-50 p-3 text-3xl text-white hidden md:flex" style={{
+                    filter: "drop-shadow(0px 0px 19px black)",
+                }} href="/">
                     moeglich.dev
                 </Link>
                 <div className="flex justify-evenly w-full md:w-auto md:justify-start">

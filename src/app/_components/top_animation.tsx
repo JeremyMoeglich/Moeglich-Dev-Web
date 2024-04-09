@@ -231,8 +231,13 @@ export function TopAnimation() {
 
     return (
         <div className="flex justify-center" ref={parent_ref}>
-            <div className="w-fit">
-                <div className="relative flex flex-row w-[900px] drop-shadow-lg">
+            <div className="flex flex-col items-center w-fit">
+                <div
+                    className="relative flex flex-row justify-center w-[900px]"
+                    style={{
+                        filter: "drop-shadow(0px 0px 28px 0.6)",
+                    }}
+                >
                     {letter_parts.map((parts, index) => (
                         <Shift
                             key={index}
@@ -257,15 +262,16 @@ export function TopAnimation() {
                     className="text-white"
                     style={{
                         fontSize: `${30 * factors.text}px`,
+                        filter: "drop-shadow(0px 0px 18px black)",
                     }}
                 >
-                    <p className="max-w-[700px]">
+                    <p className="max-w-[700px] text-center">
                         {/* Full-stack developer experienced in a wide range of
                         languages and technologies */}
                         Full-Stack entwickler mit Erfahrung in einer Vielzahl
                         von Sprachen und Technologien
                     </p>
-                    <div className="font-bold mt-3">
+                    <div className="font-bold mt-3 text-center">
                         <Link href={"https://github.com/JeremyMoeglich"}>
                             GitHub
                         </Link>{" "}
