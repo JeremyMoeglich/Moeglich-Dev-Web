@@ -268,7 +268,7 @@ export function TopAnimation() {
                     <p className="max-w-[700px] text-center mb-8">
                         {/* Full-stack developer experienced in a wide range of
                         languages and technologies */}
-                        Full-Stack entwickler mit Erfahrung in einer Vielzahl
+                        Full-Stack Entwickler mit Erfahrung in einer Vielzahl
                         von Sprachen und Technologien
                     </p>
                     <div className="font-bold mt-3 text-center">

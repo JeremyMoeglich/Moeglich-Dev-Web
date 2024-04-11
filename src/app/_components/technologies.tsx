@@ -24,9 +24,9 @@ export function Technologies() {
         });
     }, [api]);
     return (
-        <div className="gap-8 mt-8 bg-purple-800 bg-opacity-40 p-4 text-white backdrop-blur-sm">
+        <div className="flex flex-col items-center gap-8 mt-8 bg-purple-800 bg-opacity-40 p-4 text-white backdrop-blur-sm">
             <h2 className="text-4xl font-bold">Technologies</h2>
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full">
                 <Carousel
                     setApi={setApi}
                     opts={{
@@ -68,7 +68,7 @@ export function Technologies() {
                     <CarouselNext className="text-black w-10 h-10 hover:bg-blue-300" />
                 </Carousel>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 max-w-[1000px]">
                 <h3 className="text-3xl">
                     Meine Erfahrungen mit{" "}
                     <span className="font-bold text-green-400">

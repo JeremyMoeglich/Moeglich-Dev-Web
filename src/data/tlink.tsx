@@ -1229,7 +1229,7 @@ export const TLink: React.FC<{ name: keyof typeof link_map }> = ({ name }) => {
     }, [name]);
 
     return (
-        <Link href={`/overview/${link_map[name].kind}/${name}`}>{name}</Link>
+        <Link href={`/overview/${link_map[name].kind}/${name.replaceAll(" ", "_")}`}>{name}</Link>
     );
 };
 

@@ -8,10 +8,11 @@ import { TLinkNameCollector, projects, technologies } from "~/data/tlink";
 
 export default function Page() {
     const [names, setNames] = useState<string[]>([]);
-    const { name, kind } = useParams<{
+    const { name: name_unprocessed, kind } = useParams<{
         name: string;
         kind: string;
     }>();
+    const name = name_unprocessed.replaceAll("_", " ");
 
     const found =
         kind === "project"
