@@ -10,6 +10,7 @@ import {
 } from "react";
 import { CgArrowRight } from "react-icons/cg";
 import * as Icons from "~/app/_components/icons";
+import { dedent } from "~/utils/dedent";
 
 export const projects = [
     {
@@ -20,12 +21,13 @@ export const projects = [
                 <div className="article">
                     <div>
                         Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
-                        mehrere Jahre Onlineshop, Bestellungs Automatisierung
-                        und allgemein alles IT mache.
+                        mehrere Jahre Website, Bestellungs Automatisierung und
+                        allgemein alles IT mache.
                     </div>
                     <div>
-                        Das Tagaro Project ist eine Monorepo mit Turborepo +
-                        pnpm und enthält diese Projekte
+                        Das Tagaro Project ist eine Monorepo mit{" "}
+                        <TLink name="Turborepo" /> + <TLink name="pnpm" /> und
+                        enthält diese Projekte
                         <ul>
                             <li>
                                 Eine Website mit <TLink name="Sveltekit" /> als
@@ -34,6 +36,10 @@ export const projects = [
                                 <ul>
                                     <li>
                                         <TLink name="Turborepo" />: Monorepo
+                                    </li>
+                                    <li>
+                                        <TLink name="pnpm" />: Package Manager +
+                                        Workspaces
                                     </li>
                                     <li>
                                         <TLink name="Vercel" /> +{" "}
@@ -49,7 +55,8 @@ export const projects = [
                                         Kontaktformulare
                                     </li>
                                     <li>
-                                        <TLink name="Google Analytics" />
+                                        <TLink name="Google Analytics" />:
+                                        Allgemeine Website Analytics
                                     </li>
                                     <li>
                                         <TLink name="Github Actions" />: CI/CD,
@@ -61,7 +68,7 @@ export const projects = [
                                 Ein Admin Panel (ebenfalls{" "}
                                 <TLink name="Sveltekit" />,
                                 <TLink name="Typescript" />) welches Tools wie
-                                ein Email Generator, einsicht auf Logs oder ein
+                                ein Email Generator, einsicht auf Logs und ein
                                 Paketbild Generator enthält <br />
                                 Weitere Technologien:
                                 <ul>
@@ -222,7 +229,41 @@ export const projects = [
         name: "Japtools",
         summary: "Eine Sprachlernwebseite",
         description: {
-            de: () => <div className="article" />,
+            de: () => (
+                <div className="article">
+                    <div>
+                        Japtools ist eine persönliche interaktive
+                        Sprachlernwebsite welche mit <TLink name="Sveltekit" />{" "}
+                        und <TLink name="Typescript" /> geschrieben ist.
+                    </div>
+                    <div>
+                        Das besondere ist das die Seite sehr Interaktiv ist und
+                        z.B. auf einem Server-Side SRS
+                        (Spaced-Repetition-System) basiert. <br />
+                        Dieses System ist implementiert mit den folgenden
+                        weiteren Technologien:
+                        <ul>
+                            <li>
+                                <TLink name="CockroachDb" />: Speichern von
+                                Nutzerdaten wie z.B. Lernstatus
+                            </li>
+                            <li>
+                                <TLink name="Prisma" />: Typesafe ORM zum
+                                Zugriff der Datenbank
+                            </li>
+                            <li>
+                                <TLink name="pnpm" />: Package Manager
+                            </li>
+                            <li>
+                                <TLink name="Vercel" />: Hosting der Website
+                            </li>
+                            <li>
+                                <TLink name="Tailwind" />: Styling
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            ),
         },
         icon: "images/projects/japtools_icon.png",
         image: "/images/projects/japtools_site.png",
@@ -257,8 +298,8 @@ export const projects = [
                 <div>
                     Das Package ist in <TLink name="Typescript" />
                     geschrieben und enthält Funktionen fürs Arbeiten mit Arrays,
-                    Objekten, Strings und mehr. Einige Ziele sind Gute Types und
-                    Einfachheit.
+                    Objekten, Strings und mehr. Einige Ziele sind Gute Type
+                    Inference und Einfachheit.
                 </div>
             </div>
         ),
@@ -283,6 +324,12 @@ export const projects = [
                     Uniforms oder ähnliches zu schreiben, komplexe Grafiken zu
                     erstellen oder Berechnungen auf der GPU auszuführen.
                 </div>
+                <div>
+                    Intern enthält die Library ein Compiler der Javascript
+                    Methoden in einem Object Trackt und daraus dann einen Shader
+                    und eine Funktion (bindings) mit automatischen Types
+                    returned
+                </div>
             </div>
         ),
         icon: "/images/projects/tgpu_icon.svg",
@@ -304,95 +351,97 @@ export const projects = [
         summary: "Eine Programmiersprache",
         description: () => (
             <div>
-                <p>
-                    Quip steht für eine neue Perspektive in der Welt der
-                    Programmiersprachen und ist derzeit aktiv in Entwicklung. Es
-                    ist mit der Vision entstanden, Programmieren einfacher und
-                    mächtiger zu gestalten und neuen Entwicklern einen enfachen
-                    Weg in die Tiefen der Programmierung zu bieten. Obwohl Quip
-                    noch in der Entwicklungsphase ist, demonstrieren seine
-                    grundlegenden Prinzipien und innovativen Funktionen einen
-                    vielversprechenden Weg in die Zukunft der Programmierung.
-                </p>
+                <div>
+                    Quip hat das Ziel die erste Universelle Programmiersprache
+                    zu sein.
+                </div>
+                <div>
+                    Dieses Ziel wird erreicht indem Quip keine Annahmen macht
+                    und Libraries soviel kontrolle wie möglich gibt, z.B. ist
+                    der Syntax erweiterbar und Compile-Time-Execution ist eines
+                    der Wichtigsten features
+                </div>
+                <div>
+                    Die Sprache ist noch nicht nutztbar und in Planung +
+                    Entwicklung
+                </div>
+                <div>
+                    Hier ist eine Übersicht von Features welche schon geplant
+                    sind
+                    <ul>
+                        <li>
+                            <b>Automatic Compile Time Memory Management</b>{" "}
+                            <br />
+                            Es gibt 3 Hauptverfahren wie existierende Sprachen
+                            Memory Managen:
+                            <ul>
+                                <li>
+                                    Garbage Collector - Langsamer, aber Sicher,
+                                    Einfach und Automatisch (z.B. Python, Java,
+                                    Javascript, Go)
+                                </li>
+                                <li>Manual Memory Management</li> - Schnell,
+                                aber unsicher und schwer (z.B. C, C++, Zig)
+                                <li>Ownership & Borrowing</li> - Schnell und
+                                Sicher, aber limitierend und schwer zu lernen
+                                (Rust, C++ unique pointers)
+                            </ul>
+                            Alle diese verfahren haben Probleme, Quip nutzt ein
+                            anderes Verfahren wo der Compiler via Static
+                            Analysis herausfindet wie Werte genutzt werden und
+                            aus vielen Verschiedenen Strategien die beste
+                            auswählt
+                        </li>
+                        <li>
+                            <b>Async/Sync Identity</b> <br />
+                            In Quip kann jede Async function auch Sync genutzt
+                            werden, z.B.:
+                            <code>
+                                <pre>
+                                    {dedent`
+                                        async fn test() -> _ {
+                                            return 1
+                                        }
 
-                <h3>Einfachheit im Fokus</h3>
-                <p>
-                    Im Zentrum von Quip steht das Ziel, unnötige Komplexität zu
-                    reduzieren. Es legt den Fokus auf ein Design, das sowohl
-                    mächtig als auch einfach ist. Dieser Ansatz ermöglicht es
-                    Entwicklern, sich auf das Lösen von Problemen zu
-                    konzentrieren, anstatt mit der Sprache limitiert zu werden
-                </p>
+                                        fn main1() {
+                                            let a = test() // async wird sync genutzt
+                                        }
 
-                <h3>Besondere Eigenschaften</h3>
-                <ul>
-                    <li>
-                        <strong>Abstrakt als Performance Vorteil</strong>: Die
-                        meisten Sprachen haben ein Tradeoff zwischen Abstraktion
-                        & Performance Quip hat das gegenteil, es nutzt
-                        Abstraktion um Performance zu verbessern indem diese dem
-                        Compiler mehr Verständnis und Freiheiten geben.
-                    </li>
-                    <li>
-                        <strong>&quot;Everything is a value&quot;</strong>: In
-                        Quip ist alles ein Wert, sogar der Compiler selbst ist
-                        ein Wert in der Standard Library. Dies ermöglicht es
-                        alle Konzepte mit den selben Mitteln (Funktionen) zu
-                        manipulieren.
-                    </li>
-                    <li>
-                        <strong>Environments</strong>: Quip hat ein neues
-                        Konzept namens Environments, es beschreibt die Umgebung
-                        wo der Code läuft mit Capabilities und Requirements.{" "}
-                        <br />
-                        Capabilities sind Dinge die die Umgebung kann, z.B.
-                        Filesystem, Netzwerk, etc. <br />
-                        Requirements sind Dinge die die Umgebung braucht, z.B.
-                        braucht eine Website ein User Interface. Oder eine
-                        Executable eine main Funktion.
-                    </li>
-                    <li>
-                        <strong>Dynamische Typenanpassung</strong>: Quip
-                        ermöglicht die Anpassung von Variablentypen basierend
-                        auf Laufzeitbedingungen während Compilation, das erlaubt
-                        die Performance und Sicherheit von statischen Typen mit
-                        der Flexibilität von dynamischen Typen.
-                    </li>
-                    <li>
-                        <strong>Ausrichtung auf Traits</strong>: Im Zentrum von
-                        Quips Philosophie steht die innovative Nutzung von
-                        Traits zur Verhaltensdefinition, was einen modularen und
-                        wiederverwendbaren Ansatz zur Funktionsentwicklung
-                        ermöglicht.
-                    </li>
-                    <li>
-                        <strong>Umgang mit Union-Typen</strong>: Quip behandelt
-                        fortgeschrittene Konzepte wie Union-Typen auf eine
-                        benutzerfreundliche Art und Weise, was komplexe
-                        Typoperationen zugänglich und leistungsfähig macht.
-                    </li>
-                </ul>
+                                        async fn main2() {
+                                            let a_future = test.async()
+                                            let a = a_future.await
 
-                <h3>Zukunftsorientierte Entwicklung</h3>
+                                            // oder 1 Zeile
+                                            let a = test.async().await
+                                        }
+                                    `}
+                                </pre>
+                            </code>
+                        </li>
+                        <li>
+                            <b>Auto-Locking</b> <br />
+                            In Quip gibt es wie in Rust die möglichkeit manuell
+                            Locking via Mutex, RwLock und mehr zu machen, aber
+                            sonst macht Quip das automatisch, z.B.:
+                            <code>
+                                <pre>
+                                    {dedent`
+                                        let a = 1
+                                        
+                                        os.thread.spawn(|| {
+                                            a += 2
+                                        })
 
-                <p>
-                    Die Entwicklung von Quip ist ein offener Prozess, der neue
-                    Ideen und Beiträge willkommen heißt. Die Sprache entwickelt
-                    sich ständig weiter, indem sie bestehende Konventionen
-                    hinterfragt, immer mit dem Ziel, die Erfahrung der
-                    Entwickler zu verbessern.
-                </p>
-
-                <h3>Für die Herausforderungen von morgen entwickelt</h3>
-
-                <p>
-                    Quip hat das Ziel, Entwicklern Werkzeuge an die Hand zu
-                    geben, die für die modernen Herausforderungen in der
-                    Softwareentwicklung gerüstet sind. Es geht dabei nicht nur
-                    um die Schaffung einer weiteren Programmiersprache, sondern
-                    um eine Neugestaltung der Art und Weise, wie wir Ideen und
-                    Logik im Code ausdrücken.
-                </p>
+                                        println(a)
+                                    `}
+                                </pre>
+                            </code>
+                            In Rust würde das ein Error sein, in C++ würde das
+                            zu undefiniertem Verhalten führen (data-race), in
+                            Quip wird automatisch ein Atomic genutzt
+                        </li>
+                    </ul>
+                </div>
             </div>
         ),
         icon: "images/projects/quip_icon.png",
@@ -1107,7 +1156,7 @@ export const technologies = [
                     nutzen npm Packages. <br />
                     Aber den npm Package Manager nutze Ich eher selten direkt,
                     da Ich meistens <TLink name="Bun" /> oder{" "}
-                    <TLink name="Pnpm" /> nutze.
+                    <TLink name="pnpm" /> nutze.
                 </div>
             </div>
         ),
@@ -1127,11 +1176,11 @@ export const technologies = [
     },
     {
         icon: () => <Icons.PnpmIcon />,
-        name: "Pnpm",
+        name: "pnpm",
         description: () => (
             <div className="article">
                 <div>
-                    Pnpm ist ein Package Manager welcher schneller ist als npm
+                    pnpm ist ein Package Manager welcher schneller ist als npm
                     und npm. Ich nutze es in Projekten wo Ich npm oder bun
                     nutzen würde.
                 </div>
@@ -1156,11 +1205,11 @@ export const technologies = [
     {
         icon: () => <Icons.WebassemblyIcon />,
         name: "Webassembly",
-        description: () => <div className="article">
-            <div>
-                Webassembly ist eine
+        description: () => (
+            <div className="article">
+                <div>Webassembly ist eine</div>
             </div>
-        </div>,
+        ),
     },
 ] as const;
 
@@ -1229,7 +1278,14 @@ export const TLink: React.FC<{ name: keyof typeof link_map }> = ({ name }) => {
     }, [name]);
 
     return (
-        <Link href={`/overview/${link_map[name].kind}/${name.replaceAll(" ", "_")}`}>{name}</Link>
+        <Link
+            href={`/overview/${link_map[name].kind}/${name.replaceAll(
+                " ",
+                "_",
+            )}`}
+        >
+            {name}
+        </Link>
     );
 };
 

@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Layout } from "~/app/_components/Layout";
 import { I18 } from "~/app/_components/i18";
+import { NotFoundPage } from "~/app/_components/not_found_page";
 import { TLinkNameCollector, projects, technologies } from "~/data/tlink";
 
 export default function Page() {
@@ -20,7 +21,7 @@ export default function Page() {
             : technologies.find((p) => p.name === name);
 
     if (!found) {
-        return <div>Not found</div>;
+        return <NotFoundPage />;
     }
 
     const { description, name: title } = found;
