@@ -35,11 +35,9 @@ export default function RootLayout({
             <body className={`font-sans ${inter.variable} overflow-x-hidden`}>
                 <CookiesProvider>
                     <CrossTextProvider>
-                        <ShapeRenderProvider>
-                            <TRPCReactProvider cookies={cookies().toString()}>
-                                <main className="w-full">{children}</main>
-                            </TRPCReactProvider>
-                        </ShapeRenderProvider>
+                        <TRPCReactProvider cookies={cookies().toString()}>
+                            <main className="w-full">{children}</main>
+                        </TRPCReactProvider>{" "}
                     </CrossTextProvider>
                 </CookiesProvider>
             </body>
