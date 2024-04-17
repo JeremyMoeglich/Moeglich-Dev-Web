@@ -587,9 +587,9 @@ export const technologies = [
                     <TLink name="Moeglich.dev" />
                 </div>
                 <div>
-                    Der Grund warum ich React nutze ist das es sehr flexibel
-                    ist, abstraktionen wie Hooks und Higher Order Components
-                    erlauben es Probleme gut darzustellen und zu lösen.
+                    Der Grund warum ich React nutze ist das es sehr flexibel ist
+                    im vergleich zu anderen Frameworks wie{" "}
+                    <TLink name="Sveltekit" />
                 </div>
                 <div>
                     Allgemein nutze Ich React mit <TLink name="Typescript" />,{" "}
