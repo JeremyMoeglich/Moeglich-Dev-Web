@@ -17,20 +17,24 @@ export default function Page() {
 
     const found =
         kind === "project"
-            ? projects.find((p) => p.name === name)
-            : technologies.find((p) => p.name === name);
+            ? projects.find((p) => p.name.replaceAll("_", " ") === name)
+            : technologies.find((p) => p.name.replaceAll("_", " ") === name);
 
     if (!found) {
-        return <NotFoundPage />;
+        return (
+            <div className="flex-grow">
+                <NotFoundPage />
+            </div>
+        );
     }
 
     const { description, name: title } = found;
 
     return (
         <Layout>
-            <div className="mx-auto flex sm:w-3/4 max-w-[2000px] flex-col gap-8 px-4 text-white">
-                <div className="flex flex-wrap gap-4">
-                    <div className="flex flex-col">
+            <div className="mx-auto flex sm:w-3/4 flex-col gap-8 px-4 text-white max-w-full">
+                <div className="flex flex-wrap gap-4 max-w-full">
+                    <div className="flex flex-col max-w-full">
                         <button
                             className="w-fit text-white"
                             type="button"
@@ -45,7 +49,7 @@ export default function Page() {
                         <img
                             src={found.image}
                             alt={title}
-                            className="mx-auto w-[1000px] max-w-full rounded-md border-[1px] border-gray-500 shadow-md"
+                            className="mx-auto w-[700px] max-w-full rounded-md border-[1px] border-gray-500 shadow-md"
                         />
                     )}
                 </div>

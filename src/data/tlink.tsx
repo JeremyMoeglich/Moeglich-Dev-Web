@@ -11,6 +11,7 @@ import {
 import { CgArrowRight } from "react-icons/cg";
 import * as Icons from "~/app/_components/icons";
 import { dedent } from "~/utils/dedent";
+import { CopyBlock, noctisViola, nord } from "react-code-blocks";
 
 export const projects = [
     {
@@ -20,18 +21,20 @@ export const projects = [
             de: () => (
                 <div className="article">
                     <div>
-                        Tagaro ist ein Onlineshop für Sky bei dem Ich schon für
-                        mehrere Jahre Website, Bestellungs Automatisierung und
-                        allgemein alles IT mache.
+                        Tagaro ist ein Onlineshop für Sky, bei dem ich seit
+                        mehreren Jahren für die Website, die Automatisierung von
+                        Bestellungen und sämtliche IT-Aufgaben zuständig bin.
                     </div>
                     <div>
-                        Das Tagaro Project ist eine Monorepo mit{" "}
-                        <TLink name="Turborepo" /> + <TLink name="pnpm" /> und
-                        enthält diese Projekte
+                        Das Tagaro-Projekt ist ein Monorepo, das{" "}
+                        <TLink name="Turborepo" /> und
+                        <TLink name="pnpm" /> verwendet und folgende
+                        Teilprojekte enthält:
                         <ul>
                             <li>
-                                Eine Website mit <TLink name="Sveltekit" /> als
-                                Metaframework und Typescript als Sprache. <br />
+                                Eine Website, entwickelt mit{" "}
+                                <TLink name="Sveltekit" /> als Metaframework und
+                                Typescript als Sprache. <br />
                                 Weitere Technologien:
                                 <ul>
                                     <li>
@@ -65,11 +68,11 @@ export const projects = [
                                 </ul>
                             </li>
                             <li>
-                                Ein Admin Panel (ebenfalls{" "}
-                                <TLink name="Sveltekit" />,
-                                <TLink name="Typescript" />) welches Tools wie
-                                ein Email Generator, einsicht auf Logs und ein
-                                Paketbild Generator enthält <br />
+                                Ein Admin-Panel, ebenfalls entwickelt mit
+                                <TLink name="Sveltekit" /> und{" "}
+                                <TLink name="Typescript" />, umfasst Tools wie
+                                einen E-Mail-Generator, Log-Einsichten und einen
+                                Paketbild-Generator. <br />
                                 Weitere Technologien:
                                 <ul>
                                     <li>
@@ -123,8 +126,8 @@ export const projects = [
             de: () => (
                 <div className="article">
                     <div>
-                        moeglich.dev ist meine persönliche Website und
-                        Portfolio. Sie ist mit <TLink name="Next" /> und{" "}
+                        moeglich.dev ist meine persönliche Website und dient als
+                        mein Portfolio. Sie ist mit <TLink name="Next" /> und{" "}
                         <TLink name="React" /> geschrieben und verwendet{" "}
                         <TLink name="Tailwind" /> fürs Styling.
                     </div>
@@ -190,7 +193,7 @@ export const projects = [
                 <div className="article">
                     <div>
                         ErcEsg ist eine Schülerfirma des Schloss Heessen (meiner
-                        Schule), Ich habe den IT Bereich geleitet und z.B. die
+                        Schule), ich habe den IT Bereich geleitet und z.B. die
                         Website erstellt. <br />
                         Die Website wurde nach <TLink name="Tagaro" /> erstellt
                         und basiert auf einem ähnlichen Stack (
@@ -200,9 +203,11 @@ export const projects = [
                         Artikel und Account System enthält.
                     </div>
                     <div>
-                        Das Artikel System ist Custom, das Frontend interagiert
-                        mit einer Rest API welche mit <TLink name="Prisma" />{" "}
-                        auf die <TLink name="CockroachDb" /> Datenbank zugreift.
+                        Das Artikelsystem ist maßgeschneidert; das Frontend
+                        interagiert mit einer REST-API, die mittels{" "}
+                        <TLink name="Prisma" /> auf die{" "}
+                        <TLink name="CockroachDb" />
+                        -Datenbank zugreift.
                     </div>
                     <div>
                         Die Seite + API wird mit <TLink name="Vercel" /> Edge
@@ -227,18 +232,18 @@ export const projects = [
     },
     {
         name: "Japtools",
-        summary: "Eine Sprachlernwebseite",
+        summary: "Eine Sprachlern-Webseite",
         description: {
             de: () => (
                 <div className="article">
                     <div>
                         Japtools ist eine persönliche interaktive
-                        Sprachlernwebsite welche mit <TLink name="Sveltekit" />{" "}
-                        und <TLink name="Typescript" /> geschrieben ist.
+                        Sprachlernwebsite die mit <TLink name="Sveltekit" /> und{" "}
+                        <TLink name="Typescript" /> geschrieben ist.
                     </div>
                     <div>
-                        Das besondere ist das die Seite sehr Interaktiv ist und
-                        z.B. auf einem Server-Side SRS
+                        Besonders ist, dass die Seite sehr interaktiv gestaltet
+                        ist und beispielsweise auf einem serverseitiges SRS
                         (Spaced-Repetition-System) basiert. <br />
                         Dieses System ist implementiert mit den folgenden
                         weiteren Technologien:
@@ -273,7 +278,7 @@ export const projects = [
     },
     {
         name: "functional_utilities",
-        summary: "Ein utility NPM Package",
+        summary: "Ein Utility-NPM-Package",
         description: () => (
             <div className="article">
                 <div>
@@ -296,10 +301,10 @@ export const projects = [
                     </ul>
                 </div>
                 <div>
-                    Das Package ist in <TLink name="Typescript" />
-                    geschrieben und enthält Funktionen fürs Arbeiten mit Arrays,
-                    Objekten, Strings und mehr. Einige Ziele sind Gute Type
-                    Inference und Einfachheit.
+                    Das Package ist in <TLink name="Typescript" /> geschrieben
+                    und enthält Funktionen fürs Arbeiten mit Arrays, Objekten,
+                    Strings und mehr. Einige Ziele sind Gute Type Inference und
+                    Einfachheit.
                 </div>
             </div>
         ),
@@ -350,7 +355,7 @@ export const projects = [
         name: "Quip",
         summary: "Eine Programmiersprache",
         description: () => (
-            <div>
+            <div className="article">
                 <div>
                     Quip hat das Ziel die erste Universelle Programmiersprache
                     zu sein.
@@ -362,7 +367,7 @@ export const projects = [
                     der Wichtigsten features
                 </div>
                 <div>
-                    Die Sprache ist noch nicht nutztbar und in Planung +
+                    Die Sprache ist noch nicht nutzbar und in Planung +
                     Entwicklung
                 </div>
                 <div>
@@ -396,46 +401,50 @@ export const projects = [
                             <b>Async/Sync Identity</b> <br />
                             In Quip kann jede Async function auch Sync genutzt
                             werden, z.B.:
-                            <code>
-                                <pre>
-                                    {dedent`
-                                        async fn test() -> _ {
-                                            return 1
-                                        }
-
-                                        fn main1() {
-                                            let a = test() // async wird sync genutzt
-                                        }
-
-                                        async fn main2() {
-                                            let a_future = test.async()
-                                            let a = a_future.await
-
-                                            // oder 1 Zeile
-                                            let a = test.async().await
-                                        }
-                                    `}
-                                </pre>
-                            </code>
+                            <CopyBlock
+                                text={dedent`
+                                    async fn test() -> _ {
+                                        return 1
+                                    }
+                                
+                                    fn main1() {
+                                        let a = test() // async wird sync genutzt
+                                    }
+                                
+                                    async fn main2() {
+                                        let a_future = test.async()
+                                        let a = a_future.await
+                                    
+                                        // oder 1 Zeile
+                                        let a = test.async().await
+                                    }
+                                `}
+                                language="rust"
+                                showLineNumbers
+                                wrapLongLines
+                                theme={noctisViola}
+                            />
                         </li>
                         <li>
                             <b>Auto-Locking</b> <br />
                             In Quip gibt es wie in Rust die möglichkeit manuell
                             Locking via Mutex, RwLock und mehr zu machen, aber
                             sonst macht Quip das automatisch, z.B.:
-                            <code>
-                                <pre>
-                                    {dedent`
-                                        let a = 1
+                            <CopyBlock
+                                text={dedent`
+                                let a = 1
                                         
-                                        os.thread.spawn(|| {
-                                            a += 2
-                                        })
+                                os.thread.spawn(|| {
+                                    a += 2
+                                })
 
-                                        println(a)
-                                    `}
-                                </pre>
-                            </code>
+                                println(a)
+                                `}
+                                language="rust"
+                                showLineNumbers
+                                wrapLongLines
+                                theme={noctisViola}
+                            />
                             In Rust würde das ein Error sein, in C++ würde das
                             zu undefiniertem Verhalten führen (data-race), in
                             Quip wird automatisch ein Atomic genutzt
@@ -481,9 +490,9 @@ export const projects = [
                     <li>
                         <TLink name="npm" />
                     </li>{" "}
-                    Package welches die darstellung und manipulation von Grids
+                    Package welches die Darstellung und Manipulation von Grids
                     in <TLink name="Typescript" /> vereinfacht. Ich nutze es in
-                    nur wenigen Projekten, aber es ist sehr nützlich wenn es
+                    nur wenigen Projekten aber es ist sehr nützlich wenn es
                     gebraucht wird.
                 </div>
                 ,
@@ -500,10 +509,11 @@ export const projects = [
         description: () => (
             <div className="article">
                 <div>
-                    Bei SatWorld und Atelmo, Anbietern im Satellitenbereich habe
-                    Ich im Team in einer Migration zu einem Shopsystem, hierbei
-                    habe Ich ein Migrationssystem in <TLink name="Rust" />{" "}
-                    geschrieben und vieles mehr wie z.B. automatische Backups
+                    Bei SatWorld und Atelmo, Anbietern im Satellitenbereich, war
+                    ich Teil eines kleines Teams, das zu einem neuen Shopsystem
+                    migriert ist. Dabei habe ich ein Migrationssystem in{" "}
+                    <TLink name="Rust" /> geschrieben und vieles mehr wie z.B.
+                    automatische Backups.
                 </div>
             </div>
         ),
@@ -528,11 +538,11 @@ export const projects = [
                 <div>
                     Ein Node Service welcher http requests empfängt und dann an
                     listener via Websockets weiterleitet. Der Hauptzweck ist
-                    Webhooks von zu empfangen auch wenn der Server nicht
-                    öffentlich erreichbar ist oder die IP dynamisch ist.
+                    Webhooks zu empfangen auch wenn der Server nicht öffentlich
+                    erreichbar ist (z.B. localhost) oder die IP dynamisch ist.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich es nutze sind:
+                    Einige Beispiele wo ich es nutze sind:
                     <ul>
                         <li>
                             <TLink name="Tagaro" />
@@ -556,15 +566,12 @@ export const projects = [
                     collision, transformation, triangulation und vieles mehr.
                 </div>
                 <div>
-                    Aktuell ist die Library in purem Typescript geschrieben aber
-                    beschleunigung mit <TLink name="tgpu" /> und{" "}
-                    <TLink name="Webassembly" /> via Rust ist in der Zukunft
-                    geplant
-                </div>
-                <div>
-                    Aktuell ist die Library Teil von{" "}
-                    <TLink name="Moeglich.dev" />, aber Ich werde diese
-                    vermutlich auf <TLink name="npm" /> veröffentlichen
+                    Aktuell ist die Library in purem Typescript geschrieben,
+                    aber Beschleunigung mit <TLink name="tgpu" /> und{" "}
+                    <TLink name="Webassembly" /> via <TLink name="Rust" /> ist
+                    in der Zukunft geplant. <br />
+                    Derzeit ist sie Teil von Moeglich.dev, allerdings plane ich,
+                    sie irgendwann auf <TLink name="npm" /> zu veröffentlichen.
                 </div>
             </div>
         ),
@@ -583,7 +590,7 @@ export const technologies = [
                 <div>
                     React ist das Framework meiner Wahl für Frontend
                     Entwicklung. Die meisten Projekte wo ich es nutzte sind
-                    aktuell Privat, aber ein beispiel ist diese Seite{" "}
+                    aktuell Privat, aber ein Beispiel ist diese Seite{" "}
                     <TLink name="Moeglich.dev" />
                 </div>
                 <div>
@@ -592,8 +599,8 @@ export const technologies = [
                     <TLink name="Sveltekit" />
                 </div>
                 <div>
-                    Allgemein nutze Ich React mit <TLink name="Typescript" />,{" "}
-                    <TLink name="Tailwind" /> und <TLink name="Next" /> dar es
+                    Allgemein nutze ich React mit <TLink name="Typescript" />,{" "}
+                    <TLink name="Tailwind" /> und <TLink name="Next" /> da es
                     die Vorteile von React herausbringt und die Nachteile
                     reduziert
                 </div>
@@ -606,18 +613,19 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Tailwind mach Styling einfacher, besonders wenn das CSS kein
-                    Scoping hat (wie in <TLink name="React" />/
+                    Tailwind macht Styling einfacher, besonders wenn das CSS
+                    kein Scoping hat (wie in <TLink name="React" />/
                     <TLink name="Next" />
                     ). <br />
-                    Deshalb nutze Ich es in allen meiner <TLink name="Next" />{" "}
+                    Deshalb nutze ich es in allen meiner <TLink name="Next" />{" "}
                     Projekte.
                 </div>
                 <div>
-                    Es gibt auch Projekte wo Ich es nicht nutze, diese sind
-                    hauptzächlich in <TLink name="Sveltekit" /> geschrieben, da
-                    Sveltekit CSS auf die Dateien isoliert. Aber auch in diesen
-                    wechsle Ich langsam zu Tailwind, z.B. in{" "}
+                    Es gibt auch Projekte, in denen ich es nicht nutze; diese
+                    sind hauptsächlich mit <TLink name="Sveltekit" />{" "}
+                    entwickelt, da Sveltekit CSS auf die einzelnen Dateien
+                    isoliert ist. Aber auch bei diesen Projekten wechsle ich
+                    langsam zu Tailwind, wie zum Beispiel bei{" "}
                     <TLink name="Tagaro" />
                 </div>
             </div>
@@ -632,7 +640,7 @@ export const technologies = [
                     Next ist ein Metaframework für React welches Server Side
                     Rendering, Static Site Generation und mehr erlaubt. Es ist
                     das Framework meiner Wahl für Webseiten, da es sehr flexibel
-                    ist und gut mit den Technologien die Ich nutze
+                    ist und gut mit den Technologien die ich nutze
                     zusammenarbeitet.
                 </div>
                 <div>
@@ -642,24 +650,19 @@ export const technologies = [
             </div>
         ),
     },
-    // {
-    //     icon: () => <Icons.QwikIcon />,
-    //     name: "Qwik",
-    //     description: "todo",
-    // },
     {
         icon: () => <Icons.PythonIcon />,
         name: "Python",
         description: () => (
             <div className="article">
                 <div>
-                    Python war die erste richtige Programmiersprache die Ich
-                    gelernt habe, aber mittlerweile nutze Ich Python nur noch
+                    Python war die erste richtige Programmiersprache die ich
+                    gelernt habe, aber mittlerweile nutze ich Python nur noch
                     für kleine Scripts.
                 </div>
                 <div>
-                    Die meisten meiner Python Projekte habe Ich zu einer Zeit
-                    geschrieben wo Ich noch nicht alle meine Projekte auf Github
+                    Die meisten meiner Python Projekte habe ich zu einer Zeit
+                    geschrieben wo ich noch nicht alle meine Projekte auf Github
                     gepostet habe, deshalb gibt es nur wenige Beispiele wie z.B.
                     <TLink name="list_screen" />
                 </div>
@@ -672,8 +675,8 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Node nutze Ich hauptzächlich für Scripts in{" "}
-                    <TLink name="Typescript" /> Projekten und wenn Ich Bots oder
+                    Node nutze ich hauptzächlich für Scripts in{" "}
+                    <TLink name="Typescript" /> Projekten und wenn ich Bots oder
                     komplexere Scripts schreibe.
                 </div>
                 <div>
@@ -684,11 +687,6 @@ export const technologies = [
             </div>
         ),
     },
-    // {
-    //     icon: () => <Icons.PytorchIcon />,
-    //     name: "Pytorch",
-    //     description: "todo",
-    // },
     {
         icon: () => <Icons.SvelteIcon />,
         name: "Sveltekit",
@@ -700,7 +698,7 @@ export const technologies = [
                     verwendet habe, es ist einfach und effizient.
                 </div>
                 <div>
-                    Ich nutze SvelteKit in Projekten wie <TLink name="Tagaro" />{" "}
+                    ich nutze SvelteKit in Projekten wie <TLink name="Tagaro" />{" "}
                     und <TLink name="ErcEsg" />, wo es mir ermöglicht, schnell
                     interaktive und performante Webseiten zu erstellen. Durch
                     die Kombination von SvelteKit mit anderen Technologien wie{" "}
@@ -709,10 +707,10 @@ export const technologies = [
                     bieten.
                 </div>
                 <div>
-                    Sveltekit ist das was Ich für die meisten meiner aktiven
-                    Projekte genutzt habe, aber mittlerweile bevorzuge Ich{" "}
+                    Sveltekit ist das was ich für die meisten meiner aktiven
+                    Projekte genutzt habe, aber mittlerweile bevorzuge ich{" "}
                     <TLink name="Next" /> für neue Projekte, da es mehr Features
-                    hat und besser mit den Technologien die Ich nutze
+                    hat und besser mit den Technologien die ich nutze
                     zusammenarbeitet.
                 </div>
             </div>
@@ -727,11 +725,11 @@ export const technologies = [
                     <div>
                         Typescript ist die Sprache meiner Wahl für Web und viele
                         Scripts. Ich nutze fast nie Javascript ohne Typescript
-                        dar es mir viele Vorteile gibt wie bessere DX durch
-                        Types
+                        da es viele Vorteile bietet, wie zum Beispiel eine
+                        bessere Entwicklererfahrung (DX) durch Types.
                     </div>
                     <div>
-                        Einige Beispiele wo Ich Typescript nutze sind:
+                        Einige Beispiele wo ich Typescript nutze sind:
                         <ul>
                             <li>
                                 <TLink name="Tagaro" />
@@ -748,7 +746,7 @@ export const technologies = [
                         </ul>
                     </div>
                     <div>
-                        Typescript ist eine der Zwei Sprachen welche Ich für
+                        Typescript ist eine der Zwei Sprachen welche ich für
                         fast alle Projekte nutze, die andere ist{" "}
                         <TLink name="Rust" />
                     </div>
@@ -768,7 +766,8 @@ export const technologies = [
                     <ul>
                         <li>
                             <TLink name="Quip" /> - Rust wird für die erste
-                            Version der Sprache genutzt zum Bootstrapping
+                            Version der Sprache genutzt (Quip-Proto) zum
+                            Bootstrapping
                         </li>
                         <li>
                             <TLink name="Moeglich.dev" /> - Rust wird für einige
@@ -781,8 +780,8 @@ export const technologies = [
                             <TLink name="CockroachDb" />) genutzt
                         </li>
                     </ul>
-                    Wie <TLink name="Next" /> nutze Ich Rust immer mehr und die
-                    meisten Projekte wo Ich Rust nutze sind noch nicht fertig /
+                    Wie <TLink name="Next" /> nutze ich Rust immer mehr und die
+                    meisten Projekte wo ich Rust nutze sind noch nicht fertig /
                     veröffentlicht.
                 </div>
             </div>
@@ -794,7 +793,7 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Scss ist eine CSS Preprocessor die Ich in Projekten wie{" "}
+                    Scss ist eine CSS Preprocessor die ich in Projekten wie{" "}
                     <TLink name="Tagaro" /> nutze. Ich bevorzuge es gegenüber
                     CSS, aber <TLink name="Tailwind" /> ist in den meisten
                     Fällen besser.
@@ -808,7 +807,7 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Postcss ist nutze Ich selten direkt, aber es ist ein
+                    Postcss ist nutze ich selten direkt, aber es ist ein
                     wichtiger Teil von anderen CSS Tools wie{" "}
                     <TLink name="Tailwind" /> oder <TLink name="Scss" />
                 </div>
@@ -821,16 +820,17 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Firebase ist ein Cloud Service von Google welcher viele
-                    Services anbietet. Ich nutze aber nur die Datenbank um z.B.
-                    in <TLink name="Tagaro" /> Kontaktformulare oder Logs zu
+                    Firebase ist ein Cloud-Service von Google, der viele Dienste
+                    anbietet. Ich nutze jedoch nur die Datenbank, um z.B.
+                    Kontaktformulare oder Logs in <TLink name="Tagaro" /> zu
                     speichern.
                 </div>
                 <div>
                     Ich bevorzuge <TLink name="CockroachDb" /> +{" "}
                     <TLink name="Prisma" /> für die meisten Projekte, aber
-                    Firebase hat den Vorteil der Echtzeit was es für Realtime
-                    Logs oder Status Updates nützlich macht.
+                    Firebase bietet den Vorteil der Echtzeitverarbeitung, was es
+                    für Echtzeit-Logs oder Statusaktualisierungen nützlich
+                    macht.
                 </div>
             </div>
         ),
@@ -841,11 +841,11 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Google Analytics ist ein Tool um das Verhalten von Nutzern
+                    Google Analytics ist ein Tool, um das Verhalten von Nutzern
                     auf einer Webseite zu analysieren. Ich nutze es aktuell nur
-                    in <TLink name="Tagaro" />. Um möglicherweise verbesserungen
-                    in der SEO zu finden oder zu sehen wie Nutzer die Seite
-                    nutzen.
+                    auf <TLink name="Tagaro" />, um mögliche Verbesserungen in
+                    der SEO zu identifizieren oder zu analysieren, wie Nutzer
+                    die Seite nutzen
                 </div>
             </div>
         ),
@@ -856,13 +856,13 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Prisma ist meine bevorzugte möglichkeit mit Datenbanken zu
-                    interagieren. Ich nutze es meisten in Kombination mit{" "}
-                    <TLink name="CockroachDb" /> habe es aber auch schon mit
+                    Prisma ist meine bevorzugte Möglichkeit, mit Datenbanken zu
+                    interagieren. Ich nutze es meistens in Kombination mit{" "}
+                    <TLink name="CockroachDb" />, habe es aber auch schon mit
                     anderen Datenbanken wie Postgres oder MySQL genutzt.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich Prisma nutze sind:
+                    Einige Beispiele wo ich Prisma nutze sind:
                     <ul>
                         <li>
                             <TLink name="Tagaro" />
@@ -887,8 +887,8 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Pusher ist ein Service um Echtzeit Daten zu senden. Es ist
-                    das was Ich nutze wenn Ich <TLink name="CockroachDb" /> +{" "}
+                    Pusher ist ein Service, um Echtzeit-Events zu senden. Es ist
+                    das was ich nutze wenn ich <TLink name="CockroachDb" /> +{" "}
                     <TLink name="Prisma" /> nutze welche keine Echtzeit Updates
                     haben.
                 </div>
@@ -921,7 +921,7 @@ export const technologies = [
                     hat viele Vorteile wie Echtzeit Updates und Skalierbarkeit.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich CockroachDb nutze sind:
+                    Einige Beispiele wo ich CockroachDb nutze sind:
                     <ul>
                         <li>
                             <TLink name="Tagaro" />
@@ -948,11 +948,11 @@ export const technologies = [
                 <div>
                     Docker ist ein Tool um Anwendungen in Containern zu
                     verpacken. Ich nutze Docker für 2 Dinge: Builds und
-                    Services. Aktuell nutze Ich es nicht für Deployments dar
+                    Services. Aktuell nutze ich es nicht für Deployments dar
                     hosting teuer ist.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich Docker nutze sind:
+                    Einige Beispiele wo ich Docker nutze sind:
                     <ul>
                         <li>
                             <TLink name="Satworld" /> - Um Shopware lokal
@@ -975,7 +975,7 @@ export const technologies = [
                     Sprachen) auf einem Server zu hosten und https zu nutzen.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich Nginx nutze sind:
+                    Einige Beispiele wo ich Nginx nutze sind:
                     <ul>
                         <li>
                             <TLink name="Http-Websocket-Proxy" />
@@ -1002,7 +1002,7 @@ export const technologies = [
                     diese zu versionieren.
                 </div>
                 <div>
-                    Meistens nutze Ich Github (
+                    Meistens nutze ich Github (
                     <Link href="https://github.com/JeremyMoeglich">
                         Github - JeremyMoeglich
                     </Link>
@@ -1017,12 +1017,12 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Wenn Ich CI/CD brauche nutze Ich Github Actions. Es ist
-                    kostenlos und dar Ich Github für fast alle meiner Projekte
+                    Wenn ich CI/CD brauche nutze ich Github Actions. Es ist
+                    kostenlos und da ich Github für fast alle meiner Projekte
                     nutze ist es einfach zu Integrieren.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich Github Actions nutze sind:
+                    Einige Beispiele wo ich Github Actions nutze sind:
                     <ul>
                         <li>
                             <TLink name="Tagaro" /> - Deployments (
@@ -1045,10 +1045,10 @@ export const technologies = [
                 <div>
                     Ich nutze Linux als Betriebssystem auf meinem Laptop,
                     Desktop und Servern. <br />
-                    Für meine Systeme nutze Ich Arch Linux, da es mir zugriff zu
+                    Für meine Systeme nutze ich Arch Linux, da es mir zugriff zu
                     den neusten Paketen gibt, Linux allgemein ist oft besser für
-                    Development dar Tools oft stabiler und besser sind. <br />
-                    Auf Servern nutze Ich meistens Ubuntu, da es stabil ist und
+                    Development da Tools oft stabiler und besser sind. <br />
+                    Auf Servern nutze ich meistens Ubuntu, da es stabil ist und
                     trotzdem alles für Deployment hat.
                 </div>
             </div>
@@ -1065,7 +1065,7 @@ export const technologies = [
                     und viele Features wie Edge Functions hat.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich Vercel nutze sind:
+                    Einige Beispiele wo ich Vercel nutze sind:
                     <ul>
                         <li>
                             <TLink name="Tagaro" />
@@ -1087,13 +1087,13 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Strato ist ein CDN / Hosting Service. Der Grund warum Ich es
-                    nutze ist das die alte Version von <TLink name="Tagaro" />{" "}
-                    dort gehostet war und eine änderung zu Problemen geführt
-                    hätte.
+                    Strato ist ein CDN / Hosting Service. Der Grund, warum ich
+                    es nutze ist das die alte Version von{" "}
+                    <TLink name="Tagaro" /> dort gehostet war und eine änderung
+                    zu Problemen geführt hätte.
                 </div>
                 <div>
-                    Das einzige Projekt wo Ich Strato nutze ist{" "}
+                    Das einzige Projekt wo ich Strato nutze ist{" "}
                     <TLink name="Tagaro" />
                 </div>
             </div>
@@ -1125,7 +1125,7 @@ export const technologies = [
                     möglichkeit RPC im Frontend zu nutzen.
                 </div>
                 <div>
-                    Einige Beispiele wo Ich TRPC nutze sind:
+                    Einige Beispiele wo ich TRPC nutze sind:
                     <ul>
                         <li>
                             <TLink name="Moeglich.dev" /> - Aktuell nur für eine
@@ -1154,8 +1154,8 @@ export const technologies = [
                 <div>
                     Alle meine Projekte welche in Typescript geschrieben sind
                     nutzen npm Packages. <br />
-                    Aber den npm Package Manager nutze Ich eher selten direkt,
-                    da Ich meistens <TLink name="Bun" /> oder{" "}
+                    Aber den npm Package Manager nutze ich eher selten direkt,
+                    da ich meistens <TLink name="Bun" /> oder{" "}
                     <TLink name="pnpm" /> nutze.
                 </div>
             </div>
@@ -1168,7 +1168,7 @@ export const technologies = [
             <div className="article">
                 <div>
                     Bun ist ein Package Manager welcher schneller ist als npm
-                    und pnpm. Ich nutze es in Projekten wo Ich npm oder pnpm
+                    und pnpm. Ich nutze es in Projekten wo ich npm oder pnpm
                     nutzen würde.
                 </div>
             </div>
@@ -1181,8 +1181,17 @@ export const technologies = [
             <div className="article">
                 <div>
                     pnpm ist ein Package Manager welcher schneller ist als npm
-                    und npm. Ich nutze es in Projekten wo Ich npm oder bun
-                    nutzen würde.
+                    und yarn. <br />
+                    Ich nutzte allgemein selten npm und nie yarn, pnpm ist mein
+                    go-to Package Manager z.B. in Projekten wie{" "}
+                    <TLink name="functional_utilities" />,{" "}
+                    <TLink name="Tagaro" />, <TLink name="ErcEsg" /> und{" "}
+                    <TLink name="Japtools" />. Für neuere Projekte wie{" "}
+                    <TLink name="Moeglich.dev" /> nutze ich jedoch{" "}
+                    <TLink name="Bun" /> da es noch schneller ist, es
+                    unterstützt jedoch noch nicht Workspaces welche ich z.B. bei{" "}
+                    <TLink name="Tagaro" /> und <TLink name="Japtools" />{" "}
+                    brauche.
                 </div>
             </div>
         ),
@@ -1196,7 +1205,7 @@ export const technologies = [
                     Biome ist ein ersatzt für andere Tools wie Prettier und
                     ESLint, es ist in <TLink name="Rust" /> geschrieben und ist
                     schneller und ist somit schneller. <br />
-                    Der Hauptgrund warum Ich es nutze ist jedoch das es mehr
+                    Der Hauptgrund warum ich es nutze ist jedoch das es mehr
                     Funktionen hat und besser sich in Projekte integriert.
                 </div>
             </div>
@@ -1207,7 +1216,13 @@ export const technologies = [
         name: "Webassembly",
         description: () => (
             <div className="article">
-                <div>Webassembly ist eine</div>
+                <div>
+                    Webassembly ermöglicht es Code der nicht in JS geschrieben
+                    ist im Browser zu nutzen. Ich nutze es hauptzächlich zur
+                    nutzung von Rust Code im Browser um die Performance zu
+                    verbessern. Ein Beispiel Projekt wo ich an Webassembly
+                    arbeite ist <TLink name="tshapes" />
+                </div>
             </div>
         ),
     },
