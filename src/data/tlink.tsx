@@ -8,7 +8,6 @@ import {
     useEffect,
     useState,
 } from "react";
-import { CgArrowRight } from "react-icons/cg";
 import * as Icons from "~/app/_components/icons";
 import { dedent } from "~/utils/dedent";
 import { CopyBlock, noctisViola, nord } from "react-code-blocks";
@@ -27,9 +26,8 @@ export const projects = [
                     </div>
                     <div>
                         Das Tagaro-Projekt ist ein Monorepo, das{" "}
-                        <TLink name="Turborepo" /> und
-                        <TLink name="pnpm" /> verwendet und folgende
-                        Teilprojekte enthält:
+                        <TLink name="Turborepo" /> und <TLink name="pnpm" />{" "}
+                        verwendet und folgende Teilprojekte enthält:
                         <ul>
                             <li>
                                 Eine Website, entwickelt mit{" "}
@@ -68,7 +66,7 @@ export const projects = [
                                 </ul>
                             </li>
                             <li>
-                                Ein Admin-Panel, ebenfalls entwickelt mit
+                                Ein Admin-Panel, ebenfalls entwickelt mit{" "}
                                 <TLink name="Sveltekit" /> und{" "}
                                 <TLink name="Typescript" />, umfasst Tools wie
                                 einen E-Mail-Generator, Log-Einsichten und einen
@@ -193,12 +191,12 @@ export const projects = [
                 <div className="article">
                     <div>
                         ErcEsg ist eine Schülerfirma des Schloss Heessen (meiner
-                        Schule), ich habe den IT Bereich geleitet und z.B. die
-                        Website erstellt. <br />
-                        Die Website wurde nach <TLink name="Tagaro" /> erstellt
-                        und basiert auf einem ähnlichen Stack (
-                        <TLink name="Sveltekit" /> + <TLink name="Typescript" />
-                        ). <br />
+                        Schule). Ich leitete dort den IT-Bereich und erstellte
+                        unter anderem die Website. <br />
+                        Die Website, erstellt nach dem <TLink name="Tagaro" />
+                        -Projekt, basiert auf einem ähnlichen Technologiestack:{" "}
+                        <TLink name="Sveltekit" /> und{" "}
+                        <TLink name="Typescript" />. <br />
                         Das Projekt ist kleiner, aber dynamischer, da es ein
                         Artikel und Account System enthält.
                     </div>
@@ -210,8 +208,8 @@ export const projects = [
                         -Datenbank zugreift.
                     </div>
                     <div>
-                        Die Seite + API wird mit <TLink name="Vercel" /> Edge
-                        Functions gehostet
+                        Die Seite und API werden mit <TLink name="Vercel" />{" "}
+                        Edge Functions gehostet.
                     </div>
                 </div>
             ),
@@ -238,13 +236,14 @@ export const projects = [
                 <div className="article">
                     <div>
                         Japtools ist eine persönliche interaktive
-                        Sprachlernwebsite die mit <TLink name="Sveltekit" /> und{" "}
-                        <TLink name="Typescript" /> geschrieben ist.
+                        Sprachlernwebsite, die mit <TLink name="Sveltekit" />{" "}
+                        und <TLink name="Typescript" /> entwickelt wurde.
                     </div>
                     <div>
-                        Besonders ist, dass die Seite sehr interaktiv gestaltet
-                        ist und beispielsweise auf einem serverseitiges SRS
-                        (Spaced-Repetition-System) basiert. <br />
+                        Besonders hervorzuheben ist die sehr interaktive
+                        Gestaltung der Seite, die unter anderem auf einem
+                        serverseitigen SRS (Spaced-Repetition-System) basiert.
+                        <br />
                         Dieses System ist implementiert mit den folgenden
                         weiteren Technologien:
                         <ul>
@@ -464,14 +463,11 @@ export const projects = [
         description: () => (
             <div className="article">
                 <div>
-                    Ein{" "}
-                    <li>
-                        <TLink name="Python" />
-                    </li>{" "}
-                    Package mit dem Ziel multi-line Texte im Terminal einfach
-                    darzustellen. Es funktioniert indem man eine Liste von
-                    Strings der Library gibt, diese wird dann automatisch den
-                    Aktuellen Inhalt des Terminals anpassen.
+                    Ein <TLink name="Python" /> Package mit dem Ziel multi-line
+                    Texte im Terminal einfach darzustellen. Es funktioniert
+                    indem man eine Liste von Strings der Library gibt, diese
+                    wird dann automatisch den Aktuellen Inhalt des Terminals
+                    anpassen.
                 </div>
             </div>
         ),
@@ -486,16 +482,11 @@ export const projects = [
         description: () => (
             <div className="article">
                 <div>
-                    Ein{" "}
-                    <li>
-                        <TLink name="npm" />
-                    </li>{" "}
-                    Package welches die Darstellung und Manipulation von Grids
-                    in <TLink name="Typescript" /> vereinfacht. Ich nutze es in
-                    nur wenigen Projekten aber es ist sehr nützlich wenn es
-                    gebraucht wird.
+                    Ein <TLink name="npm" /> Package welches die Darstellung und
+                    Manipulation von Grids in <TLink name="Typescript" />{" "}
+                    vereinfacht. Ich nutze es in nur wenigen Projekten aber es
+                    ist sehr nützlich wenn es gebraucht wird.
                 </div>
-                ,
             </div>
         ),
         icon: "images/projects/npm_icon.svg",
@@ -663,7 +654,7 @@ export const technologies = [
                 <div>
                     Die meisten meiner Python Projekte habe ich zu einer Zeit
                     geschrieben wo ich noch nicht alle meine Projekte auf Github
-                    gepostet habe, deshalb gibt es nur wenige Beispiele wie z.B.
+                    gepostet habe, deshalb gibt es nur wenige Beispiele wie z.B.{" "}
                     <TLink name="list_screen" />
                 </div>
             </div>
