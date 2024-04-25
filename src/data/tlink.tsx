@@ -746,8 +746,8 @@ export const technologies = [
                         </ul>
                     </div>
                     <div>
-                        Typescript ist eine der Zwei Sprachen welche ich für
-                        fast alle Projekte nutze, die andere ist{" "}
+                        Typescript ist eine der 2 Sprachen welche ich für fast
+                        alle Projekte nutze, die andere ist{" "}
                         <TLink name="Rust" />
                     </div>
                 </div>
@@ -887,8 +887,8 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Pusher ist ein Service, um Echtzeit-Events zu senden. Es ist
-                    das was ich nutze wenn ich <TLink name="CockroachDb" /> +{" "}
+                    Pusher ist ein Service, um Echtzeit-Events zu senden. Ich
+                    nutze es, wenn ich <TLink name="CockroachDb" /> +{" "}
                     <TLink name="Prisma" /> nutze welche keine Echtzeit Updates
                     haben.
                 </div>
@@ -916,9 +916,10 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    CockroachDb ist eine verteilte SQL Datenbank. Ich nutze es
-                    in fast allen Projekten welche eine Datenbank brauchen. Es
-                    hat viele Vorteile wie Echtzeit Updates und Skalierbarkeit.
+                    CockroachDB ist eine verteilte SQL-Datenbank. Ich nutze
+                    diese in fast allen Projekten die eine Datenbank brauchen.
+                    Es hat viele Vorteile wie Echtzeit Updates und
+                    Skalierbarkeit.
                 </div>
                 <div>
                     Einige Beispiele wo ich CockroachDb nutze sind:
@@ -946,10 +947,10 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Docker ist ein Tool um Anwendungen in Containern zu
+                    Docker ist ein Tool, um Anwendungen in Containern zu
                     verpacken. Ich nutze Docker für 2 Dinge: Builds und
-                    Services. Aktuell nutze ich es nicht für Deployments dar
-                    hosting teuer ist.
+                    Services. Aktuell nutze ich es nicht für Deployments, da das
+                    Hosting teuer ist.
                 </div>
                 <div>
                     Einige Beispiele wo ich Docker nutze sind:
@@ -957,6 +958,11 @@ export const technologies = [
                         <li>
                             <TLink name="Satworld" /> - Um Shopware lokal
                             isoliert zum testen zu hosten.
+                        </li>
+                        <li>
+                            Rust Builds welche eine alte glibc Version benötigen
+                            für portability, z.B. für{" "}
+                            <TLink name="Http-Websocket-Proxy" />
                         </li>
                     </ul>
                 </div>
@@ -970,9 +976,9 @@ export const technologies = [
             <div className="article">
                 <div>
                     Ich nutze Nginx als Reverse Proxy für Services auf meinem
-                    Server für viele Projekte. <br />
-                    Das ermöglicht es mir mehrere Webseiten (in verschiedenen
-                    Sprachen) auf einem Server zu hosten und https zu nutzen.
+                    Server in vielen Projekten. <br />
+                    Dies ermöglicht es mir, mehrere Webseiten (in verschiedenen
+                    Sprachen) auf einem Server zu hosten und HTTPS zu nutzen.
                 </div>
                 <div>
                     Einige Beispiele wo ich Nginx nutze sind:
@@ -997,9 +1003,9 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Ich nutze Git für den größten Teil meiner Projekte. Es gibt
-                    mir die Möglichkeit an Projekten von überall zu arbeiten und
-                    diese zu versionieren.
+                    Ich nutze Git für die meisten meiner Projekte. Es gibt mir
+                    die Möglichkeit, an Projekten von überall zu arbeiten und
+                    verschiedene Versionen zu verwalten.
                 </div>
                 <div>
                     Meistens nutze ich Github (
@@ -1017,9 +1023,9 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Wenn ich CI/CD brauche nutze ich Github Actions. Es ist
-                    kostenlos und da ich Github für fast alle meiner Projekte
-                    nutze ist es einfach zu Integrieren.
+                    Wenn ich CI/CD brauche, nutze ich GitHub Actions. Es ist
+                    kostenlos, und da ich GitHub für fast alle meiner Projekte
+                    nutze, ist es einfach zu integrieren.
                 </div>
                 <div>
                     Einige Beispiele wo ich Github Actions nutze sind:
@@ -1045,11 +1051,12 @@ export const technologies = [
                 <div>
                     Ich nutze Linux als Betriebssystem auf meinem Laptop,
                     Desktop und Servern. <br />
-                    Für meine Systeme nutze ich Arch Linux, da es mir zugriff zu
-                    den neusten Paketen gibt, Linux allgemein ist oft besser für
-                    Development da Tools oft stabiler und besser sind. <br />
+                    Für meine Systeme nutze ich Arch Linux, da es mir Zugriff
+                    auf die neuesten Pakete bietet. Linux ist generell oft
+                    besser für Development, da die Tools stabiler und
+                    ausgereifter sind. <br />
                     Auf Servern nutze ich meistens Ubuntu, da es stabil ist und
-                    trotzdem alles für Deployment hat.
+                    dennoch alles Nötige für Deployments bietet.
                 </div>
             </div>
         ),
@@ -1060,9 +1067,10 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Vercel ist ein Hosting Service für Webseiten. Ich nutze es
-                    für fast alle meiner Webseiten, da es einfach zu nutzen ist
-                    und viele Features wie Edge Functions hat.
+                    Vercel ist ein Hosting-Dienst für Webseiten. Ich nutze es
+                    für fast alle meine Webseiten, da es einfach zu nutzen ist,
+                    kostenlos für kleine Projekte ist und viele Features mit
+                    guter Performance bietet.
                 </div>
                 <div>
                     Einige Beispiele wo ich Vercel nutze sind:
@@ -1087,10 +1095,9 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Strato ist ein CDN / Hosting Service. Der Grund, warum ich
-                    es nutze ist das die alte Version von{" "}
-                    <TLink name="Tagaro" /> dort gehostet war und eine änderung
-                    zu Problemen geführt hätte.
+                    Strato ist ein CDN- und Hosting-Dienst. Ich nutze es, weil
+                    die alte Version von <TLink name="Tagaro" /> dort gehostet
+                    wurde und eine Änderung zu Problemen geführt hätte.
                 </div>
                 <div>
                     Das einzige Projekt wo ich Strato nutze ist{" "}
@@ -1105,10 +1112,10 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Turborepo ist ein Tool für Monorepos. Ich nutze es in meinen
+                    Turborepo ist ein Tool für Monorepos, das ich in meinen
                     größeren Projekten wie <TLink name="Tagaro" /> und{" "}
-                    <TLink name="Japtools" /> um einfach Packages zwischen
-                    Teilen des Projekts zu teilen.
+                    <TLink name="Japtools" /> nutze, um einfach Packages
+                    zwischen Teilen des Projekts zu teilen.
                 </div>
             </div>
         ),
@@ -1119,10 +1126,9 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    TRPC ist meine bevorzugte Möglichkeit um mit dem Backend
-                    Service zu kommunizieren. Es ermöglicht Type-Safety in der
-                    API was ohne RPC nicht möglich wäre. TRPC ist die einfachste
-                    möglichkeit RPC im Frontend zu nutzen.
+                    TRPC ist meine bevorzugte Methode, um mit dem
+                    Backend-Service zu kommunizieren. Es ermöglicht Type-Safety
+                    in der API, was ohne RPC nicht möglich wäre.
                 </div>
                 <div>
                     Einige Beispiele wo ich TRPC nutze sind:
@@ -1133,13 +1139,11 @@ export const technologies = [
                             bald auch TRPC nutzen
                         </li>
                         <li>
-                            Ein Projekt welches noch nicht veröffentlicht ist,
-                            es ist ein Online Multiplayer Spiel jegliche
-                            Frontend{" "}
-                            <span className="inline-block translate-y-[3px]">
-                                <CgArrowRight />
-                            </span>{" "}
-                            Backend Kommunikation läuft über TRPC
+                            Ein noch nicht veröffentlichtes Projekt ist ein
+                            Online-Multiplayer-Spiel, bei dem jegliche
+                            Kommunikation von Frontend zu Backend über TRPC
+                            läuft, <TLink name="Pusher" /> wird oft für Backend
+                            zu Frontend genutzt
                         </li>
                     </ul>
                 </div>
@@ -1152,11 +1156,11 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Alle meine Projekte welche in Typescript geschrieben sind
-                    nutzen npm Packages. <br />
-                    Aber den npm Package Manager nutze ich eher selten direkt,
+                    Alle meine Projekte, die in TypeScript geschrieben sind,
+                    nutzen npm-Packages. <br />
+                    Den npm-Package-Manager nutze ich jedoch eher selten direkt,
                     da ich meistens <TLink name="Bun" /> oder{" "}
-                    <TLink name="pnpm" /> nutze.
+                    <TLink name="pnpm" /> bevorzuge.
                 </div>
             </div>
         ),
@@ -1167,9 +1171,14 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Bun ist ein Package Manager welcher schneller ist als npm
-                    und pnpm. Ich nutze es in Projekten wo ich npm oder pnpm
-                    nutzen würde.
+                    Bun ist eine Alternative zu Node, die oft schneller als Node
+                    ist. <br />
+                    Die Runtime ist etwas schneller, und ich nutze sie eher
+                    selten, da die Vorteile gering sind. Jedoch ist der
+                    Bun-Package-Manager deutlich schneller als npm und pnpm,
+                    weshalb ich ihn in Projekten wie{" "}
+                    <TLink name="Moeglich.dev" /> welche nicht Workspaces
+                    benötigen.
                 </div>
             </div>
         ),
@@ -1180,10 +1189,11 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    pnpm ist ein Package Manager welcher schneller ist als npm
-                    und yarn. <br />
-                    Ich nutzte allgemein selten npm und nie yarn, pnpm ist mein
-                    go-to Package Manager z.B. in Projekten wie{" "}
+                    pnpm ist ein Package Manager, der schneller ist als npm und
+                    Yarn (jedoch langsamer als <TLink name="Bun" />
+                    ). <br />
+                    Ich nutze allgemein selten npm und nie Yarn; pnpm ist mein
+                    bevorzugter Package Manager, z.B. in Projekten wie{" "}
                     <TLink name="functional_utilities" />,{" "}
                     <TLink name="Tagaro" />, <TLink name="ErcEsg" /> und{" "}
                     <TLink name="Japtools" />. Für neuere Projekte wie{" "}
@@ -1202,11 +1212,12 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Biome ist ein ersatzt für andere Tools wie Prettier und
-                    ESLint, es ist in <TLink name="Rust" /> geschrieben und ist
-                    schneller und ist somit schneller. <br />
-                    Der Hauptgrund warum ich es nutze ist jedoch das es mehr
-                    Funktionen hat und besser sich in Projekte integriert.
+                    Biome ist ein Ersatz für andere Tools wie Prettier und
+                    ESLint, geschrieben in <TLink name="Rust" />, und zeichnet
+                    sich durch höhere Geschwindigkeit aus. <br />
+                    Der Hauptgrund für die Nutzung ist jedoch, dass es mehr
+                    Funktionen bietet, weniger Bugs hat und sich besser in
+                    Projekte integriert.
                 </div>
             </div>
         ),
@@ -1217,11 +1228,11 @@ export const technologies = [
         description: () => (
             <div className="article">
                 <div>
-                    Webassembly ermöglicht es Code der nicht in JS geschrieben
-                    ist im Browser zu nutzen. Ich nutze es hauptzächlich zur
-                    nutzung von Rust Code im Browser um die Performance zu
-                    verbessern. Ein Beispiel Projekt wo ich an Webassembly
-                    arbeite ist <TLink name="tshapes" />
+                    Webassembly ermöglicht es, Code, der nicht in JavaScript
+                    geschrieben ist, im Browser zu nutzen. Ich verwende es
+                    hauptsächlich, um Rust-Code im Browser einzusetzen und die
+                    Performance zu verbessern. Ein Beispielprojekt, an dem ich
+                    mit Webassembly arbeite, ist <TLink name="tshapes" />
                 </div>
             </div>
         ),
